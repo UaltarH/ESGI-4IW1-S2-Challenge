@@ -1,5 +1,6 @@
 services:
   mongo:
+    container_name: ${MONGO_CONTAINER_NAME:-app_mongo}
     image: mongo
     ports:
       - 127.0.0.1:27017:27017
@@ -12,6 +13,7 @@ services:
     working_dir: /SampleCollections
 
   node:
+    container_name: ${NODE_CONTAINER_NAME:-app_node}
     image: node:latest
     environment:
       PORT: 3000
@@ -26,18 +28,20 @@ services:
     command: npm run dev
   
   vuejs:
+   container_name: ${VUEJS_CONTAINER_NAME:-app_vuejs}
    image: node:20.0.0-alpine
    user: node
    working_dir: /home/node
    # le --port 5174 --host est pour que le serveur soit accessible depuis l'extérieur et ce sont des paramètres passés à vite parce que npm run dev exécute vite
-   command: '"npm install && npm run dev -- --port 5174 --host"'
+   command: '"cd frontend && npm install && npm run dev -- --port 5174 --host"'
    ports:
-      - "127.0.0.1:5174:5174"
+      - "127.0.0.1:80:5174"
    volumes:
       - .:/home/node
    entrypoint: sh -c
 
   postgres:
+    container_name: ${POSTGRES_CONTAINER_NAME:-app_postgres}
     image: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data

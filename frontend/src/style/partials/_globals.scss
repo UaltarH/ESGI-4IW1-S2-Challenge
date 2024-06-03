@@ -1,0 +1,93 @@
+@use 'variables' as v;
+@use 'fonts' as f;
+
+:root {
+  --primary: #{ v.$primary };
+  --primary-light: #{ v.$primary_light };
+  --secondary: #{ v.$secondary };
+  --secondary-light: #{ v.$secondary_light };
+  --success: #{ v.$success };
+  --warning: #{ v.$warning };
+  --danger: #{ v.$danger };
+  --dark-blue: #{ v.$dark_blue };
+  --dark-blue-dark: #{ v.$dark_blue_dark };
+
+  --xl: #{ v.$xl };
+  --lg: #{ v.$lg };
+  --md: #{ v.$md };
+  --sm: #{ v.$sm };
+
+  --tag-news: #{ v.$tag_news };
+  --tag-tutorial: #{ v.$tag_tutorial };
+  --tag-announcement: #{ v.$tag_announcement };
+  --tag-news-bg : #{ v.$tag_news_bg };
+  --tag-tutorial-bg : #{ v.$tag_tutorial_bg };
+  --tag-announcement-bg : #{ v.$tag_announcement_bg };
+}
+
+#app {
+  margin: 0 auto;
+  font-weight: normal;
+}
+body {
+  font-size: 1rem;
+  background-color: white;
+  font-family: f.$font;
+  color: var(--dark-blue);
+}
+html.dark {
+  body {
+    background-color: var(--dark-blue);
+    color: white;
+  }
+}
+main {
+  max-width: 1280px;
+  margin: auto;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  text-transform: uppercase;
+}
+header {
+  h1 {
+    font-size: 1.5rem;
+    margin: 0;
+  }
+}
+article:not(.card) {
+  header {
+    @apply mb-12;
+  }
+  h2 {
+    @apply text-3xl font-medium mb-6;
+  }
+  h3 {
+    @apply text-2xl font-medium mb-6;
+  }
+  p {
+    @apply mb-4 leading-loose tracking-wide;
+  }
+  ul,ol {
+    @apply list-outside pl-6 mb-6;
+  }
+  ul {
+    @apply list-disc;
+  }
+  ol {
+    @apply list-decimal;
+  }
+  li {
+    @apply mb-2 leading-loose tracking-wide;
+  }
+}
+article.card {
+  .article-preview p{
+    @apply text-ellipsis overflow-hidden ;
+  }
+}
+b {
+  @apply font-semibold;
+}

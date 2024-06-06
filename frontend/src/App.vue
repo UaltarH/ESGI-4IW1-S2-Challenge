@@ -2,8 +2,8 @@
 import MainMenu from "./components/MainMenu.vue";
 import MainFooter from "./components/MainFooter.vue";
 import {onMounted, ref} from "vue";
-import {useMenuItems} from "./composables/useMenuItems.ts";
-import {useDarkMode} from "./composables/useDarkMode.ts";
+import {useMenuItems} from "./composables/useMenuItems";
+import {useDarkMode} from "./composables/useDarkMode";
 
 const {menuItems} = useMenuItems();
 const { loadDarkModePreference } = useDarkMode();
@@ -14,6 +14,9 @@ onMounted(() => {
 
 <template>
   <main-menu :menu-items="menuItems"></main-menu>
+  <main>
+    <router-view></router-view>
+  </main>
   <main-footer></main-footer>
 </template>
 

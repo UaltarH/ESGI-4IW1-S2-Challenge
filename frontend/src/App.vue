@@ -14,7 +14,7 @@ onMounted(() => {
 
 <template>
   <main-menu :menu-items="menuItems"></main-menu>
-  <main>
+  <main class="relative">
     <router-view></router-view>
   </main>
   <main-footer></main-footer>

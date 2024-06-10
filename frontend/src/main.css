@@ -44,6 +44,7 @@ html.dark body {
 
 main {
   max-width: 1280px;
+  min-height: 100vh;
   margin: auto;
 }
 
@@ -180,6 +181,20 @@ b {
 @layer components {
   .tag {
     @apply flex items-center border rounded-md w-min px-2 py-1 text-xs font-semibold;
+  }
+}
+@layer components {
+  .modal {
+    @apply absolute m-auto top-1/3 left-0 right-0 w-1/4 min-h-44
+    bg-white dark:bg-dark-blue-dark shadow-lg rounded-md p-4
+    flex flex-col justify-between items-center
+    ring-1 ring-inset ring-gray-300 dark:ring-gray-700;
+  }
+  .modal--md {
+    @apply w-1/3;
+  }
+  .modal footer {
+    @apply border-t border-gray-300 dark:border-gray-700 w-full flex justify-between items-center p-2;
   }
 }
 

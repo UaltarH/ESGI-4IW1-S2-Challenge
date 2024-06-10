@@ -1,14 +1,19 @@
 .DS_Store
 **/node_modules
 **/dist
+**/.npm/
 .npm
 # IDE
 **/.vscode
+backend/.vscode
+frontend/.vscode
 **/.idea
 
 # Logs
 **/npm-debug.log*
 **/yarn-debug.log*
 **/_logs
+
+**/.vite
 
 Sujet.pdf

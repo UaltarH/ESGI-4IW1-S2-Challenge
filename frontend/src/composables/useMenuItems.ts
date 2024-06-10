@@ -19,6 +19,26 @@ export const useMenuItems = () => {
             icon: '',
             route: '/about',
             access: 'all',
+        },
+        {
+            title: 'Admin',
+            icon: '',
+            route: '',
+            access: 'admin',
+            children: [
+                {
+                    title: 'Roles',
+                    icon: '',
+                    route: '/admin/roles',
+                    access: 'admin',
+                },
+                {
+                    title: 'Utilisateurs',
+                    icon: '',
+                    route: '/admin/users',
+                    access: 'admin',
+                },
+            ],
         }
     ]);
 

@@ -1,0 +1,25 @@
+@layer components {
+  .menu-link {
+    @apply font-medium hover:text-secondary-light dark:hover:text-dark-blue;
+  }
+  .menu-item {
+    @apply flex justify-center items-center h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
+    .menu-subitem {
+      @apply px-2 z-10 relative;
+    }
+  }
+  li:hover > .menu-submenu, .menu-submenu:hover {
+    @apply lg:top-12 block pt-4;
+  }
+  ul.menu-submenu {
+    @apply hidden transition-all duration-300;
+
+  }
+  .menu-subitem:nth-child(1):before {
+     @apply absolute top-0 left-1/2 -mt-2 w-4 h-4 bg-primary transform -translate-x-1/2 rotate-45 z-0;
+     content: '';
+  }
+  .menu-subitem:nth-child(1):before:hover {
+    @apply bg-primary-light;
+  }
+}

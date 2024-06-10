@@ -1,0 +1,58 @@
+services:
+  mongo:
+    container_name: ${MONGO_CONTAINER_NAME:-app_mongo}
+    image: mongo
+    ports:
+      - 127.0.0.1:27017:27017
+    volumes:
+      - mongo-data:/data/db
+      - ./SampleCollections:/SampleCollections
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    working_dir: /SampleCollections
+
+  node:
+    container_name: ${NODE_CONTAINER_NAME:-app_node}
+    image: node:latest
+    tty: true
+    stdin_open: true
+    environment:
+      PORT: 3000
+      MONGO_URL: mongodb://root:password@mongo:27017/app?authSource=admin
+      DATABASE_URL: postgres://root:password@postgres:5432/app
+      JWT_SECRET: secret
+    ports:
+      - 8000:8000
+    volumes:
+      - ./backend:/home/node/
+    working_dir: /home/node/
+    entrypoint: sh -c
+    command: '"npm install && npm run dev"'
+  
+  vuejs:
+   container_name: ${VUEJS_CONTAINER_NAME:-app_vuejs}
+   image: node:20.0.0-alpine
+   user: node
+   working_dir: /home/node
+   # le --port 5174 --host est pour que le serveur soit accessible depuis l'extérieur et ce sont des paramètres passés à vite parce que npm run dev exécute vite
+   command: '"cd frontend && npm install && npm run dev -- --port 5173 --host"'
+   ports:
+     - 5173:5173
+   volumes:
+      - .:/home/node
+   entrypoint: sh -c
+
+  postgres:
+    container_name: ${POSTGRES_CONTAINER_NAME:-app_postgres}
+    image: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app
+
+volumes:
+  mongo-data: {}
+  postgres-data: {}

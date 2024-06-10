@@ -1,0 +1,13 @@
+@layer components {
+  .card {
+    @apply divide-y divide-gray-200 dark:divide-gray-800
+    dark:bg-dark-blue-dark rounded-md
+    ring-1 ring-gray-200 dark:ring-gray-800 hover:ring-gray-300 dark:hover:ring-gray-700;
+    &--content {
+      @apply xl:px-4 xl:py-5 sm:p-6;
+    }
+    &--footer {
+      @apply xl:px-4 xl:py-2 sm:p-6 bg-secondary-light dark:bg-[#0c0816];
+    }
+  }
+}

@@ -1,0 +1,167 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* tags */
+:root {
+  --primary: #88AB8E;
+  --primary-light: #AFC8AD;
+  --secondary: #EEE7DA;
+  --secondary-light: #F2F1EB;
+  --success: #88AB8E;
+  --warning: #F2CC8F;
+  --danger: #E07A5F;
+  --dark-blue: #1f2345;
+  --dark-blue-dark: #111428;
+  --xl: 1280px;
+  --lg: 1024px;
+  --md: 768px;
+  --sm: 640px;
+  --tag-news: #FF9D00;
+  --tag-tutorial: #4e52cc;
+  --tag-announcement: #E07A5F;
+  --tag-news-bg: #F2CC8F60;
+  --tag-tutorial-bg: #0f138060;
+  --tag-announcement-bg: #E07A5F60;
+}
+
+#app {
+  margin: 0 auto;
+  font-weight: normal;
+}
+
+body {
+  font-size: 1rem;
+  background-color: white;
+  font-family: "Poppins", sans-serif;
+  color: var(--dark-blue);
+}
+
+html.dark body {
+  background-color: var(--dark-blue);
+  color: white;
+}
+
+main {
+  max-width: 1280px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 1rem 0;
+  text-transform: uppercase;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0;
+}
+
+article:not(.card) header {
+  @apply mb-12;
+}
+article:not(.card) h2 {
+  @apply text-3xl font-medium mb-6;
+}
+article:not(.card) h3 {
+  @apply text-2xl font-medium mb-6;
+}
+article:not(.card) p {
+  @apply mb-4 leading-loose tracking-wide;
+}
+article:not(.card) ul, article:not(.card) ol {
+  @apply list-outside pl-6 mb-6;
+}
+article:not(.card) ul {
+  @apply list-disc;
+}
+article:not(.card) ol {
+  @apply list-decimal;
+}
+article:not(.card) li {
+  @apply mb-2 leading-loose tracking-wide;
+}
+
+article.card .article-preview p {
+  @apply text-ellipsis overflow-hidden;
+}
+
+b {
+  @apply font-semibold;
+}
+
+/* tags */
+@layer components {
+  .switch {
+    @apply relative inline-block w-14 h-8;
+  }
+  .switch input {
+    @apply opacity-0 w-0 h-0;
+  }
+  .slider {
+    @apply absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-secondary transition duration-500;
+  }
+  .slider:before {
+    background-image: url("/public/sun.svg");
+    background-size: 1.5rem;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  .slider:before {
+    @apply absolute content-[""] h-6 w-6 left-1 bottom-1 bg-white transition duration-500;
+  }
+  #dark-mode-toggle.dark .slider {
+    @apply bg-dark-blue;
+  }
+  #dark-mode-toggle:focus + .slider {
+    @apply shadow;
+  }
+  #dark-mode-toggle.dark .slider:before {
+    @apply translate-x-6;
+  }
+  #dark-mode-toggle.dark .slider:before {
+    background-image: url("/public/moon-stars.svg");
+  }
+  /* Rounded sliders */
+  .slider.round {
+    @apply rounded-full;
+  }
+  .slider.round:before {
+    @apply rounded-full;
+  }
+}
+@layer components {
+  .btn {
+    @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex;
+  }
+  .btn--primary {
+    @apply bg-primary hover:bg-primary-light text-white dark:text-gray-900;
+  }
+}
+@layer components {
+  .menu-link {
+    @apply font-medium hover:text-secondary-light dark:hover:text-dark-blue;
+  }
+}
+@layer components {
+  .card {
+    @apply divide-y divide-gray-200 dark:divide-gray-800
+    dark:bg-dark-blue-dark rounded-md
+    ring-1 ring-gray-200 dark:ring-gray-800 hover:ring-gray-300 dark:hover:ring-gray-700;
+  }
+  .card--content {
+    @apply xl:px-4 xl:py-5 sm:p-6;
+  }
+  .card--footer {
+    @apply xl:px-4 xl:py-2 sm:p-6 bg-secondary-light dark:bg-[#0c0816];
+  }
+}
+@layer components {
+  .tag {
+    @apply flex items-center border rounded-md w-min px-2 py-1 text-xs font-semibold;
+  }
+}
+
+/*# sourceMappingURL=main.css.map */

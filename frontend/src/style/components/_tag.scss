@@ -1,0 +1,5 @@
+@layer components {
+  .tag {
+    @apply flex items-center border rounded-md w-min px-2 py-1 text-xs font-semibold;
+  }
+}

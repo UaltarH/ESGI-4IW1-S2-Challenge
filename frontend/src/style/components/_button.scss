@@ -1,0 +1,8 @@
+@layer components {
+  .btn {
+    @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex;
+    &--primary {
+      @apply bg-primary hover:bg-primary-light text-white dark:text-gray-900;
+    }
+  }
+}

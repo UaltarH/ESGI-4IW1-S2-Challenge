@@ -1,16 +1,5 @@
 export const useDarkMode = () => {
-    // const toggleDarkMode = (e: Event) => {
-    //     console.log(e)
-    //     if(e.target === null) {
-    //         return;
-    //     }
-    //     if(!(e.target instanceof HTMLInputElement))
-    //         return;
-    //     applyDarkMode(e.target.checked);
-    //     localStorage.setItem("darkMode", e.target.checked.toString());
-    // };
     const toggleDarkMode = (e: Event) => {
-        console.log(e)
         if(e.target === null) {
             return;
         }

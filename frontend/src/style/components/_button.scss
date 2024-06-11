@@ -4,5 +4,8 @@
     &--primary {
       @apply bg-primary hover:bg-primary-light text-white dark:text-gray-900;
     }
+    &--cancel {
+      @apply text-gray-400 hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;
+    }
   }
 }

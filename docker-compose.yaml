@@ -9,7 +9,6 @@ services:
     volumes:
       - mongo-data:/data/db
       - ./SampleCollections:/SampleCollections
-
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -51,8 +50,6 @@ services:
     image: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
-    ports:
-      - 5432:5432
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}

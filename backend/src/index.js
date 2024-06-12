@@ -1,9 +1,9 @@
 import {authRouter, indexRouter, userRouter} from "./routes/index.js";
 import express from "express";
 import cors from "cors";
+
 const server = express();
 const port = process.env.PORT || 8000;
-
 const corsOptions = {
   origin: "http://localhost:5173",
   optionsSuccessStatus: 200

@@ -1,17 +1,14 @@
-import Router from "express";
-import {HelloController} from "../controllers/helloController.js";
-import {SecurityController} from "../controllers/securityControllers.js";
+import {Router} from "express";
+import HelloController from "../controllers/helloController.js";
+import UserController from "../controllers/userController.js";
 import cors from "cors";
 
-export const corsOptions = {
-    origin: "http://localhost:5173",
-    optionsSuccessStatus: 200,
-}
+// export const corsOptions = {
+//     origin: "http://localhost:5173",
+//     optionsSuccessStatus: 200,
+// }
+// indexRouter.get("/exempleCustomCors", cors(corsOptions), HelloController.index); // exemple : si vous voulez utiliser des CORS custom pour une route spécifique
 
-/**
- * route "/"
- * @type {Express}
- */
 export const indexRouter = Router();
 indexRouter.get("/", HelloController.index);
 indexRouter.get("/exempleCustomCors", cors(corsOptions), HelloController.index); // exemple : si vous voulez utiliser des CORS custom pour une route spécifique

@@ -11,8 +11,15 @@ async function connectPostgres(sequelize) {
   }
 }
 
-export const sequelize = new Sequelize(`${process.env.DATABASE_URL}`)
-connectPostgres(sequelize)
+export const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {define: { freezeTableName: true }});
+
+connectPostgres(sequelize);
+
+
+(async () => {
+  await sequelize.sync({ force: true }); // Utilisation de force: true pour recréer la table à chaque fois
+  console.log("Toutes les tables ont été crées !");
+})();
 
 async function connectMongoDB(mongoUrl) {
   try {
@@ -23,4 +30,4 @@ async function connectMongoDB(mongoUrl) {
     process.exit(1);
   }
 };
-connectMongoDB(process.env.MONGO_URL)
+connectMongoDB(process.env.MONGO_URL);

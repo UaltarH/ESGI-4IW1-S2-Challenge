@@ -5,7 +5,7 @@ import PaginationTable from "./pagination-table.vue";
 //props (input parent component)
 const props = defineProps<{
   data: any[];
-  columns: { name: string; key: string; sort: boolean }[];
+  columns: { name: string; key: string; sort: boolean; typeData: string }[];
   actions: { edit: boolean; delete: boolean };
 }>();
 
@@ -14,6 +14,11 @@ const emit = defineEmits(["edit-item", "delete-item"]);
 
 let data = computed(() => {
   return props.data;
+});
+
+const searchTerms = ref<{ [key: string]: string }>({});
+props.columns.forEach((col) => {
+  searchTerms.value[col.key] = "";
 });
 
 // Pagination
@@ -28,9 +33,10 @@ const pageInfo = computed(() => ({
 }));
 
 const paginatedData = computed(() => {
+  const filteredData = filterData();
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + Number(itemsPerPage.value);
-  return data.value.slice(start, end);
+  return filteredData.slice(start, end);
 });
 
 function nextPage() {
@@ -94,6 +100,50 @@ function sortData(field: string, direction: string) {
   });
 }
 
+// filter with search
+function filterData() {
+  const filtered = props.data.filter((item) => {
+    let match = true;
+    for (const key in searchTerms.value) {
+      const searchTerm = searchTerms.value[key];
+      const column = props.columns.find((col) => col.key === key);
+      const value = item[key];
+
+      if (searchTerm && column) {
+        if (
+          column.typeData === "string" &&
+          !value.toLowerCase().includes(searchTerm.toLowerCase())
+        ) {
+          match = false;
+        } else if (
+          column.typeData === "number" &&
+          value !== parseInt(searchTerm, 10)
+        ) {
+          match = false;
+        } else if (column.typeData === "date") {
+          const searchDate = new Date(searchTerm);
+          const itemDate = new Date(value);
+
+          if (!isNaN(searchDate.getTime()) && !isNaN(itemDate.getTime())) {
+            // Comparer uniquement par la date (sans l'heure)
+            if (
+              searchDate.getDate() !== itemDate.getDate() ||
+              searchDate.getMonth() !== itemDate.getMonth() ||
+              searchDate.getFullYear() !== itemDate.getFullYear()
+            ) {
+              match = false;
+            }
+          } else {
+            match = false;
+          }
+        }
+      }
+    }
+    return match;
+  });
+  return filtered;
+}
+
 // emit for parent component
 function onEdit(item: any) {
   emit("edit-item", item);
@@ -128,9 +178,25 @@ function onDelete(item: any) {
                 </span>
               </div>
               <input
-                type="text"
                 class="px-3 mt-4 rounded focus:shadow text-sm border border-solid border-black"
-                placeholder="Search anything..."
+                v-if="col.typeData === 'string'"
+                v-model="searchTerms[col.key]"
+                type="text"
+                :placeholder="`Recherche par ${col.name}`"
+              />
+              <input
+                class="px-3 mt-4 rounded focus:shadow text-sm border border-solid border-black"
+                v-else-if="col.typeData === 'number'"
+                v-model.number="searchTerms[col.key]"
+                type="number"
+                :placeholder="`Recherche par ${col.name}`"
+              />
+              <input
+                class="px-3 mt-4 rounded focus:shadow text-sm border border-solid border-black"
+                v-else-if="col.typeData === 'date'"
+                v-model="searchTerms[col.key]"
+                type="date"
+                :placeholder="`Recherche par ${col.name}`"
               />
             </div>
           </th>

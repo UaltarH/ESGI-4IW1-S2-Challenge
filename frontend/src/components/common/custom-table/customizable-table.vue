@@ -24,23 +24,24 @@ props.columns.forEach((col) => {
 // Pagination
 const itemsPerPage = ref(5);
 const currentPage = ref(1);
-const totalItems = data.value.length;
+const totalItems = ref(data.value.length);
 
 const pageInfo = computed(() => ({
   current: currentPage.value,
-  total: totalItems,
+  total: totalItems.value,
   perPage: itemsPerPage.value,
 }));
 
 const paginatedData = computed(() => {
   const filteredData = filterData();
+  totalItems.value = filteredData.length;
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + Number(itemsPerPage.value);
   return filteredData.slice(start, end);
 });
 
 function nextPage() {
-  if (currentPage.value * itemsPerPage.value < totalItems) {
+  if (currentPage.value * itemsPerPage.value < totalItems.value) {
     currentPage.value += 1;
   }
 }
@@ -144,6 +145,18 @@ function filterData() {
   return filtered;
 }
 
+// display data ('pipe')
+const formatValue = (value: any, type: any) => {
+  if (type === "number") {
+    return Number(value).toLocaleString();
+  } else if (type === "date") {
+    const date = new Date(value);
+    return date.toLocaleDateString();
+  } else {
+    return value;
+  }
+};
+
 // emit for parent component
 function onEdit(item: any) {
   emit("edit-item", item);
@@ -208,7 +221,7 @@ function onDelete(item: any) {
       <tbody>
         <tr v-for="item in paginatedData" :key="item.name">
           <td v-for="col in columns" :key="col.key">
-            {{ (item as any)[col.key] }}
+            {{ formatValue(item[col.key], col.typeData) }}
           </td>
           <td v-if="actions.edit || actions.delete" class="w-[10%]">
             <div class="flex flex-row justify-around">

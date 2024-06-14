@@ -5,8 +5,11 @@
       :data="data.datas"
       :columns="data.columns"
       :actions="data.actions"
+      :numberOfItemsPerPage="data.numberOfItemsPerPage"
+      @visualize-item="handleVisualize"
       @edit-item="handleEdit"
       @delete-item="handleDelete"
+      @delete-multiple-items="handleMultipleDelete"
     ></CustomizableTable>
   </div>
 </template>
@@ -46,7 +49,7 @@ const data = reactive({
     {
       name: "Kari",
       fullName: "Renner",
-      age: "664.77",
+      age: 664.77,
       email: "non",
       phone: "1-468-840-2255 x28383",
       address: "Clare Key",
@@ -55,7 +58,7 @@ const data = reactive({
     {
       name: "Tyrique",
       fullName: "Hauck",
-      age: "866.79",
+      age: 866.79,
       email: "quae",
       phone: "1-257-863-8984 x00340",
       address: "Chaz Road",
@@ -64,7 +67,7 @@ const data = reactive({
     {
       name: "Asa",
       fullName: "Greenholt",
-      age: "134.54",
+      age: 134.54,
       email: "quia",
       phone: "(371) 264-3543",
       address: "Boyle Ranch",
@@ -73,7 +76,7 @@ const data = reactive({
     {
       name: "Meda",
       fullName: "Goyette",
-      age: "147.40",
+      age: 147.4,
       email: "non",
       phone: "777.911.4928 x871",
       address: "Sydnee Garden",
@@ -82,7 +85,7 @@ const data = reactive({
     {
       name: "Hillard",
       fullName: "Ratke",
-      age: "49.76",
+      age: 49.76,
       email: "cum",
       phone: "1-854-846-1640",
       address: "Amya Junctions",
@@ -91,7 +94,7 @@ const data = reactive({
     {
       name: "Polly",
       fullName: "Robel",
-      age: "253.15",
+      age: 253.15,
       email: "nihil",
       phone: "1-461-658-6521 x107",
       address: "Cummings Squares",
@@ -100,7 +103,7 @@ const data = reactive({
     {
       name: "Myrtis",
       fullName: "Frami",
-      age: "978.46",
+      age: 978.46,
       email: "ut",
       phone: "(330) 474-5546",
       address: "Schaden Islands",
@@ -109,7 +112,7 @@ const data = reactive({
     {
       name: "Loraine",
       fullName: "Reichert",
-      age: "540.23",
+      age: 540.23,
       email: "impedit",
       phone: "(802) 589-7751 x1431",
       address: "Frieda Village",
@@ -118,7 +121,7 @@ const data = reactive({
     {
       name: "Macy",
       fullName: "Bauch",
-      age: "371.52",
+      age: 371.52,
       email: "reprehenderit",
       phone: "1-412-931-1003 x21503",
       address: "Waylon Oval",
@@ -127,7 +130,7 @@ const data = reactive({
     {
       name: "Aidan",
       fullName: "Reilly",
-      age: "886.37",
+      age: 886.37,
       email: "nisi",
       phone: "(968) 951-3655 x54707",
       address: "Maye Tunnel",
@@ -136,7 +139,7 @@ const data = reactive({
     {
       name: "Sid",
       fullName: "Witting",
-      age: "315.63",
+      age: 315.63,
       email: "ad",
       phone: "275-284-9184 x30500",
       address: "Bogan Islands",
@@ -152,7 +155,8 @@ const data = reactive({
     { name: "Address", key: "address", sort: true, typeData: "string" },
     { name: "Birthday", key: "birthday", sort: true, typeData: "date" },
   ],
-  actions: { edit: true, delete: true },
+  actions: { edit: true, delete: true, visualize: true },
+  numberOfItemsPerPage: [5, 10, 15, 20],
 });
 
 let data2 = reactive(
@@ -167,11 +171,32 @@ let data2 = reactive(
   }))
 );
 
+function handleVisualize(item: any) {
+  console.log("Visualize item:", item);
+  // todo: open modal to visualize item
+  alert("Visualize item: " + JSON.stringify(item));
+}
+
 function handleEdit(item: any) {
   console.log("Edit item:", item);
+  // todo: open modal to edit item
+  // todo: make query to edit item from database using backend
+  alert("Edit item: " + JSON.stringify(item));
 }
 
 function handleDelete(item: any) {
   console.log("Delete item:", item);
+  alert("Delete item: " + JSON.stringify(item));
+  //delete item from data
+  //todo: make query to delete item from database using backend
+  data.datas = data.datas.filter((data) => data !== item);
+}
+
+function handleMultipleDelete(items: any[]) {
+  console.log("Delete items:", items);
+  alert("Delete items: " + JSON.stringify(items));
+  // delete items from data
+  // todo: make query to delete items from database using backend
+  data.datas = data.datas.filter((data) => !items.includes(data));
 }
 </script>

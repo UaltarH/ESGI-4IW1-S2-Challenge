@@ -1,21 +1,35 @@
 <script lang="ts" setup>
 import { ref, computed } from "vue";
 import PaginationTable from "./pagination-table.vue";
+import { columnsModel } from "./models/columns.interface";
+import { actionsModel } from "./models/actions.interface";
+
+defineOptions({
+  name: "CustomizableTable",
+  inheritAttrs: false,
+});
 
 //props (input parent component)
 const props = defineProps<{
   data: any[];
-  columns: { name: string; key: string; sort: boolean; typeData: string }[];
-  actions: { edit: boolean; delete: boolean };
+  columns: columnsModel[];
+  actions: actionsModel;
+  numberOfItemsPerPage: number[];
 }>();
 
 // emit (output parent component)
-const emit = defineEmits(["edit-item", "delete-item"]);
+const emit = defineEmits([
+  "visualize-item",
+  "edit-item",
+  "delete-item",
+  "delete-multiple-items",
+]);
 
 let data = computed(() => {
   return props.data;
 });
 
+//used for filter data by columns
 const searchTerms = ref<{ [key: string]: string }>({});
 props.columns.forEach((col) => {
   searchTerms.value[col.key] = "";
@@ -37,6 +51,8 @@ const paginatedData = computed(() => {
   totalItems.value = filteredData.length;
   const start = (currentPage.value - 1) * itemsPerPage.value;
   const end = start + Number(itemsPerPage.value);
+  // if (filteredData.slice(start, end).length === 0) currentPage.value == 1;
+
   return filteredData.slice(start, end);
 });
 
@@ -116,10 +132,7 @@ function filterData() {
           !value.toLowerCase().includes(searchTerm.toLowerCase())
         ) {
           match = false;
-        } else if (
-          column.typeData === "number" &&
-          value !== parseInt(searchTerm, 10)
-        ) {
+        } else if (column.typeData === "number" && value !== searchTerm) {
           match = false;
         } else if (column.typeData === "date") {
           const searchDate = new Date(searchTerm);
@@ -142,14 +155,14 @@ function filterData() {
     }
     return match;
   });
+  // currentPage.value = 1;
+
   return filtered;
 }
 
 // display data ('pipe')
 const formatValue = (value: any, type: any) => {
-  if (type === "number") {
-    return Number(value).toLocaleString();
-  } else if (type === "date") {
+  if (type === "date") {
     const date = new Date(value);
     return date.toLocaleDateString();
   } else {
@@ -157,22 +170,136 @@ const formatValue = (value: any, type: any) => {
   }
 };
 
+// selecing multiple items
+const selectedItems = ref<any[]>([]);
+
+// add isSelected property to each item of data
+props.data.forEach((item) => {
+  item.isSelected = false;
+});
+function toggleSelection(item: any) {
+  const index = selectedItems.value.indexOf(item);
+  if (item.isSelected && index === -1) {
+    // add item to selectedItems
+    selectedItems.value.push(item);
+  } else if (!item.isSelected && index > -1) {
+    // remove item from selectedItems
+    selectedItems.value.splice(index, 1);
+  }
+}
+
+function changePageToFirst() {
+  currentPage.value = 1;
+}
+
+// export csv
+function generateCSV(data: any, columns: columnsModel[]) {
+  const header = columns.map((col) => col.name).join(",") + "\n";
+
+  const rows = data
+    .map((item: any) => {
+      return columns
+        .map((col) => {
+          let value = item[col.key];
+
+          // Formater les valeurs selon le type de données
+          if (col.typeData === "number") {
+            value = Number(value).toLocaleString();
+          } else if (col.typeData === "date") {
+            const date = new Date(value);
+            value = date.toLocaleDateString();
+          }
+
+          if (typeof value === "string") {
+            value = value.replace(/"/g, '""');
+            if (value.includes(",")) {
+              value = `"${value}"`;
+            }
+          }
+
+          return value;
+        })
+        .join(",");
+    })
+    .join("\n");
+
+  const csvContent = `${header}${rows}`;
+  return csvContent;
+}
+
+async function exportToCSV(data: any, columns: columnsModel[]) {
+  // Générer le contenu CSV
+  const csvContent = generateCSV(data, columns);
+
+  try {
+    // Sélectionner un emplacement pour enregistrer le fichier CSV
+    const handle = await window.showSaveFilePicker({
+      suggestedName: "export.csv",
+      types: [
+        {
+          description: "Fichiers CSV",
+          accept: {
+            "text/csv": [".csv"],
+          },
+        },
+      ],
+    });
+
+    const writableStream = await handle.createWritable();
+    await writableStream.write(csvContent);
+    await writableStream.close();
+  } catch (err) {
+    console.error("Erreur lors de l'exportation du fichier CSV :", err);
+  }
+}
+
 // emit for parent component
+function onVisualize(item: any) {
+  emit("visualize-item", item);
+}
+
 function onEdit(item: any) {
   emit("edit-item", item);
 }
 
 function onDelete(item: any) {
   emit("delete-item", item);
+  currentPage.value = 1;
+}
+
+function onDeleteMultipleItems() {
+  emit("delete-multiple-items", selectedItems.value);
+  selectedItems.value = [];
+  changePageToFirst();
+}
+
+function onDeleteAllItems() {
+  emit("delete-multiple-items", data.value);
+  changePageToFirst();
 }
 </script>
 
 <template>
   <div>
-    <table>
+    <table class="border-collapse w-full">
       <thead>
         <tr>
-          <th v-for="col in columns" :key="col.key" class="min-w-fit w-[6%]">
+          <th class="border border-solid border-black p-2">
+            <select v-model="itemsPerPage" @change="changeItemsPerPage">
+              <option
+                v-for="number in numberOfItemsPerPage"
+                :key="number"
+                :value="number"
+              >
+                {{ number }}
+              </option>
+            </select>
+          </th>
+          <th
+            v-for="col in columns"
+            :key="col.key"
+            class="min-w-fit w-[6%] p-2 border border-solid border-black"
+          >
             <div class="flex flex-col">
               <div class="flex flex-row justify-between">
                 <p>{{ col.name }}</p>
@@ -191,85 +318,158 @@ function onDelete(item: any) {
                 </span>
               </div>
               <input
+                @keyup="changePageToFirst"
                 class="px-3 mt-4 rounded focus:shadow text-sm border border-solid border-black"
                 v-if="col.typeData === 'string'"
                 v-model="searchTerms[col.key]"
                 type="text"
-                :placeholder="`Recherche par ${col.name}`"
+                :placeholder="`Filtrer par ${col.name}`"
               />
               <input
+                @keyup="changePageToFirst"
                 class="px-3 mt-4 rounded focus:shadow text-sm border border-solid border-black"
                 v-else-if="col.typeData === 'number'"
                 v-model.number="searchTerms[col.key]"
                 type="number"
-                :placeholder="`Recherche par ${col.name}`"
+                :placeholder="`Filtrer par ${col.name}`"
               />
               <input
+                @change="changePageToFirst"
                 class="px-3 mt-4 rounded focus:shadow text-sm border border-solid border-black"
                 v-else-if="col.typeData === 'date'"
                 v-model="searchTerms[col.key]"
                 type="date"
-                :placeholder="`Recherche par ${col.name}`"
+                :placeholder="`Filtrer par ${col.name}`"
               />
             </div>
           </th>
-          <th v-if="actions.edit || actions.delete" class="min-w-fit">
+          <th
+            v-if="actions.edit || actions.delete"
+            class="min-w-fit p-2 text-center border border-solid border-black"
+          >
             Actions
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in paginatedData" :key="item.name">
-          <td v-for="col in columns" :key="col.key">
+          <td class="w-[6%] p-2 text-center border border-solid border-black">
+            <input
+              type="checkbox"
+              v-model="item.isSelected"
+              @change="toggleSelection(item)"
+            />
+          </td>
+          <td
+            v-for="col in columns"
+            :key="col.key"
+            class="p-2 text-left border border-solid border-black"
+          >
             {{ formatValue(item[col.key], col.typeData) }}
           </td>
-          <td v-if="actions.edit || actions.delete" class="w-[10%]">
+          <td
+            v-if="actions.edit || actions.delete"
+            class="p-2 border border-solid border-black"
+          >
             <div class="flex flex-row justify-around">
+              <button
+                v-if="actions.visualize"
+                @click="onVisualize(item)"
+                class="bg-primary text-white rounded-sm p-1.5 m-1"
+              >
+                <p>Visualiser</p>
+              </button>
+
               <button
                 v-if="actions.edit"
                 @click="onEdit(item)"
-                class="bg-primary text-white rounded-sm p-1.5"
+                class="bg-primary text-white rounded-sm p-1.5 m-1"
               >
-                <p>Edit</p>
+                <p>Modifier</p>
               </button>
               <button
                 v-if="actions.delete"
                 @click="onDelete(item)"
-                class="bg-primary text-white rounded-sm p-1.5"
+                class="bg-primary text-white rounded-sm p-1.5 m-1"
               >
-                <p>Delete</p>
+                <p>Supprimer</p>
               </button>
             </div>
           </td>
         </tr>
       </tbody>
+      <tfoot>
+        <tr>
+          <td :colspan="columns.length + 2">
+            <div class="w-full flex flex-row justify-between items-center">
+              <div class="flex flex-col items-start">
+                <button
+                  @click="onDeleteMultipleItems"
+                  class="rounded p-2 mt-2"
+                  :class="{
+                    'bg-red-500 text-white': selectedItems.length > 0,
+                    'disabled-button': selectedItems.length === 0,
+                  }"
+                >
+                  Supprimer les éléments selectionnés
+                </button>
+
+                <button
+                  @click="exportToCSV(selectedItems, columns)"
+                  class="rounded p-2 mt-2"
+                  :class="{
+                    'bg-primary text-white': selectedItems.length > 0,
+                    'disabled-button': selectedItems.length === 0,
+                  }"
+                >
+                  Exporter les éléments selectionnés en CSV
+                </button>
+              </div>
+
+              <div>
+                <PaginationTable
+                  :page="pageInfo"
+                  @emitNextPage="nextPage"
+                  @emitPreviousPage="previousPage"
+                />
+              </div>
+
+              <div class="flex flex-col items-end">
+                <button
+                  @click="onDeleteAllItems"
+                  class="rounded p-2 mt-2"
+                  :class="{
+                    'bg-red-500 text-white': data.length > 0,
+                    'disabled-button': data.length === 0,
+                  }"
+                >
+                  Supprimer tous les éléments
+                </button>
+
+                <button
+                  @click="exportToCSV(paginatedData, columns)"
+                  class="rounded p-2 mt-2"
+                  :class="{
+                    'bg-primary text-white': data.length > 0,
+                    'disabled-button': data.length === 0,
+                  }"
+                >
+                  Exporter toutes les données en CSV
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tfoot>
     </table>
-
-    <!-- Pagination Controls -->
-    <PaginationTable
-      :page="pageInfo"
-      @emitNextPage="nextPage"
-      @emitPreviousPage="previousPage"
-    />
-
-    <!-- Items Per Page Selector -->
-    <select v-model="itemsPerPage" @change="changeItemsPerPage">
-      <option value="5">5</option>
-      <option value="10">10</option>
-      <option value="25">25</option>
-    </select>
   </div>
 </template>
 
 <style scoped>
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-td,
-th {
-  border: 1px solid black;
-  padding: 8px;
-  text-align: left;
+.disabled-button {
+  background-color: #ccc;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 2;
 }
 </style>

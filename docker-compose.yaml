@@ -36,7 +36,7 @@ services:
    user: node
    working_dir: /home/node
    # le --port 5174 --host est pour que le serveur soit accessible depuis l'extérieur et ce sont des paramètres passés à vite parce que npm run dev exécute vite
-   command: '"cd frontend && npm install && npm run dev -- --port 5173 --host"'
+   command: '"cd frontend && npm install && npm run dev"'
    ports:
      - 5173:5173
    volumes:

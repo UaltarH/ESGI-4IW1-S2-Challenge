@@ -144,6 +144,9 @@ b {
   .btn--cancel {
     @apply text-gray-400 hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;
   }
+  .btn--danger {
+    @apply bg-danger hover:bg-danger-light text-white dark:text-gray-900;
+  }
 }
 @layer components {
   .menu-link {
@@ -205,6 +208,32 @@ b {
   }
   .message--error {
     @apply text-red-500 dark:text-red-400;
+  }
+}
+@layer components {
+  .form {
+    @apply bg-white dark:bg-dark-blue-dark shadow-md rounded-lg p-4 flex flex-col lg:flex-row lg:flex-wrap justify-between px-8 border-t border-t-gray-50 dark:border-t-gray-800;
+  }
+  .form-item {
+    @apply mb-4 flex flex-col w-full lg:w-4/5;
+  }
+  .form-item label {
+    @apply font-semibold pl-2 mb-2;
+  }
+  .form-item input, .form-item textarea, .form-item select {
+    @apply p-2 rounded-lg dark:bg-dark-blue border border-gray-200 dark:border-gray-800 lg:w-1/2;
+  }
+  .form-item.col-0 {
+    @apply w-full items-center;
+  }
+  .form-item.col-0 label, .form-item.col-0 input, .form-item.col-0 textarea, .form-item.col-0 select {
+    @apply w-1/2;
+  }
+  .form-item.col-2 {
+    @apply w-full lg:w-[40%];
+  }
+  .form-item.col-2 label, .form-item.col-2 input, .form-item.col-2 textarea, .form-item.col-2 select {
+    @apply w-full;
   }
 }
 

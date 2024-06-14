@@ -4,6 +4,6 @@
   </button>
 </template>
 <script lang="ts" setup>
-import { useDarkMode } from "../composables/useDarkMode";
+import { useDarkMode } from "@/composables/useDarkMode";
 const { toggleDarkMode } = useDarkMode();
 </script>

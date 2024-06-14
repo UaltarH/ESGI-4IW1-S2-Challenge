@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import MainMenu from "./components/MainMenu.vue";
-import MainFooter from "./components/MainFooter.vue";
-import {onMounted, ref} from "vue";
-import {useMenuItems} from "./composables/useMenuItems";
-import {useDarkMode} from "./composables/useDarkMode";
+import MainMenu from "@/components/MainMenu.vue";
+import MainFooter from "@/components/MainFooter.vue";
+import {onMounted} from "vue";
+import {useMenuItems} from "@/composables/useMenuItems";
+import {useDarkMode} from "@/composables/useDarkMode";
 
 const {menuItems} = useMenuItems();
 const { loadDarkModePreference } = useDarkMode();

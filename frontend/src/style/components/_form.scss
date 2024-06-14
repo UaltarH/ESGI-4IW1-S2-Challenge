@@ -1,0 +1,26 @@
+@layer components {
+  .form {
+    @apply bg-white dark:bg-dark-blue-dark shadow-md rounded-lg p-4 flex flex-col lg:flex-row lg:flex-wrap justify-between px-8 border-t border-t-gray-50 dark:border-t-gray-800;
+  }
+  .form-item {
+    @apply mb-4 flex flex-col w-full lg:w-4/5;
+    label {
+      @apply font-semibold pl-2 mb-2;
+    }
+    input, textarea, select {
+      @apply p-2 rounded-lg dark:bg-dark-blue border border-gray-200 dark:border-gray-800 lg:w-1/2;
+    }
+  }
+  .form-item.col-0 {
+    @apply w-full items-center;
+    label, input, textarea, select {
+      @apply w-1/2;
+    }
+  }
+  .form-item.col-2 {
+    @apply w-full lg:w-[40%];
+    label, input, textarea, select {
+      @apply w-full;
+    }
+  }
+}

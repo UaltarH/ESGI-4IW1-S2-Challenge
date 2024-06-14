@@ -30,7 +30,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import {Response} from "../dto/response.dto";
+import {ApiResponse} from "@/dto/apiResponse.dto.ts";
 import {onMounted, PropType, ref} from "vue";
 
 onMounted(() => {
@@ -55,7 +55,7 @@ const props = defineProps({
     type: Object,
   },
   action: {
-    type: (Function as PropType<(id:number) => Promise<Response>>),
+    type: (Function as PropType<(id:number) => Promise<ApiResponse>>),
   }
 });
 const sizes:{[key:string]:string} = {
@@ -74,7 +74,7 @@ function handleSubmit() {
     error.value = 'Une erreur est survenue';
     return;
   }
-  props.action(props.data.id).then((data:Response) => {
+  props.action(props.data.id).then((data:ApiResponse) => {
     if(data.success) {
       success.value = data.message;
       setTimeout(() => {

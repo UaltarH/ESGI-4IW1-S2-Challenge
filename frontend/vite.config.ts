@@ -15,6 +15,12 @@ export default defineConfig({
   server: {
     watch: {
       usePolling: true,
-    },
+    }
   },
-});
+  resolve: {
+      // alias qui permet d'appeler le dossier src avec @ dans les imports
+      alias: {
+      '@': '/src',
+      },
+  },
+})

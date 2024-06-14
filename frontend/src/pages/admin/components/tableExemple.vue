@@ -17,7 +17,7 @@
 </template>
 <script lang="ts" setup>
 import { reactive } from "vue";
-import CustomizableTable from "../../../components/common/custom-table/customizable-table.vue";
+import CustomizableTable from "@/components/common/custom-table/customizable-table.vue";
 
 const data = reactive({
   datas: [

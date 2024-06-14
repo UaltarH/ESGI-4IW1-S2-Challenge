@@ -20,5 +20,5 @@
 
 </template>
 <script setup lang="ts">
-import X from "./icons/x.vue";
+import X from "@/components/icons/x.vue";
 </script>

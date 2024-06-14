@@ -17,3 +17,7 @@ frontend/.vscode
 **/.vite
 
 Sujet.pdf
+
+# build files
+frontend/src/main.css
+frontend/src/main.css.map

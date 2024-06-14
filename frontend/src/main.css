@@ -43,7 +43,7 @@ html.dark body {
 }
 
 main {
-  max-width: 1280px;
+  /* max-width: 1280px; */
   min-height: 100vh;
   margin: auto;
 }

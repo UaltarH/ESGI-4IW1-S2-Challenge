@@ -35,7 +35,6 @@ const menuItems = ref(props.menuItems);
 
 const menuOpen = ref(false);
 const toggleMenu = () => {
-  console.log('toggleMenu');
   menuOpen.value = !menuOpen.value;
 }
 const closeMenu = () => {

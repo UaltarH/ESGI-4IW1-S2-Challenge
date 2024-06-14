@@ -21,4 +21,7 @@ indexRouter.get("/exempleCustomCors", cors(corsOptions), HelloController.index);
  * @type {Express}
  */
 export const userRouter = Router();
+userRouter.get("/all", SecurityController.getUsers);
+userRouter.get("/byId/:id", SecurityController.getUser);
 userRouter.get("/roles", SecurityController.getRoles);
+userRouter.delete("/delete/:id", SecurityController.deleteUser);

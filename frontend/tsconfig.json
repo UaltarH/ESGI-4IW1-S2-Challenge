@@ -19,7 +19,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["@types/wicg-file-system-access"]
+    "types": ["@types/wicg-file-system-access"],
+
+    /* Vue */
+    "paths": {
+      // alias qui permet d'appeler le dossier src avec @ dans les imports
+      "@/*": ["./src/*"],
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]

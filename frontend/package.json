@@ -12,7 +12,8 @@
   "dependencies": {
     "ionicons": "^7.4.0",
     "vue": "^3.4.19",
-    "vue-router": "^4.3.2"
+    "vue-router": "^4.3.2",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/wicg-file-system-access": "^2023.10.5",

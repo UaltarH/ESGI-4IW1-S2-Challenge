@@ -4,25 +4,26 @@
 @tailwind utilities;
 /* tags */
 :root {
-  --primary: #88ab8e;
-  --primary-light: #afc8ad;
-  --secondary: #eee7da;
-  --secondary-light: #f2f1eb;
-  --success: #88ab8e;
-  --warning: #f2cc8f;
-  --danger: #e07a5f;
+  --primary: #C4997C;
+  --primary-light: #CEAA93;
+  --secondary: #EEE7DA;
+  --secondary-light: #F2F1EB;
+  --success: #88AB8E;
+  --warning: #F2CC8F;
+  --danger: #DF7D7D;
+  --danger-light: #DD9B9D;
   --dark-blue: #1f2345;
   --dark-blue-dark: #111428;
   --xl: 1280px;
   --lg: 1024px;
   --md: 768px;
   --sm: 640px;
-  --tag-news: #ff9d00;
+  --tag-news: #FF9D00;
   --tag-tutorial: #4e52cc;
-  --tag-announcement: #e07a5f;
-  --tag-news-bg: #f2cc8f60;
+  --tag-announcement: #E07A5F;
+  --tag-news-bg: #F2CC8F60;
   --tag-tutorial-bg: #0f138060;
-  --tag-announcement-bg: #e07a5f60;
+  --tag-announcement-bg: #E07A5F60;
 }
 
 #app {
@@ -43,7 +44,7 @@ html.dark body {
 }
 
 main {
-  /* max-width: 1280px; */
+  max-width: 1280px;
   min-height: 100vh;
   margin: auto;
 }
@@ -72,8 +73,7 @@ article:not(.card) h3 {
 article:not(.card) p {
   @apply mb-4 leading-loose tracking-wide;
 }
-article:not(.card) ul,
-article:not(.card) ol {
+article:not(.card) ul, article:not(.card) ol {
   @apply list-outside pl-6 mb-6;
 }
 article:not(.card) ul {
@@ -155,8 +155,7 @@ b {
   .menu-item .menu-subitem {
     @apply px-2 z-10 relative;
   }
-  li:hover > .menu-submenu,
-  .menu-submenu:hover {
+  li:hover > .menu-submenu, .menu-submenu:hover {
     @apply lg:top-12 block pt-4;
   }
   ul.menu-submenu {

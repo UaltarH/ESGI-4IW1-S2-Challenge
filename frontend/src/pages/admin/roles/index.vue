@@ -24,9 +24,9 @@
 </template>
 <script lang="ts" setup>
 import {onMounted, ref} from "vue";
-import {Response} from "../../../dto/response.dto";
-import ConfirmModal from "../../../components/ConfirmModal.vue";
-import {useUserManagement} from "../../../composables/useUserManagement.ts";
+import {ApiResponse} from "@/dto/apiResponse.dto.ts";
+import ConfirmModal from "@/components/ConfirmModal.vue";
+import {useUserManagement} from "@/composables/useUserManagement.ts";
 
 const { getRoles, getUser, deleteUser } = useUserManagement();
 onMounted(async () => {
@@ -43,8 +43,8 @@ const fetchRoles = async () => {
   await getRoles(handleFetchRoles);
 };
 // exemples
-function handleFetchRoles(res: Promise<Response>) {
-  res.then((data:Response) => {
+function handleFetchRoles(res: Promise<ApiResponse>) {
+  res.then((data:ApiResponse) => {
     if(data.success)
       roles.value = data.data;
     else
@@ -55,8 +55,8 @@ function handleFetchRoles(res: Promise<Response>) {
 const fetchUser = async () => {
   await getUser(2, handleFetchUser);
 };
-function handleFetchUser(res: Promise<Response>) {
-  res.then((data:Response) => {
+function handleFetchUser(res: Promise<ApiResponse>) {
+  res.then((data:ApiResponse) => {
     if(data.success) {
       user.value = data.data;
       content.value = "Êtes-vous sûr de vouloir supprimer <b>" + user.value.username + "</b>?"

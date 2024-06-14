@@ -21,7 +21,7 @@
 </template>
 <script lang="ts" setup>
 import {type Component} from 'vue';
-import {TagType} from "~/data/tag.dto";
+import {TagType} from "@/dto/tag.dto";
 
 const props = defineProps<{
   name: string;

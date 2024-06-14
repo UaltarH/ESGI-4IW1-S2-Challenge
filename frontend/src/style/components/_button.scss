@@ -7,5 +7,8 @@
     &--cancel {
       @apply text-gray-400 hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;
     }
+    &--danger {
+      @apply bg-danger hover:bg-danger-light text-white dark:text-gray-900;
+    }
   }
 }

@@ -11,6 +11,7 @@ export default {
         'secondary': 'var(--secondary)',
         'secondary-light': 'var(--secondary-light)',
         'danger': 'var(--danger)',
+        'danger-light': 'var(--danger-light)',
         'success': 'var(--success)',
         'warning': 'var(--warning)',
         'dark-blue': 'var(--dark-blue)',

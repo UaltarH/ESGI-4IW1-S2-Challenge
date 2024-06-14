@@ -280,7 +280,7 @@ function onDeleteAllItems() {
 </script>
 
 <template>
-  <div>
+  <div class="w-full">
     <table class="border-collapse w-full">
       <thead>
         <tr>

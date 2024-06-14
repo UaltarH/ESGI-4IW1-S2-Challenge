@@ -40,6 +40,20 @@ export const useMenuItems = () => {
         },
       ],
     },
+    {
+      title: "Composants",
+      icon: "",
+      route: "",
+      access: "all",
+      children: [
+        {
+          title: "Tableau",
+          icon: "",
+          route: "/components/table",
+          access: "all",
+        },
+      ],
+    },
   ]);
 
   return { menuItems };

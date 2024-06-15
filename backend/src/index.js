@@ -1,20 +1,3 @@
-import {authRouter, indexRouter, userRouter} from "./routes/index.js";
-import express from "express";
-import cors from "cors";
-
-const app = express();
-const corsOptions = {
-  origin: "http://localhost:5173",
-  optionsSuccessStatus: 200
-};
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use("/", indexRouter);
-app.use("/user", userRouter);
-app.use("/auth", authRouter);
-
-
-#!/usr/bin/env node
 import {sequelize} from "./config/db.js";
 import app from './app.js';
 

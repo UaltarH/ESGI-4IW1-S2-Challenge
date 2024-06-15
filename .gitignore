@@ -2,7 +2,8 @@
 **/node_modules
 **/dist
 **/.npm/
-.npm
+.env
+
 # IDE
 **/.vscode
 backend/.vscode

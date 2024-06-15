@@ -1,8 +1,9 @@
-import { Sequelize } from "sequelize"
+import { Sequelize } from 'sequelize';
+import conf from './config.js';
 import mongoose from 'mongoose'
 
 async function connectPostgres(sequelize) {
-    try {
+  try {
     await sequelize.authenticate();
     console.log('Postgres connected.');
     return
@@ -11,15 +12,9 @@ async function connectPostgres(sequelize) {
   }
 }
 
-export const sequelize = new Sequelize(`${process.env.DATABASE_URL}`, {define: { freezeTableName: true }});
+export const sequelize = new Sequelize(process.env.DATABASE_URL, conf.development)
 
 connectPostgres(sequelize);
-
-
-(async () => {
-  await sequelize.sync({ force: true }); // Utilisation de force: true pour recréer la table à chaque fois
-  console.log("Toutes les tables ont été crées !");
-})();
 
 async function connectMongoDB(mongoUrl) {
   try {

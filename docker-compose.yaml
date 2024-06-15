@@ -20,7 +20,8 @@ services:
     environment:
        MONGO_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/app?authSource=admin
        DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-       JWT_SECRET: $(JWT_SECRET)
+       JWT_SECRET: ${JWT_SECRET}
+       NODE_ENV: ${NODE_ENV}
     ports:
       - 8000:8000
     volumes:

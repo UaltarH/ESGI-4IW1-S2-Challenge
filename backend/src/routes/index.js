@@ -1,6 +1,6 @@
 import {Router} from "express";
 import HelloController from "../controllers/helloController.js";
-import UserController from "../controllers/userController.js";
+import authController from "../controllers/authController.js";
 import cors from "cors";
 
 // export const corsOptions = {
@@ -29,3 +29,5 @@ userRouter.delete("/delete/:id", SecurityController.deleteUser);
  */
 export const authRouter = Router();
 authRouter.post("/register", SecurityController.register);
+indexRouter.get("/register", authController.register);
+indexRouter.get("/login", authController.login);

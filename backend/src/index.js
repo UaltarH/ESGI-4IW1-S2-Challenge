@@ -2,22 +2,26 @@ import {authRouter, indexRouter, userRouter} from "./routes/index.js";
 import express from "express";
 import cors from "cors";
 
-const server = express();
-const port = process.env.PORT || 8000;
+const app = express();
 const corsOptions = {
   origin: "http://localhost:5173",
   optionsSuccessStatus: 200
 };
-server.use(cors(corsOptions));
-server.use(express.json());
-server.use("/", indexRouter);
-server.use("/user", userRouter);
-server.use("/auth", authRouter);
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use("/", indexRouter);
+app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 
 #!/usr/bin/env node
+import {sequelize} from "./config/db.js";
 import app from './app.js';
-import {} from "../config/db.js";
+
+// Synchronisation de toutes les tables
+await sequelize.sync({ force: true });
+console.log('All models were synchronized successfully.');
+
 import debug from 'debug';
 debug('api:server');
 

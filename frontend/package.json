@@ -12,6 +12,7 @@
   "dependencies": {
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "gridstack": "^10.2.0",
     "ionicons": "^7.4.0",
     "lucide-vue-next": "^0.395.0",
     "radix-vue": "^1.8.3",

@@ -188,7 +188,7 @@ const formSchema = toTypedSchema(z.object({
             required_error: 'Veuillez renseigner une hauteur entre 5 et 8',
         }).min(5).max(8)
     ),
-    type: z.enum(['area', 'line', 'bar', 'donuts'], 
+    type: z.enum(['area', 'line', 'bar', 'donut'], 
         {
             required_error: 'Veuillez selectionner un type de graphique',
         }

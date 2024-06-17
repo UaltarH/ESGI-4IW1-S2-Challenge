@@ -98,7 +98,6 @@
     
     async function addWidget(dataWidget: ModalResponse) {
         closeDialog()
-
         let index = "";
         let categories: string[] = [];
         let data: any = [];

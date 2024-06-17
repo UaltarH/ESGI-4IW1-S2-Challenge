@@ -40,7 +40,7 @@ function deleteWidget() {
               <AreaChart v-if="data.chartType == 'area'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" />
               <LineChart v-else-if="data.chartType == 'line'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" />
               <BarChart v-else-if="data.chartType == 'bar'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" />
-              <DonutChart v-else-if="data.chartType == 'donut'" :data="data.data" :index="data.indexData" :category="data.categoriesData['total']" />
+              <DonutChart v-else-if="data.chartType == 'donut'" :data="data.data" :index="data.indexData" :category="data.categoriesData[0]" />
             </div>
           </div>
           <btn 

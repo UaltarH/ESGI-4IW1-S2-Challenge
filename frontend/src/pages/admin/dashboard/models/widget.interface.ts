@@ -4,4 +4,9 @@ export interface Widget {
     grid: {
         [key: string]: number;
     };
+    chartType: string;
+    description: string;
+    data: any;
+    indexData: any;
+    categoriesData: any;
 }

@@ -2,6 +2,7 @@ import {Router} from "express";
 import HelloController from "../controllers/helloController.js";
 import authController from "../controllers/authController.js";
 import cors from "cors";
+import {SecurityController} from "../controllers/securityControllers.js";
 
 // export const corsOptions = {
 //     origin: "http://localhost:5173",
@@ -29,5 +30,5 @@ export const userRouter = Router();
  */
 export const authRouter = Router();
 // authRouter.post("/register", SecurityController.register);
-indexRouter.get("/register", authController.register);
+indexRouter.get("/register", SecurityController.register);
 indexRouter.get("/login", authController.login);

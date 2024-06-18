@@ -9,6 +9,7 @@ import {FormSchema} from "@/dto/formSchema.dto.ts";
 import {useAuth} from "@/composables/useAuth";
 import {ApiResponse} from "@/dto/apiResponse.dto.ts";
 import {z} from "zod";
+import {ref} from "vue";
 
 const {registerUser} = useAuth();
 const maxDate = new Date();
@@ -22,7 +23,7 @@ const invalidNumberMessage = "Ce champ doit être un nombre";
 const invalidEmailMessage = "Ce champ doit être une adresse email valide";
 const invalidDateMessage = "Ce champ doit être une date valide";
 
-const formSchema: FormSchema[] = [
+const formSchema = ref<FormSchema<any>[]>([
   {
     label: "Nom",
     component: "input",
@@ -67,8 +68,8 @@ const formSchema: FormSchema[] = [
     schema: z.object({
       password: z.string({required_error: requiredMessage, invalid_type_error: invalidStringMessage})
         .min(12, {message: "Le mot de passe doit contenir au moins 12 caractères"})
-        .max(50, {message: "Le mot de passe doit contenir au maximum 50 caractères"})
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, {message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)"}),
+        .max(32, {message: "Le mot de passe doit contenir au maximum 32 caractères"})
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/, {message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)"}),
     }),
     col: 2,
   },
@@ -162,9 +163,9 @@ const formSchema: FormSchema[] = [
     }),
     col: 0,
   },
-]
+]);
 
-async function handleSubmit(schema: FormSchema[]) {
+async function handleSubmit(schema: FormSchema<any>[]) {
   console.log("Form submitted");
   console.log(schema);
   // build param

@@ -4,7 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
-import { indexRouter } from "./routes/index.js";
+import {authRouter, indexRouter} from "./routes/index.js";
 import { userRouter } from "./routes/user.js";
 import errorHandler from "./error-handler.js";
 
@@ -21,6 +21,7 @@ app.use(cookieParser());
 app.use(cors(corsOptions));
 
 app.use("/", indexRouter);
+app.use("/auth", authRouter);
 app.use("/user", userRouter);
 
 

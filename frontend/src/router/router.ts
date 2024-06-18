@@ -7,6 +7,7 @@ import CustomTableExemple from "@/pages/admin/components/tableExemple.vue";
 const routes = [
     { path: "/", component: index },
     { path: "/admin/roles", component: Roles},
+    { path: "/admin/dashboard", component: () => import('@/pages/admin/dashboard/index.vue')},
     { path: "/register", component: Register},
     { path: "/components/table", component: CustomTableExemple },
 ]

@@ -1,4 +1,4 @@
-export default class HelloController {
+class HelloController {
   static index(_request, response) {
     response.json({
       success: true,
@@ -6,3 +6,5 @@ export default class HelloController {
     });
   }
 }
+
+module.exports = HelloController;

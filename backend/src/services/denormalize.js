@@ -1,5 +1,5 @@
-import { User } from '../models';  // Sequelize model
-import UserMongo from '../models/userMongo';  // Mongoose model
+// const User  = require('../models');  // Sequelize model
+// const UserMongo = require('../models/userMongo');  // Mongoose model
 
 const denormalizeUsers = async () => {
   try {
@@ -16,4 +16,4 @@ const denormalizeUsers = async () => {
   }
 };
 
-export default denormalizeUsers;
+module.exports = denormalizeUsers;

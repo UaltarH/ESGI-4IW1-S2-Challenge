@@ -10,13 +10,20 @@
     "scss": "sass --watch src/style/input.scss src/main.css"
   },
   "dependencies": {
+    "@unovis/ts": "^1.4.1",
+    "@unovis/vue": "^1.4.1",
+    "@vee-validate/zod": "^4.13.1",
+    "@vueuse/core": "^10.11.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "gridstack": "^10.2.0",
     "ionicons": "^7.4.0",
     "lucide-vue-next": "^0.395.0",
     "radix-vue": "^1.8.3",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^10.0.0",
+    "vee-validate": "^4.13.1",
     "vue": "^3.4.19",
     "vue-router": "^4.3.2",
     "zod": "^3.23.8"

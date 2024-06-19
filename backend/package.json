@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "jest",
+    "migrate": " node ./bin/migration.js"
   },
   "dependencies": {
     "@babel/preset-env": "^7.24.7",

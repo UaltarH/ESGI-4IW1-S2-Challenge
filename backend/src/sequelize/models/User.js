@@ -1,15 +1,22 @@
-const {Model, DataTypes} = require('sequelize');
-const connection = require('./db');
+const { Model, DataTypes } = require('sequelize');
 
-module.exports = function(sequelize) {
-    class User extends Model {}
+module.exports = function (connection) {
+    class User extends Model { }
     User.init({
         // Model attributes are defined here
         firstname: {
             type: DataTypes.STRING,
+            validate: {
+                len: [2, 50],
+                is: /^[a-zA-Z]{2,50}$/i
+            }
         },
         lastname: {
             type: DataTypes.STRING,
+            validate: {
+                len: [2, 50],
+                is: /^[a-zA-Z]{2,50}$/i
+            }
         },
         email: {
             type: DataTypes.STRING,
@@ -17,7 +24,9 @@ module.exports = function(sequelize) {
             unique: true,
             validate: {
                 notNull: [true, "L'email est obligatoire"],
-                isEmail: [true, "Email invalide"]
+                isEmail: [true, "Email invalide"],
+                len: [5, 50],
+                is: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i
             }
         },
         password: {
@@ -28,10 +37,40 @@ module.exports = function(sequelize) {
                 len: [8, 50],
                 is: /^[a-zA-Z0-9]{8,50}$/i
             }
+        },
+        address: {
+            type: DataTypes.STRING,
+        },
+        city: {
+            type: DataTypes.STRING,
+            validate: {
+                len: [2, 50],
+                is: /^[a-zA-Z]{2,50}$/i
+            }
+        },
+        postal_code: {
+            type: DataTypes.INTEGER,
+            validate: {
+                isInt: [true, "Code postal invalide"],
+                len: [5, 5]
+            }
+        },
+        phone: {
+            type: DataTypes.STRING,
+        },
+        dob: {
+            type: DataTypes.DATEONLY,
+            validate: {
+                isDate: [true, "Date invalide"]
+            }
+        },
+        role: {
+            type: DataTypes.ENUM('admin', 'user'),
+            defaultValue: 'user'
         }
     }, {
         // Other model options go here
-        sequelize, // We need to pass the connection instance
+        sequelize: connection, // We need to pass the connection instance
         modelName: 'User', // We need to choose the model name
         paranoid: true
     });

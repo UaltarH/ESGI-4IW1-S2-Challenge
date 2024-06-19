@@ -12,7 +12,7 @@ for (const file of files){
     if (['index.js', 'db.js'].includes(file)){
         continue;
     }
-    const model = require(path.join(__dirname,file))(sequelize);
+    const model = require(path.join(__dirname,file))(connection);
     db[model.name] = model;
 }
 

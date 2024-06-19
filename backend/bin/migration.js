@@ -1,7 +1,9 @@
-const connection = require("../sequelize/models/db.js");
+#!/usr/bin/env node
 
-sequelize
+const {connection} = require("../src/sequelize/models");
+
+connection
   .sync()
   .then(() => console.log("Database synchronized successfully."))
-  .then(() => process.exit(0))
+  .then(() => connection.close())
   .catch((error) => console.error("An error occurred while synchronizing the database:", error));

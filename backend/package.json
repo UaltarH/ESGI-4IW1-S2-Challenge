@@ -6,7 +6,11 @@
     "dev": "node --watch src/index.js",
     "start": "node src/index.js",
     "test": "jest",
-    "migrate": " node ./bin/migration.js"
+    "migrate-up": " sequelize-cli db:migrate --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
+    "migrate-down-all": "sequelize-cli db:migrate:undo:all --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
+    "migrate-down-last": "sequelize-cli db:migrate:undo --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
+    "seed": "sequelize-cli db:seed:all --seeders-path ./src/sequelize/seeders --config ./src/config/sequelize_config.js",
+    "seed-down": "sequelize-cli db:seed:undo:all --seeders-path ./src/sequelize/seeders --config ./src/config/sequelize_config.js"
   },
   "dependencies": {
     "@babel/preset-env": "^7.24.7",

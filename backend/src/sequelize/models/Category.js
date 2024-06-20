@@ -1,21 +1,27 @@
 const { Model, DataTypes } = require('sequelize');
 
-module.exports = function (connection) {
+module.exports = (sequelize, DataTypes) => {
     class Category extends Model { }
-    Category.init({
-        id: {
-            type: DataTypes.UUID,
-            defaultValue: DataTypes.UUIDV4,
-            primaryKey: true,
-            allowNull: false,
+
+    Category.init(
+        {
+            id: {
+                type: DataTypes.UUID,
+                defaultValue: DataTypes.UUIDV4,
+                primaryKey: true,
+                allowNull: false,
+            },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
         },
-        name: {
-            type: DataTypes.STRING,
-            allowNull: false,
+        {
+            sequelize,
+            modelName: 'Category',
+            timestamps: true,
         }
-    }, 
-    {
-        sequelize: connection,
-        modelName: 'Category',
-    });
+    );
+
+    return Category;
 };

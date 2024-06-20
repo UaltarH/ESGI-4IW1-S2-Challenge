@@ -1,4 +1,4 @@
-export const Roles = [
+const Roles = [
     {
         id: 1,
         name: "admin",
@@ -15,7 +15,7 @@ export const Roles = [
     }
 ];
 
-export const Users = [
+const Users = [
     {
         id: 1,
         username: "admin",
@@ -63,3 +63,52 @@ export const Users = [
     },
 ];
 
+const Products = [
+    {
+        productId: 0,
+        name: "Produit A",
+        description: "Description du produit A",
+        price: 10.00,
+        stock: 50,
+        categoryId: 1,
+        brandId: 1,
+    },
+    {
+        productId: 1,
+        name: "Produit B",
+        description: "Description du produit B",
+        price: 20.00,
+        stock: 30,
+        categoryId: 2,
+        brandId: 2,
+    },
+    {
+        productId: 2,
+        name: "Produit C",
+        description: "Description du produit C",
+        price: 15.00,
+        stock: 20,
+        categoryId: 3,
+        brandId: 3,
+    },
+    {
+        productId: 3,
+        name: "Produit D",
+        description: "Description du produit D",
+        price: 25.00,
+        stock: 10,
+        categoryId: 4,
+        brandId: 1,
+    },
+    {
+        productId: 4,
+        name: "Produit E",
+        description: "Description du produit E",
+        price: 30.00,
+        stock: 5,
+        categoryId: 5,
+        brandId: 2,
+    },
+];
+
+module.exports = {Roles, Users, Products};

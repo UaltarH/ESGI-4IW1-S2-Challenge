@@ -18,6 +18,30 @@ docker compose up -d
 - Back : [Localhost](http://localhost:8000)
 - Adminer : [TODO](https://youtu.be/dQw4w9WgXcQ?si=-KctTd90xUR--kht)
 
+### Migration
+- lancer les migrations
+```
+docker compose exec node npm run migrate-up
+```
+- supprimer les migrations
+```
+docker compose exec node npm run migrate-down-all
+```
+- supprimer la derniere migration
+```
+docker compose exec node npm run migrate-down-last
+```
+
+### Seeds
+- lancer les seeds
+```
+docker compose exec node npm run seed
+```
+- supprimer les seeds
+```
+docker compose exec node npm run seed-down
+```
+
 
 ## Auteurs
 

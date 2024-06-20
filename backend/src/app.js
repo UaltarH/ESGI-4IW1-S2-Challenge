@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const { indexRouter } = require('./routes');
-const { connection } = require('./sequelize/models');
 const app = express();
 
 const corsOptions = {
@@ -14,4 +13,4 @@ app.use(cors(corsOptions));
 
 app.use('/', indexRouter);
 
-module.exports = {app};
+module.exports = { app };

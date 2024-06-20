@@ -1,5 +1,3 @@
-'use strict';
-
 const { DataTypes } = require('sequelize');
 
 /** @type {import('sequelize-cli').Migration} */
@@ -83,7 +81,7 @@ module.exports = {
       },
     );
 
-    await queryInterface.createTable('Payement',
+    await queryInterface.createTable('Payment',
       {
         id: {
           type: DataTypes.UUID,
@@ -101,7 +99,7 @@ module.exports = {
           onUpdate: 'CASCADE',
           onDelete: 'CASCADE',
         },
-        payementMethod: {
+        paymentMethod: {
           type: DataTypes.ENUM('credit_card', 'paypal'),
           allowNull: false,
         },
@@ -292,7 +290,7 @@ module.exports = {
     await queryInterface.dropTable('Category');
     await queryInterface.dropTable('Cart');
     await queryInterface.dropTable('Shipping');
-    await queryInterface.dropTable('Payement');
+    await queryInterface.dropTable('Payment');
     await queryInterface.dropTable('Order');
     await queryInterface.dropTable('User');
   }

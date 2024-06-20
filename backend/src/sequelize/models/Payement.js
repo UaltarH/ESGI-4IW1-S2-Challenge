@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = function (sequelize, DataTypes) {
-    class Payement extends Model { }
-    Payement.init(
+    class Payment extends Model { }
+    Payment.init(
         {
             id: {
                 type: DataTypes.UUID,
@@ -20,7 +20,7 @@ module.exports = function (sequelize, DataTypes) {
                 onUpdate: 'CASCADE',
                 onDelete: 'CASCADE',
             },
-            payementMethod: {
+            paymentMethod: {
                 type: DataTypes.ENUM('credit_card', 'paypal'),
                 allowNull: false,
             },
@@ -31,9 +31,9 @@ module.exports = function (sequelize, DataTypes) {
         },
         {
             sequelize: sequelize,
-            modelName: 'Payement',
+            modelName: 'Payment',
             timestamps: true,
         }
     );
-    return Payement;
+    return Payment;
 }

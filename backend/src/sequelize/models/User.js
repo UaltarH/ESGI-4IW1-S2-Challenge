@@ -1,6 +1,19 @@
 const { Model, DataTypes } = require('sequelize');
+const bcrypt = require('bcryptjs');
 
 module.exports = function (sequelize, DataTypes) {
+    class User extends Model {
+        static addHooks(models) {
+            User.addHook('beforeCreate', async (user, { fields }) => {
+                user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(10));
+            });
+
+            User.addHook('beforeUpdate', async (user, { fields }) => {
+                user.password = await bcrypt.hash(user.password, await bcrypt.genSalt(10));
+            });
+        }
+    }
+
     class User extends Model {
         static associate(models) {
             User.hasMany(models.Order);

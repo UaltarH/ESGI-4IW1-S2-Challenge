@@ -1,7 +1,11 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = function (sequelize, DataTypes) {
-    class Payment extends Model { }
+    class Payment extends Model {
+        static associate(models) {
+            Payment.belongsTo(models.Order);
+        }
+    }
     Payment.init(
         {
             id: {
@@ -9,16 +13,6 @@ module.exports = function (sequelize, DataTypes) {
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
                 allowNull: false,
-            },
-            orderId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Order',
-                    key: 'id',
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
             },
             paymentMethod: {
                 type: DataTypes.ENUM('credit_card', 'paypal'),

@@ -1,7 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Order_item extends Model { }
+    class Order_item extends Model {
+        static associate(models) {
+            Order_item.belongsTo(models.Order);
+            Order_item.belongsTo(models.Product);
+        }
+    }
 
     Order_item.init(
         {
@@ -10,26 +15,6 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
                 allowNull: false,
-            },
-            orderId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Orders',
-                    key: 'id',
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
-            },
-            productId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Products',
-                    key: 'id',
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
             },
             quantity: {
                 type: DataTypes.INTEGER,

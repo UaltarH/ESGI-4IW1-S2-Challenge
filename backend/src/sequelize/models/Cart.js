@@ -1,7 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize, DataTypes) => {
-    class Cart extends Model { }
+    class Cart extends Model {
+        static associate(models) {
+            Cart.belongsTo(models.User);
+            Cart.hasMany(models.CartItem);
+        }
+    }
 
     Cart.init(
         {
@@ -10,16 +15,6 @@ module.exports = (sequelize, DataTypes) => {
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
                 allowNull: false,
-            },
-            userId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Users',
-                    key: 'id',
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
             },
         },
         {

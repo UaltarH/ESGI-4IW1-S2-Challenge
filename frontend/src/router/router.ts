@@ -10,6 +10,7 @@ const routes = [
     { path: "/admin/dashboard", component: () => import('@/pages/admin/dashboard/index.vue')},
     { path: "/register", component: Register},
     { path: "/components/table", component: CustomTableExemple },
+    { path: "/article/:id", component: () => import('@/pages/article/index.vue') },
 ]
 
 export const router = createRouter({

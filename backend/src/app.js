@@ -12,5 +12,7 @@ app.use(express.json());
 app.use(cors(corsOptions));
 
 app.use('/', indexRouter);
+app.use('/search', indexRouter);
+
 
 module.exports = { app };

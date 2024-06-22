@@ -4,4 +4,6 @@ export const Api = {
     getUser: '/user/byId',
     getRoles: '/user/roles',
     register: '/auth/register',
+    search: '/search',
+    getProductById: '/article'
 }

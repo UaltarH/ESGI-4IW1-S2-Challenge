@@ -1,9 +1,9 @@
 export const Api = {
-    deleteUser: '/user/delete',
-    getUsers: '/user/all',
-    getUser: '/user/byId',
-    getRoles: '/user/roles',
-    register: '/auth/register',
-    search: '/search',
-    getProductById: '/article'
-}
+  deleteUser: "/user/delete",
+  getUsers: "/users/all",
+  getUser: "/users/byId",
+  getRoles: "/users/roles",
+  register: "/register",
+  search: "/search",
+  getProductById: "/article",
+};

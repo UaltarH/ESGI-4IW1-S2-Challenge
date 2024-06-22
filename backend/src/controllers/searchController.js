@@ -30,7 +30,7 @@ const {Products} = require('../mock/data.js')
 // });
 
 
-class SearchController {
+class searchController {
     static index(req, res) {
       const searchTerm = req.params.search;
       const result = Products.filter(product => product.name.includes(searchTerm) || product.description.includes(searchTerm))
@@ -50,4 +50,4 @@ class SearchController {
     }
   }
   
-  module.exports = SearchController;
+  module.exports = searchController;

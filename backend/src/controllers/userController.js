@@ -14,10 +14,10 @@ class userController {
     }
   }
 
-  static async register(req, res) {
+  static async register(req, res, next) {
     try {
+      console.log(req.body, 'register')
       const user = await User.create(req.body);
-      // Attention au body reçu faut le parser et valider
       res.status(201).json({ user });
     } catch (error) {
       next(error);

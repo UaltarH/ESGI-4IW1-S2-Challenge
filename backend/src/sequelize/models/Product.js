@@ -4,8 +4,8 @@ module.exports = function (sequelize, DataTypes) {
     class Product extends Model {
         static associate(models) {
             Product.belongsTo(models.Category);
-            Product.hasMany(models.CartItem);
-            Product.hasMany(models.OrderItem);
+            Product.hasMany(models.Cart_item);
+            Product.hasMany(models.Order_item);
         }
     }
     Product.init(

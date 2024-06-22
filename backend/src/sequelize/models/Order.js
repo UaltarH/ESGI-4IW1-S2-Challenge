@@ -4,7 +4,7 @@ module.exports = function (sequelize, DataTypes) {
     class Order extends Model {
         static associate(models) {
             Order.belongsTo(models.User);
-            Order.hasMany(models.OrderItem);
+            Order.hasMany(models.Order_item);
             Order.hasOne(models.Payment);
             Order.hasOne(models.Shipping);
         }

@@ -1,7 +1,23 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = function (sequelize, DataTypes) {
-    class User extends Model { }
+    class User extends Model {
+        static associate(models) {
+            User.hasMany(models.Order);
+            User.hasOne(models.Cart);
+        }
+
+        static addHooks() {
+            User.addHook('beforeCreate', async (user) => {
+                user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
+            });
+            User.addHook('beforeUpdate', async (user, { fields }) => {
+                if (fields.includes('password')) {
+                    user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
+                }
+            });
+        }
+    }
     User.init(
         {
             id: {

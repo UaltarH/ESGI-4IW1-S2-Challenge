@@ -1,7 +1,13 @@
 const { Model, DataTypes } = require('sequelize');
 
 module.exports = function (sequelize, DataTypes) {
-    class Product extends Model { }
+    class Product extends Model {
+        static associate(models) {
+            Product.belongsTo(models.Category);
+            Product.hasMany(models.CartItem);
+            Product.hasMany(models.OrderItem);
+        }
+    }
     Product.init(
         {
             id: {
@@ -25,16 +31,6 @@ module.exports = function (sequelize, DataTypes) {
             stock: {
                 type: DataTypes.INTEGER,
                 allowNull: false,
-            },
-            categoryId: {
-                type: DataTypes.UUID,
-                allowNull: false,
-                references: {
-                    model: 'Category',
-                    key: 'id',
-                },
-                onUpdate: 'CASCADE',
-                onDelete: 'CASCADE',
             },
         },
         {

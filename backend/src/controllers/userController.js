@@ -18,7 +18,7 @@ class userController {
     try {
       console.log(req.body, 'register')
       await User.create(req.body);
-      res.status(201).json({ status: 'success'});
+      res.status(201).json({ success: true});
     } catch (error) {
       next(error);
     }

@@ -3,7 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const indexRouter = require('./routes/index');
 const searchRouter = require('./routes/search');
-const userRouter  = require('./routes/user');
+const userRouter = require('./routes/user');
+const productRouter = require('./routes/product');
 const app = express();
 
 const corsOptions = {
@@ -18,5 +19,6 @@ app.use(cors(corsOptions));
 app.use(indexRouter);
 app.use(searchRouter);
 app.use(userRouter);
+app.use(productRouter);
 
 module.exports = { app };

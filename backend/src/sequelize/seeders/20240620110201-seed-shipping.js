@@ -14,7 +14,7 @@ module.exports = {
 
       shippings.push({
         id: uuidv4(),
-        orderId: orderId,
+        OrderId: orderId,
         shippingMethod: faker.helpers.arrayElement(['standard', 'express']),
         trackingNumber: faker.number.int({ min: 10000 }),
         createdAt: new Date(),

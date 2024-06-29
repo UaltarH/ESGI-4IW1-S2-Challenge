@@ -2,18 +2,18 @@ const { Cart, Cart_item, sequelize } = require('../sequelize/models');
 
 class cartController {
     static async createCart(req, res, next) {
-        const { userId, products } = req.body;
+        const { UserId, products } = req.body;
         const transaction = await sequelize.transaction();
 
         try {
             const cart = await Cart.create(
-                { userId },
+                { UserId },
                 { transaction }
             );
 
             const cartItems = products.map(product => ({
-                cartId: cart.id,
-                productId: product.productId,
+                CartId: cart.id,
+                ProductId: product.productId,
                 quantity: product.quantity,
             }));
 
@@ -28,17 +28,17 @@ class cartController {
     }
 
     static async deleteCart(req, res, next) {
-        const cartId = req.params.id;
+        const CartId = req.params.id;
         const transaction = await sequelize.transaction();
 
         try {
             await Cart_item.destroy({
-                where: { cartId },
+                where: { CartId },
                 transaction,
             });
 
             const nbDeleted = await Cart.destroy({
-                where: { id: cartId },
+                where: { id: CartId },
                 transaction,
             });
             await transaction.commit();

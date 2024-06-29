@@ -18,8 +18,8 @@ module.exports = {
       cartItems.push({
         id: uuidv4(),
         quantity: faker.number.int({ min: 1, max: 10 }),
-        cartId: cartId,
-        productId: productId,
+        CartId: cartId,
+        ProductId: productId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

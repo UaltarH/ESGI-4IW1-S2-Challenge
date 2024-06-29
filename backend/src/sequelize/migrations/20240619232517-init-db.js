@@ -83,7 +83,7 @@ module.exports = {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      userId: {
+      UserId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -115,7 +115,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      orderId: {
+      OrderId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -152,7 +152,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      orderId: {
+      OrderId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -189,7 +189,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      userId: {
+      UserId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -257,7 +257,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      categoryId: {
+      CategoryId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -289,7 +289,7 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      orderId: {
+      OrderId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -299,7 +299,7 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      productId: {
+      ProductId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -311,6 +311,10 @@ module.exports = {
       },
       quantity: {
         type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      price: {
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
       createdAt: {
@@ -336,7 +340,7 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      cartId: {
+      CartId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
@@ -346,7 +350,7 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      productId: {
+      ProductId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {

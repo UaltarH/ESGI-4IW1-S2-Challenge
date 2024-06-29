@@ -1,4 +1,4 @@
-const { User } = require('../sequelize/models');
+const { User } = require('../sequelize/models/');
 const crudService = require('../services/crudGeneric');
 
 class userController {
@@ -19,7 +19,7 @@ class userController {
   }
 
   static async getUser(req, res) {
-    const { data, error } = await crudService.findByPk(User, parseInt(req.params.id, 10));
+    const { data, error } = await crudService.findByPk(User, req.params.id);
     if (error) {
       return res.status(404).json({ error: error.message });
     }
@@ -27,7 +27,7 @@ class userController {
   }
 
   static async deleteUser(req, res) {
-    const { data, error } = await crudService.destroy(User, parseInt(req.params.id, 10));
+    const { data, error } = await crudService.destroy(User, req.params.id);
     if (error) {
       return res.status(404).json({ error: error.message });
     }
@@ -35,7 +35,7 @@ class userController {
   }
 
   static async put(req, res) {
-    const { data: deletedData, error: deleteError } = await crudService.destroy(User, parseInt(req.params.id, 10));
+    const { data: deletedData, error: deleteError } = await crudService.destroy(User, req.params.id);
     if (deleteError) {
       return res.status(404).json({ error: deleteError.message });
     }
@@ -47,7 +47,7 @@ class userController {
   }
 
   static async patch(req, res) {
-    const { data, error } = await crudService.update(User, parseInt(req.params.id, 10), req.body);
+    const { data, error } = await crudService.update(User, req.params.id, req.body);
     if (error) {
       return res.status(404).json({ error: error.message });
     }

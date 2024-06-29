@@ -20,7 +20,7 @@ module.exports = {
       orders.push({
         id: orderId,
         date: faker.date.past(),
-        userId: userId,
+        UserId: userId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

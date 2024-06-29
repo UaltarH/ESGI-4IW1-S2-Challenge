@@ -20,7 +20,7 @@ module.exports = {
 
       carts.push({
         id: cartId,
-        userId: userId,
+        UserId: userId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

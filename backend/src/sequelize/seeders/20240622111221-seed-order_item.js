@@ -18,8 +18,9 @@ module.exports = {
       orderItems.push({
         id: uuidv4(),
         quantity: faker.number.int({ min: 1, max: 10 }),
-        orderId: orderId,
-        productId: productId,
+        price: faker.number.float({ min: 1, max: 1000, fixed: 2 }),
+        OrderId: orderId,
+        ProductId: productId,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

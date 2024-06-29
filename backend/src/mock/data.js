@@ -1,4 +1,4 @@
-export const Roles = [
+const Roles = [
     {
         id: 1,
         name: "admin",
@@ -15,7 +15,7 @@ export const Roles = [
     }
 ];
 
-export const Users = [
+const Users = [
     {
         id: 1,
         username: "admin",
@@ -62,4 +62,5 @@ export const Users = [
         updatedAt: new Date(),
     },
 ];
+module.exports = {Roles, Users};
 

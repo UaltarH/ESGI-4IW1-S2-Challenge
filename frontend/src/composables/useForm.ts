@@ -1,8 +1,8 @@
-import {FormSchema} from "@/dto/formSchema.dto.ts";
+import {FormField} from "@/dto/formField.dto.ts";
 import {z, ZodObject} from "zod";
 import {Ref} from "vue";
 
-export const useForm = (formSchema: Ref<FormSchema<any>[]>) => {
+export const useForm = (formSchema: Ref<FormField<any>[]>) => {
     const getValidationSchema = ()=> {
         let schema:ZodObject<any> = z.object({});
         formSchema.value.forEach((item) => {
@@ -34,7 +34,7 @@ export const useForm = (formSchema: Ref<FormSchema<any>[]>) => {
     const getFieldMax = (name: string): number|null => {
         return getFieldShape(name).maxLength;
     }
-    function validateField (item: FormSchema<any>): boolean {
+    function validateField (item: FormField<any>): boolean {
         console.log(`Validating ${item.name}`);
         console.log(`Value: ${item.value}`)
         item.error = "";

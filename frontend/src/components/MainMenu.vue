@@ -5,12 +5,12 @@
       <button type="button" class="absolute top-0 right-0 z-20 lg:hidden" id="burger" @click="toggleMenu"><burger class="fill-dark-blue hover:fill-white" aria-label="Openu menu"></burger></button>
       <div class="flex flex-col lg:flex-row lg:flex-2 absolute lg:static w-full h-screen lg:w-full lg:h-full bg-primary dark:fill-white dark:hover:fill-dark-blue top-0" :class="menuOpen ? '-right-0' : '-right-full' ">
         <ul class="flex flex-col lg:flex-row w-full lg:flex-2 py-32 lg:py-0 text-center font-bold">
-          <li v-for= "(item, index) in menuItems" class="menu-item static lg:relative">
+          <li v-for= "(item, index) in menuItems" class="menu-item static lg:relative parent-item">
             <!-- item has children -->
-            <RouterLink v-if="item.hasOwnProperty('children') && item.route !== ''" :to="item.route" class="parent-item" @click="closeMenu">{{ item.title }}</RouterLink>
-            <span v-if="item.hasOwnProperty('children') && item.route == ''" class="parent-item">{{ item.title }}</span>
+            <RouterLink v-if="item.hasOwnProperty('children') && item.route !== ''" :to="item.route" class="menu-link" @click="closeMenu">{{ item.title }}</RouterLink>
+            <span v-if="item.hasOwnProperty('children') && item.route == ''" class="menu-link">{{ item.title }}</span>
             <ul v-if="item.hasOwnProperty('children')" class="menu-submenu static lg:absolute">
-              <li v-for="(subItem, indexSub) in item.children" class="menu-item menu-subitem h-12 text-center"><RouterLink :to="subItem.route" class="font-medium" @click="closeMenu">{{ subItem.title }}</RouterLink></li>
+              <li v-for="(subItem, indexSub) in item.children" class="menu-item menu-subitem h-12 text-center"><RouterLink :to="subItem.route" class="menu-link" @click="closeMenu">{{ subItem.title }}</RouterLink></li>
             </ul>
             <!-- item has no children -->
             <RouterLink v-else :to="item.route" class="menu-link" @click="closeMenu">{{ item.title }}</RouterLink>

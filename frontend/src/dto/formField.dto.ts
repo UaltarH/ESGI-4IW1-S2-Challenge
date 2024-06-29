@@ -1,6 +1,6 @@
-import {ZodSchema} from "zod";
+import {ZodObject} from "zod";
 
-export interface FormSchema<Schema extends ZodSchema<any>> {
+export interface FormField<FieldSchema extends ZodObject<any>> {
     label: string;
     component: string;
     type: string;
@@ -9,7 +9,7 @@ export interface FormSchema<Schema extends ZodSchema<any>> {
     value?: string | undefined;
     error?: string | undefined;
     options?: string[] | undefined;
-    schema: Schema;
+    schema: FieldSchema;
     col?: number | undefined;
     dependsOn?: {field: string, errorMessage: string} | undefined;
 }

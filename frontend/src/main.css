@@ -54,28 +54,6 @@
   --vis-text-color: var(--muted-foreground);
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --primary: 210 40% 98%;
-  --primary-foreground: 222.2 47.4% 11.2%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --ring: 212.7 26.8% 83.9%;
-}
-
 #app {
   margin: 0 auto;
   font-weight: normal;
@@ -191,6 +169,9 @@ b {
   .btn--danger {
     @apply bg-danger hover:bg-danger-light text-white dark:text-gray-900;
   }
+  .btn--disabled {
+    @apply bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed hover:bg-gray-200 hover:text-gray-400 dark:hover:text-gray-500 dark:hover:bg-gray-800;
+  }
 }
 @layer components {
   .menu-link {
@@ -200,16 +181,22 @@ b {
     @apply flex flex-col lg:flex-row justify-center items-center min-h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
   }
   .menu-item .menu-subitem {
-    @apply px-2 z-10 relative lg:w-auto w-full;
+    @apply z-10 relative lg:w-auto w-full;
+  }
+  .menu-item a, .menu-item span {
+    @apply px-4;
   }
   li:hover > .menu-submenu, .menu-submenu:hover, li:focus > .menu-submenu, .menu-submenu:focus {
     @apply lg:top-12 block lg:pt-4;
   }
   ul.menu-submenu {
-    @apply hidden transition-all duration-300 w-full;
+    @apply hidden transition-all duration-300 min-w-full;
   }
   .parent-item {
-    @apply font-medium h-12 leading-12;
+    @apply p-0;
+  }
+  .parent-item > a, .parent-item > span {
+    @apply h-12 leading-12;
   }
   .menu-subitem:nth-child(1):before {
     @apply lg:content-[""] absolute top-0 left-1/2 -mt-2 w-4 h-4 bg-primary transform -translate-x-1/2 rotate-45 z-0;
@@ -280,6 +267,19 @@ b {
   }
   .form-item.col-2 label, .form-item.col-2 input, .form-item.col-2 textarea, .form-item.col-2 select {
     @apply w-full;
+  }
+}
+@layer components {
+  .wrapper {
+    @apply relative;
+  }
+  .wrapper--loading::before {
+    @apply content-[""] top-0 bottom-0 left-0 right-0 absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center dark:bg-black dark:bg-opacity-50;
+  }
+}
+@layer components {
+  .spinner {
+    @apply absolute top-0 bottom-0 left-0 right-0 inset-0 flex items-center justify-center;
   }
 }
 

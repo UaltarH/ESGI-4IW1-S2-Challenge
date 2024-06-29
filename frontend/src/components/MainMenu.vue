@@ -19,6 +19,7 @@
         <div class="flex flex-col lg:flex-row lg:flex-0.5 gap-2 items-center w-full">
           <RouterLink to="/register" class="menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700" @click="closeMenu">Connexion</RouterLink>
           <dark-mode-button></dark-mode-button>
+          <search-bar></search-bar>
         </div>
       </div>
     </nav>
@@ -29,6 +30,7 @@ import {ref} from "vue";
 import DarkModeButton from "@/components/DarkModeButton.vue";
 import LogoWithText from "@/components/icons/logoWithText.vue";
 import Burger from "@/components/icons/burger.vue";
+import SearchBar from "@/components/SearchBar.vue";
 
 const props = defineProps(['menuItems']);
 const menuItems = ref(props.menuItems);

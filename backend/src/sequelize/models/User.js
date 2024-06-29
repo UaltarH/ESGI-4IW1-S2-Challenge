@@ -1,39 +1,84 @@
-const {Model, DataTypes} = require('sequelize');
-const connection = require('./db');
+const { Model, DataTypes } = require("sequelize");
+const bcrypt = require("bcryptjs");
 
-module.exports = function(sequelize) {
-    class User extends Model {}
-    User.init({
-        // Model attributes are defined here
-        firstname: {
-            type: DataTypes.STRING,
-        },
-        lastname: {
-            type: DataTypes.STRING,
-        },
-        email: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            unique: true,
-            validate: {
-                notNull: [true, "L'email est obligatoire"],
-                isEmail: [true, "Email invalide"]
-            }
-        },
-        password: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                notNull: [true, "Le mot de passe est obligatoire"],
-                len: [8, 50],
-                is: /^[a-zA-Z0-9]{8,50}$/i
-            }
-        }
-    }, {
-        // Other model options go here
-        sequelize, // We need to pass the connection instance
-        modelName: 'User', // We need to choose the model name
-        paranoid: true
-    });
-    return User;
-}
+module.exports = function (sequelize, DataTypes) {
+  class User extends Model {
+    static associate(models) {
+      User.hasMany(models.Order);
+      User.hasOne(models.Cart);
+    }
+
+    static addHooks(models) {
+      User.addHook("beforeCreate", async (user) => {
+        user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
+      });
+      User.addHook("beforeUpdate", async (user, { fields }) => {
+        if (fields.includes("password")) user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
+      });
+    }
+  }
+  User.init(
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+      },
+      firstname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      lastname: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      zipcode: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      country: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "France",
+      },
+      phone: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      birthdate: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
+      role: {
+        type: DataTypes.ENUM("admin", "user", "store_manager", "accountant"),
+        defaultValue: "user",
+        allowNull: false,
+      },
+    },
+    {
+      sequelize: sequelize,
+      modelName: "User",
+      paranoid: true,
+      timestamps: true,
+    }
+  );
+  return User;
+};

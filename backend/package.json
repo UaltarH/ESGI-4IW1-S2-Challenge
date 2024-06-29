@@ -6,7 +6,12 @@
     "dev": "node --watch src/index.js",
     "dev:legacy": "nodemon -L src/index.js",
     "start": "node src/index.js",
-    "test": "jest"
+    "test": "jest",
+    "migrate-up": " sequelize-cli db:migrate --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
+    "migrate-down-all": "sequelize-cli db:migrate:undo:all --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
+    "migrate-down-last": "sequelize-cli db:migrate:undo --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
+    "seed": "sequelize-cli db:seed:all --seeders-path ./src/sequelize/seeders --config ./src/config/sequelize_config.js",
+    "seed-down": "sequelize-cli db:seed:undo:all --seeders-path ./src/sequelize/seeders --config ./src/config/sequelize_config.js"
   },
   "dependencies": {
     "@babel/preset-env": "^7.24.7",
@@ -23,9 +28,11 @@
     "pg": "^8.12.0",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.3",
-    "ts-jest": "^29.1.4"
+    "ts-jest": "^29.1.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@faker-js/faker": "^8.4.1",
     "sequelize-cli": "^6.6.2"
   }
 }

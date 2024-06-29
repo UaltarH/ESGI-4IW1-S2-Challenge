@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const { indexRouter , authRouter, mockRouter} = require('./routes');
+const indexRouter = require('./routes/index');
+const searchRouter = require('./routes/search');
+const userRouter  = require('./routes/user');
+const mockRouter = require("./routes/mock");
 const app = express();
 
 const corsOptions = {
@@ -8,12 +11,13 @@ const corsOptions = {
   optionsSuccessStatus: 200
 };
 
-app.use(express.json()); //body-parser
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 
-app.use("/", indexRouter);
-app.use("/mock", mockRouter);
-app.use("/auth", authRouter);
-// app.use("/user", userRouter);
+app.use(indexRouter);
+app.use(searchRouter);
+app.use(userRouter);
+app.use(mockRouter);
 
-module.exports = {app};
+module.exports = { app };

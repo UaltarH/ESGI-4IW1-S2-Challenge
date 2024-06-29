@@ -1,7 +1,8 @@
-import jwt from('jsonwebtoken');
-import('../../config/jwtConfig');
+const jwt = require('jsonwebtoken');
+const {secret} = require('../config/jwtConfig.js');
 
-export const authenticateJWT = (req, res, next) => {
+const authenticateJWT = (req, res, next) => {
+
   const token = req.header('Authorization')?.replace('Bearer ', '');
 
   if (!token) {
@@ -9,10 +10,12 @@ export const authenticateJWT = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, config.secret);
+    const decoded = jwt.verify(token, secret);
     req.user = decoded;
     next();
   } catch (error) {
     res.status(401).send('Invalid token');
   }
 };
+
+module.exports = { authenticateJWT };

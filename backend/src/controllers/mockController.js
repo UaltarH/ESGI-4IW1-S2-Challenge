@@ -1,6 +1,6 @@
 const {Roles, Users} = require("../mock/data.js");
 
-class SecurityController {
+class MockController {
     static mockGetRoles(_request, response) {
         response.json({
             success: true,
@@ -53,7 +53,7 @@ class SecurityController {
             // }
             const user = {
                 id: Users.length + 1,
-                username: data["name"] + " " + data["firstname"],
+                username: data["lastname"] + " " + data["firstname"],
                 email: data["email"],
                 password: data["password"],
                 birthdate: data["birthdate"],
@@ -70,7 +70,7 @@ class SecurityController {
             // TODO : remove success, si jamais on veut envoyer un lien pour la page suivante ou précédente, utiliser la norme HATEOAS
             // note : error 422 : erreur de validation
             response.status(201).json({
-                message: `User ${data["name"]} ${data["firstname"]} registered`,
+                message: `User ${data["lastname"]} ${data["firstname"]} registered`,
                 data: user
             });
         } catch (e) {
@@ -78,4 +78,4 @@ class SecurityController {
         }
     }
 }
-module.exports = {SecurityController};
+module.exports = {MockController};

@@ -1,4 +1,4 @@
-import {ZodObject} from "zod";
+import { ZodObject } from "zod";
 
 export interface FormField<FieldSchema extends ZodObject<any>> {
     label: string;

@@ -123,6 +123,9 @@ module.exports = {
         'md': 'var(--md)',
         'sm': 'var(--sm)',
       },
+      lineHeight: {
+        '12': '3rem',
+      }
     },
     flex: {
       '0.5': '0.5 0.5 0%',

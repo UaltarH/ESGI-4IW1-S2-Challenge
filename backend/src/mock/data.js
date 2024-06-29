@@ -62,6 +62,7 @@ const Users = [
         updatedAt: new Date(),
     },
 ];
+module.exports = {Roles, Users};
 
 const Products = [
     {

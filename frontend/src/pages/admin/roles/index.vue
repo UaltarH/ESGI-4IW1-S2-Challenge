@@ -17,7 +17,7 @@
       :action="deleteUser"
   >
     <template #content>
-      <p v-html="content"></p>
+      <p>{{content}}</p>
     </template>
   </confirm-modal>
 </transition>
@@ -59,7 +59,7 @@ function handleFetchUser(res: Promise<ApiResponse>) {
   res.then((data:ApiResponse) => {
     if(data.success) {
       user.value = data.data;
-      content.value = "Êtes-vous sûr de vouloir supprimer <b>" + user.value.username + "</b>?"
+      content.value = "Êtes-vous sûr de vouloir supprimer " + user.value.username + "?"
     }
     else {
       content.value = data.message;

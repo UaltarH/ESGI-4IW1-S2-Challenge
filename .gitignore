@@ -20,5 +20,5 @@ frontend/.vscode
 Sujet.pdf
 
 # build files
-**/frontend/src/main.css
-**/frontend/src/main.css.map
+**/main.css
+**/main.css.map

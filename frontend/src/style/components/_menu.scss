@@ -3,21 +3,28 @@
     @apply font-medium hover:text-secondary-light dark:hover:text-dark-blue;
   }
   .menu-item {
-    @apply flex justify-center items-center h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
+    @apply flex flex-col lg:flex-row justify-center items-center min-h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
     .menu-subitem {
-      @apply px-2 z-10 relative;
+      @apply z-10 relative lg:w-auto w-full;
+    }
+    a, span {
+      @apply px-4;
     }
   }
-  li:hover > .menu-submenu, .menu-submenu:hover {
-    @apply lg:top-12 block pt-4;
+  li:hover > .menu-submenu, .menu-submenu:hover, li:focus > .menu-submenu, .menu-submenu:focus {
+    @apply lg:top-12 block lg:pt-4;
   }
   ul.menu-submenu {
-    @apply hidden transition-all duration-300;
-
+    @apply hidden transition-all duration-300 min-w-full;
+  }
+  .parent-item {
+    @apply p-0;
+  }
+  .parent-item > a, .parent-item > span {
+    @apply h-12 leading-12;
   }
   .menu-subitem:nth-child(1):before {
-     @apply absolute top-0 left-1/2 -mt-2 w-4 h-4 bg-primary transform -translate-x-1/2 rotate-45 z-0;
-     content: '';
+     @apply lg:content-[''] absolute top-0 left-1/2 -mt-2 w-4 h-4 bg-primary transform -translate-x-1/2 rotate-45 z-0;
   }
   .menu-subitem:nth-child(1):before:hover {
     @apply bg-primary-light;

@@ -1,0 +1,8 @@
+@layer components {
+  .wrapper {
+    @apply relative;
+    &--loading::before {
+      @apply content-[''] top-0 bottom-0 left-0 right-0 absolute inset-0 bg-white bg-opacity-50 flex items-center justify-center dark:bg-black dark:bg-opacity-50;
+    }
+  }
+}

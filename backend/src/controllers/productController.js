@@ -1,5 +1,5 @@
 const { Product } = require('../sequelize/models');
-const crudService = require('../services/crudService');
+const crudService = require('../services/crudGeneric');
 
 class productController {
     static async getProducts(req, res) {

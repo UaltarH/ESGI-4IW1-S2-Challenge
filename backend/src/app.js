@@ -5,6 +5,8 @@ const indexRouter = require('./routes/index');
 const searchRouter = require('./routes/search');
 const userRouter = require('./routes/user');
 const productRouter = require('./routes/product');
+const orderRouter = require('./routes/order');
+const cartRouter = require('./routes/cart');
 const app = express();
 
 const corsOptions = {
@@ -20,5 +22,7 @@ app.use(indexRouter);
 app.use(searchRouter);
 app.use(userRouter);
 app.use(productRouter);
+app.use(orderRouter);
+app.use(cartRouter);
 
 module.exports = { app };

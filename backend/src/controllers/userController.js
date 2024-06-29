@@ -1,5 +1,5 @@
 const { User } = require('../sequelize/models');
-const crudService = require('../services/crudService');
+const crudService = require('../services/crudGeneric');
 
 class userController {
   static async getUsers(req, res) {

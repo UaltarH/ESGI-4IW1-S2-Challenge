@@ -14,7 +14,7 @@ module.exports = {
 
       payments.push({
         id: uuidv4(),
-        orderId: orderId,
+        OrderId: orderId,
         paymentMethod: faker.helpers.arrayElement(['credit_card', 'paypal']),
         amount: faker.number.float({ min: 50, max: 150 }),
         createdAt: new Date(),

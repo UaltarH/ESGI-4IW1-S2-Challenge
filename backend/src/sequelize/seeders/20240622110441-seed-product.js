@@ -24,7 +24,7 @@ module.exports = {
         description: faker.commerce.productDescription(),
         price: faker.number.float({ min: 10, max: 20 }),
         stock: faker.number.int({ min: 1, max: 100 }),
-        categoryId: categoryId,
+        CategoryId: categoryId,
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,

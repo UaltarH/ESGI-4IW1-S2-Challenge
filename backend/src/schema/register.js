@@ -14,7 +14,7 @@ const registerSchema = z.object({
   lastname: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
     .min(2, { message: "Le nom doit contenir au moins 2 caractères" })
     .max(50, { message: "Le nom doit contenir au maximum 50 caractères" }),
-  
+
   firstname: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
     .min(2, { message: "Le prénom doit contenir au moins 2 caractères" })
     .max(50, { message: "Le prénom doit contenir au maximum 50 caractères" }),
@@ -57,7 +57,6 @@ const registerSchema = z.object({
 
   phone: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
     .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" })
-    .optional(),
 });
 
 module.exports = registerSchema;

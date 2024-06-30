@@ -6,4 +6,6 @@ export const Api = {
   register: "/register",
   search: "/search",
   getProductById: "/article",
+  getMockRoles: "/mock/roles",
+  mockRegister: "/mock/users",
 };

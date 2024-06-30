@@ -1,16 +1,20 @@
 <template>
   <div class="py-24">
-    <Form :schema="formSchema" @submit="handleSubmit" :show-reset="true" />
+    <Form ref="formRef" :schema="formSchema" @submit="handleSubmit" :disabled="formDisabled" :loading="formLoading" :show-reset="true"/>
   </div>
 </template>
 <script lang="ts" setup>
 import Form from "@/components/CustomForm.vue";
-import { FormSchema } from "@/dto/formSchema.dto.ts";
-import { useAuth } from "@/composables/useAuth";
-import { ApiResponse } from "@/dto/apiResponse.dto.ts";
+import { FormField} from "@/dto/formField.dto.ts";
+import { useAuth} from "@/composables/useAuth";
+import { ApiResponse} from "@/dto/apiResponse.dto.ts";
 import { z } from "zod";
+import { onUnmounted, Ref, ref  } from "vue";
 
+const controller = new AbortController();
+const { signal } = controller;
 const { registerUser } = useAuth();
+
 const maxDate = new Date();
 maxDate.setFullYear(maxDate.getFullYear() - 18);
 const minDate = new Date();
@@ -22,7 +26,8 @@ const invalidNumberMessage = "Ce champ doit être un nombre";
 const invalidEmailMessage = "Ce champ doit être une adresse email valide";
 const invalidDateMessage = "Ce champ doit être une date valide";
 
-const formSchema: FormSchema[] = [
+const formRef = ref<{formRef:Ref<any>, SetFieldsValue:Function, getFieldsValue:Function, handleReset:Function} | null>(null);
+const formSchema = ref<FormField<any>[]>([
   {
     label: "Nom",
     component: "input",
@@ -67,8 +72,8 @@ const formSchema: FormSchema[] = [
     schema: z.object({
       password: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
         .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
-        .max(50, { message: "Le mot de passe doit contenir au maximum 50 caractères" })
-        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+        .max(32, { message: "Le mot de passe doit contenir au maximum 32 caractères" })
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
     }),
     col: 2,
   },
@@ -162,9 +167,15 @@ const formSchema: FormSchema[] = [
     }),
     col: 0,
   },
-]
+]);
+const formLoading = ref(false);
+const formDisabled = ref(false);
 
-async function handleSubmit(schema: FormSchema[]) {
+onUnmounted(() => {
+  controller.abort();
+});
+
+async function handleSubmit(schema: FormField<any>[]) {
   console.log("Form submitted");
   console.log(schema);
   // build param
@@ -173,20 +184,41 @@ async function handleSubmit(schema: FormSchema[]) {
     if (item.value !== undefined)
       param[item.name] = item.value;
   });
-  await fetchRegister(param);
+  formLoading.value = true;
+  formDisabled.value = true;
+  setTimeout(async () => {
+    await fetchRegister(param);
+  }, 5000);
 }
 const fetchRegister = async (param: { [key: string]: string | number | Date }) => {
-  await registerUser(param, handleRegister);
+  await registerUser(param, signal, handleRegister);
 }
-function handleRegister(res: Promise<ApiResponse>) {
-  res.then((data: ApiResponse) => {
-    if (data.success) {
-      console.log("User registered");
-      // TODO : popup success
-      // TODO : redirect to login
-    } else {
-      console.error(data.message);
-    }
-  });
+function handleRegister(res: Response) {
+  if(res.status === 201) {
+    console.log("User registered");
+    formLoading.value = false;
+    formDisabled.value = false;
+    res.json().then((data: ApiResponse) => {
+      console.group("Response")
+      console.log(data);
+      console.groupEnd();
+      console.group("formRef");
+      console.log(formRef.value);
+      console.log(formRef.value.getFieldsValue());
+      console.groupEnd();
+      // Ignore the warning :  formRef.value will hold an instance of <CustomForm> after the form is mounted (cf: template refs doc)
+      if(formRef.value !== null) {
+        // TODO : popup success with setTimeout
+        // TODO : reset or unmount form
+        formRef.value.handleReset();
+        // @reset event is triggered by handleReset
+        // TODO : redirect to login
+      }
+      // exemple on how to use SetFieldValue
+      // formRef.value.SetFieldValue({country: "ESGI"}, "country");
+    });
+  } else {
+    console.error(res.statusText);
+  }
 }
 </script>

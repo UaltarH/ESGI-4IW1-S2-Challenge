@@ -22,6 +22,23 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            address: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            city: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            zipcode: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            country: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                defaultValue: 'France',
+            },
         },
         {
             sequelize: sequelize,

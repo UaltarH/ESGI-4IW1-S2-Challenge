@@ -17,6 +17,10 @@ module.exports = {
         OrderId: orderId,
         shippingMethod: faker.helpers.arrayElement(['standard', 'express']),
         trackingNumber: faker.number.int({ min: 10000 }),
+        address: faker.location.streetAddress(),
+        city: faker.location.city(),
+        zipcode: Number(faker.location.zipCode("####")),
+        country: faker.location.country(),
         createdAt: new Date(),
         updatedAt: new Date(),
       });

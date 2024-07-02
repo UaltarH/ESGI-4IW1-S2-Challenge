@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const connectMongoDB = require('./config/mongo_config');
 const indexRouter = require('./routes/index');
 const searchRouter = require('./routes/search');
 const userRouter = require('./routes/user');
@@ -25,5 +26,7 @@ app.use(productRouter);
 app.use(orderRouter);
 app.use(cartRouter);
 app.use(mockRouter);
+
+connectMongoDB();
 
 module.exports = { app };

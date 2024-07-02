@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require("sequelize");
 const bcrypt = require("bcryptjs");
+const { afterCreateHook, afterUpdateHook, afterDestroyHook } = require("../hooks/UsersHooks");
 
 module.exports = function (sequelize, DataTypes) {
   class User extends Model {
@@ -80,5 +81,10 @@ module.exports = function (sequelize, DataTypes) {
       timestamps: true,
     }
   );
+
+  User.afterCreate(afterCreateHook);
+  User.afterUpdate(afterUpdateHook);
+  User.afterDestroy(afterDestroyHook);
+
   return User;
 };

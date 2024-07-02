@@ -1,53 +1,24 @@
-const {Products} = require('../mock/data.js')
+const { Product } = require('../sequelize/models'); // Assurez-vous que le chemin est correct
+const { Op } = require('sequelize');
 
-// const mongoose = require('mongoose');
+class SearchController {
+    static async getProducts(req, res) {
+        try {
+            const searchTerm = req.query.search || '';
+            const query = {
+                [Op.or]: [
+                    { name: { [Op.iLike]: `%${searchTerm}%` } },
+                    { description: { [Op.iLike]: `%${searchTerm}%` } }
+                ]
+            };
 
-// mongoose.connect('mongodb://localhost:27017/yourDatabase', { useNewUrlParser: true, useUnifiedTopology: true });
-
-// const productSchema = new mongoose.Schema({
-//   productId: Number,
-//   name: String,
-//   description: String,
-//   price: Number,
-//   stock: Number,
-//   categoryId: Number,
-//   brandId: Number
-// });
-
-// const Product = mongoose.model('Product', productSchema);
-
-// Product.find({
-//   $or: [
-//     { name: { $regex: searchTerm, $options: 'i' } },
-//     { description: { $regex: searchTerm, $options: 'i' } }
-//   ]
-// }, (err, products) => {
-//   if (err) {
-//     result = err
-//   } else {
-//     result = products
-//   }
-// });
-
-
-class searchController {
-    static index(req, res) {
-      const searchTerm = req.params.search;
-      const result = Products.filter(product => product.name.includes(searchTerm) || product.description.includes(searchTerm))
-      res.json({
-        success: true,
-        message: result
-      });
+            const records = await Product.findAll({ where: query });
+            res.json({ products: records });
+        } catch (error) {
+            console.error('Erreur dans getProducts :', error);
+            res.status(500).json({ error: error.message });
+        }
     }
+}
 
-    static article(req, res) {
-      const id = Number(req.params.id);
-      const result = Products.find(product => product.productId === id)
-      res.json({
-        success: true,
-        product: result
-      });
-    }
-  }
-  
-  module.exports = searchController;
+module.exports = SearchController;

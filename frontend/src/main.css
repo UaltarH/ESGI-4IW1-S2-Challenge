@@ -176,6 +176,7 @@ b {
   }
   .menu-item {
     @apply flex flex-col lg:flex-row justify-center items-center min-h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
+    @apply flex flex-col lg:flex-row justify-center items-center min-h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
   }
   .menu-item .menu-subitem {
     @apply z-10 relative lg:w-auto w-full;

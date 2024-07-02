@@ -46,11 +46,15 @@ import { ref, watchEffect } from "vue";
 const {getSearch} = useSearchBarManagement();
 
 interface Product {
-    productId: number;
+    id: string,
     name: string;
     description: string;
     price: number;
     stock: number;
+    CategoryId: string,
+    createdAt: Date,
+    updatedAt: Date,
+    deletedAt: any,
 }
 
 let searchTerm = '';
@@ -65,7 +69,8 @@ const navigateToArticle = (id :number) => {
 function performSearch() {
     getSearch(searchTerm)
     .then(response => {
-        products.value = response.message as Product[];
+        console.log(response);
+        products.value = response.products as Product[];
         open.value = true;
     })
     .catch(error => {

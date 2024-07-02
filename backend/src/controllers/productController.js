@@ -4,6 +4,7 @@ const crudService = require('../services/crudGeneric');
 class productController {
     static async getProducts(req, res) {
         const { data, error } = await crudService.findAll(Product, req.query);
+
         if (error) {
             return res.status(400).json({ error: error.message });
         }

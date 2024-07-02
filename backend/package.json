@@ -8,10 +8,10 @@
     "start": "node src/index.js",
     "test": "jest",
     "migrate-up": " sequelize-cli db:migrate --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
-    "migrate-down-all": "sequelize-cli db:migrate:undo:all --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
-    "migrate-down-last": "sequelize-cli db:migrate:undo --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
-    "seed": "sequelize-cli db:seed:all --seeders-path ./src/sequelize/seeders --config ./src/config/sequelize_config.js",
-    "seed-down": "sequelize-cli db:seed:undo:all --seeders-path ./src/sequelize/seeders --config ./src/config/sequelize_config.js"
+    "migrate-down-all": "sequelize-cli db:migrate:undo:all",
+    "migrate-down-last": "sequelize-cli db:migrate:undo",
+    "seed": "sequelize-cli db:seed:all",
+    "seed-down": "sequelize-cli db:seed:undo:all"
   },
   "dependencies": {
     "@babel/preset-env": "^7.24.7",

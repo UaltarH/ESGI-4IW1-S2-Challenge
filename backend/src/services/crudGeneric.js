@@ -33,6 +33,7 @@ const update = async (Model, id, data) => {
         const [updated] = await Model.update(data, {
             where: { id },
             returning: true,
+            individualHooks: true,
         });
         if (updated === 0) {
             return { data: null, error: new Error('Record not found') };
@@ -48,6 +49,7 @@ const destroy = async (Model, id) => {
     try {
         const deleted = await Model.destroy({
             where: { id },
+            individualHooks: true
         });
         if (deleted === 0) {
             return { data: null, error: new Error('Record not found') };

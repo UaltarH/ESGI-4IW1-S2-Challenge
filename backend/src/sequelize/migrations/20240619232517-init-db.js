@@ -170,6 +170,23 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      address: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      city: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      zipcode: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      country: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        defaultValue: "France",
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

@@ -13,6 +13,7 @@ const afterCreateHook = async (user, options) => {
         phone: user.phone,
         birthdate: user.birthdate,
         role: user.role,
+        deleteAt: null,
     });
 };
 
@@ -42,14 +43,17 @@ const afterUpdateHook = async (user, options) => {
 };
 
 const afterDestroyHook = async (user, options) => {
-    const mongoUser = await MongoUser.findOneAndDelete({ postgresId: user.id });
+    const mongoUser = await MongoUser.findOneAndUpdate(
+        { postgresId: user.id },
+        { deleteAt: new Date() }
+    );
 
     if (!mongoUser) {
         console.error(`MongoUser with postgresId ${user.id} not found`);
         return;
     }
 
-    console.log(`MongoUser deleted: ${mongoUser}`);
+    console.log(`MongoUser deleted (deleteAt): ${mongoUser}`);
 };
 
 module.exports = {

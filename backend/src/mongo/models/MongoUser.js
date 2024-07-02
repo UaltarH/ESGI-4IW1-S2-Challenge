@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
         enum: ["admin", "user", "store_manager", "accountant"],
         default: "user",
     },
+    deleteAt: Date,
 });
 
 const MongoUser = mongoose.model('User', userSchema);

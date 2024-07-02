@@ -41,6 +41,7 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
                 zipcode: shippingRes.zipcode,
                 country: shippingRes.country,
             },
+            deleteAt: null,
         });
 
         console.log('Order created in MongoDB');

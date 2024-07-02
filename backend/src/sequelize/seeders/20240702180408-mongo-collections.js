@@ -27,6 +27,7 @@ module.exports = {
         stock: product.stock,
         categoryId: product.Category.id,
         categoryName: product.Category.name,
+        deleteAt: null,
       });
     }
 
@@ -46,6 +47,7 @@ module.exports = {
         phone: user.phone,
         birthdate: user.birthdate,
         role: user.role,
+        deleteAt: null,
       });
     }
 

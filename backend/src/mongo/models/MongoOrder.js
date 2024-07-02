@@ -42,6 +42,7 @@ const orderSchema = new mongoose.Schema({
             default: "France",
         },
     },
+    deleteAt: Date,
 });
 
 const MongoOrder = mongoose.model('Order', orderSchema);

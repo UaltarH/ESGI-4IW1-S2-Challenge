@@ -8,6 +8,7 @@ const productSchema = new mongoose.Schema({
     stock: Number,
     categoryId: String,
     categoryName: String,
+    deleteAt: Date,
 });
 
 const MongoProduct = mongoose.model('Product', productSchema);

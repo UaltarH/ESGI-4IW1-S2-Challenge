@@ -1,5 +1,6 @@
 const { Product } = require('../sequelize/models');
 const crudService = require('../services/crudGeneric');
+const MongoProduct = require('../mongo/models/MongoProduct');
 
 class productController {
     static async getProducts(req, res) {
@@ -41,6 +42,14 @@ class productController {
             return res.status(400).json({ error: error.message });
         }
         res.json({ product: data });
+    }
+
+    static async getMongoProducts(req, res) {
+        const products = await MongoProduct.find();
+        if (!products) {
+            return res.status(404).json({ error: 'Products not found' });
+        }
+        res.json({ products: products });
     }
 }
 

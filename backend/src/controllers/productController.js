@@ -51,6 +51,14 @@ class productController {
         }
         res.json({ products: products });
     }
+
+    static async getSpecificMongoProduct(req, res) {
+        const product = await MongoProduct.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.json({ product: product });
+    }
 }
 
 module.exports = productController;

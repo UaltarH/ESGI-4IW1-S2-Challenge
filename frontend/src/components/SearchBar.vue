@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import {useSearchBarManagement} from "@/composables/useSearchBarManagement.ts";
+import {useSearchBarManagement} from "@/composables/api/useSearchBarManagement.ts";
 import { ref, watchEffect } from "vue";
 
 const {getSearch} = useSearchBarManagement();

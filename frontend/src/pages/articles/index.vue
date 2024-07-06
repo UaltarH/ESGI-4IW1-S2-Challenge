@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-6">Articles</h1>
+    <h1 class="text-2xl font-bold mb-6">Produits</h1>
 
     <!-- Filters Section -->
     <div class="mb-6 flex flex-col lg:flex-row justify-between">
@@ -52,6 +52,7 @@ import { ref, onMounted, Ref, computed, reactive } from 'vue';
 import ArticleCard from './CardArticle.vue';
 import { Slider } from '@/components/ui/slider';
 import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
+import { ProductService } from '@/composables/api/products.service.ts'; 
 
 interface Category {
   id: string;
@@ -71,11 +72,11 @@ onMounted(() => {
 });
 
 const fetchArticles = async () => {
-  try {
-    const response = await fetch(import.meta.env.VITE_APP_API_URL + '/mongoProducts');
-    const data = await response.json();
-    articles.value = data.products;   
-    setVariables();
+  try {    
+    ProductService().getAllMongoProducts().then(res => {
+      articles.value = res.products;
+      setVariables();
+    });    
   } catch (error) {
     console.error('Error fetching articles:', error);
   }

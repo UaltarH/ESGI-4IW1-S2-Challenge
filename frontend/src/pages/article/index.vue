@@ -1,50 +1,59 @@
 <template>
-  <div class="py-16">
-    <h2 class="text-3xl font-bold mb-4">{{ article.name }}</h2>
-  </div>
-  <div class="mt-2 bg-gray-100 p-6 rounded-lg shadow-md">
-    <p class="text-xl mb-2">{{ article.price }} €</p>
-    <p class="text-gray-700">{{ article.description }}</p>
+  <div class="container mx-auto py-16">
+    <div class="flex flex-col md:flex-row items-center">
+      <!-- Product Image -->
+      <div class="w-full md:w-1/2 p-4">
+        <img :src="productImage" alt="Product Image" class="rounded-lg shadow-md">
+      </div>
+      <!-- Product Information -->
+      <div class="w-full md:w-1/2 p-4">
+        <h2 class="text-3xl font-bold mb-4">{{ article.name }}</h2>
+        <p class="text-xl font-semibold mb-4">{{ article.price }} €</p>
+        <p class="text-gray-700 mb-6">{{ article.description }}</p>
+        <div class="flex items-center">
+          <label for="quantity" class="mr-3">Quantité</label>
+          <select id="quantity" class="border rounded p-2">
+            <option v-for="n in 10" :key="n" :value="n">{{ n }}</option>
+          </select>
+          <button @click="addToCart" class="ml-6 bg-black text-white py-2 px-4 rounded-lg shadow-md">Ajouter au panier</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, Ref } from 'vue';
 import { useRoute } from 'vue-router';
-import { useSearchBarManagement } from '@/composables/useSearchBarManagement.ts'; 
+import { ProductService } from '@/composables/api/products.service.ts';
+import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
 
-const { getProductById } = useSearchBarManagement();
-
-interface Article {
-  productId: number;
-  name: string;
-  description: string;
-  price: number;
-  stock: number;
-}
-
-const article = ref<Article>({
-  productId: 0,
-  name: '',
-  description: '',
-  price: 0,
-  stock: 0
-});
-
+const article: Ref<mongoArticle> = ref({} as mongoArticle);
 const route = useRoute();
 
-onMounted(async () => {
-  const productId = Number(route.params.id); 
+const fetchArticle = async () => {
   try {
-    getProductById(productId)
-      .then(res => {
-        article.value = res.product;
-      })
-      .catch(error => {
-        console.error('Error fetching product details:', error);
-      });
+    let productId = route.params.id as unknown as number;
+    const response = await ProductService().getSpecificMongoProduct(productId);
+    article.value = response.product;
   } catch (error) {
     console.error('Error fetching product details:', error);
   }
+};
+
+onMounted(async () => {
+  await fetchArticle();
 });
+
+const productImage = 'https://placehold.co/600x400';
+
+const addToCart = () => {
+  console.log(`Adding ${article.value.name} to cart`);
+};
 </script>
+
+<style scoped>
+.container {
+  max-width: 1200px;
+}
+</style>

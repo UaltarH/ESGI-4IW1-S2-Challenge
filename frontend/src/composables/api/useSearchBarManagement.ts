@@ -1,4 +1,4 @@
-import {Api} from './api';
+import {Api} from './routesApi';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 export const useSearchBarManagement = () => {
@@ -6,9 +6,5 @@ export const useSearchBarManagement = () => {
         return await fetch(baseUrl + Api.search + `/${search}`).then(res => res.json());
     }
 
-    const getProductById = async (id :number) => {
-        return await fetch(baseUrl + Api.getProductById + `/${id}`).then(res => res.json())
-    }
-
-    return {getSearch, getProductById};
+    return { getSearch };
 }

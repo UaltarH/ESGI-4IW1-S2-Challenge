@@ -26,7 +26,7 @@
 import {onMounted, ref} from "vue";
 import {ApiResponse} from "@/dto/apiResponse.dto.ts";
 import ConfirmModal from "@/components/ConfirmModal.vue";
-import {useUserManagement} from "@/composables/useUserManagement.ts";
+import {useUserManagement} from "@/composables/api/useUserManagement.ts";
 
 const { getRoles, getUser, deleteUser } = useUserManagement();
 onMounted(async () => {

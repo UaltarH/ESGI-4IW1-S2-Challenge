@@ -7,6 +7,8 @@ export interface mongoArticle {
     stock: number,
     categoryId: string,
     categoryName: string,
+    createdAt: Date,
+    updatedAt: Date,
     deleteAt: Date,
     __v: number
 }

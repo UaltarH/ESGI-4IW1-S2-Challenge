@@ -9,7 +9,6 @@ const create = async (Model, data) => {
 
 const findAll = async (Model, query) => {
     try {
-        console.log(query);
         const records = await Model.findAll({ where: query });
         return { data: records, error: null };
     } catch (error) {

@@ -48,7 +48,7 @@
 
     <!-- Mobile menu -->
     <div v-if="menuOpen" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50" @click="closeMenu">
-      <div class="fixed right-0 top-0 w-64 h-full bg-white dark:bg-gray-800 shadow-md z-50" @click.stop>
+      <div class="fixed right-0 top-0 w-72 h-full bg-white dark:bg-gray-800 shadow-md z-50" @click.stop>
         <div class="flex flex-col items-center">
           <div class="flex justify-around items-center h-[60px] w-full">
             <RouterLink to="/register" class="menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700" @click="closeMenu">

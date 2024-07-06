@@ -10,5 +10,5 @@ export const Api = {
   getMockRoles: "/mock/roles",
   mockRegister: "/mock/users",
   products: "/products",
-  mongoProducts: "/mongoProducts"
+  mongoProducts: "/mongoProducts",
 };

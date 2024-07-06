@@ -1,5 +1,5 @@
 <template>
-  <div class="py-24">
+  <div>
     <h1>Home</h1>
     <btn>Click me</btn>
   </div>

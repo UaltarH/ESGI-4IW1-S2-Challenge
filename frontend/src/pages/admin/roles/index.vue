@@ -1,5 +1,5 @@
 <template>
-<div class="py-24">
+<div>
   <h1>Roles</h1>
   <ul>
     <li v-for="role in roles" :key="role">{{ role }}</li>

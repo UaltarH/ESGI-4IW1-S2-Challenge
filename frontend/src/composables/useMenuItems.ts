@@ -43,7 +43,7 @@ export const useMenuItems = () => {
           icon: "",
           route: "/admin/dashboard",
           access: "admin",
-        }
+        },
       ],
     },
     {

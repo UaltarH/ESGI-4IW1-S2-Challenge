@@ -3,6 +3,7 @@ import index from "@/pages/index.vue";
 import Roles from '@/pages/admin/roles/index.vue';
 import Register from '@/pages/auth/register/index.vue';
 import CustomTableExemple from "@/pages/admin/components/tableExemple.vue";
+import ArticlesPage from "@/pages/articles/index.vue";
 
 const routes = [
     { path: "/", component: index },
@@ -11,6 +12,7 @@ const routes = [
     { path: "/register", component: Register},
     { path: "/components/table", component: CustomTableExemple },
     { path: "/article/:id", component: () => import('@/pages/article/index.vue') },
+    { path: "/articles", component: ArticlesPage },
 ]
 
 export const router = createRouter({

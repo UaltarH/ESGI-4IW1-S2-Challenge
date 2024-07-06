@@ -1,18 +1,18 @@
 <template>
-<div class="search p-4 relative" ref="searchContainer">
-    <div class="flex">
-    <input
-        v-model="searchTerm"
-        @keyup.enter="performSearch"
-        placeholder="Rechercher un produit..."
-        class="border border-gray-300 rounded-l px-4 py-2 w-200 ring-1 ring-gray-300"
-    />
-    <button
-        @click="performSearch"
-        class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300"
-    >
-        Rechercher
-    </button>
+<div class="search relative" ref="searchContainer">
+    <div class="flex flex-col lg:flex-row">
+        <input
+            v-model="searchTerm"
+            @keyup.enter="performSearch"
+            placeholder="Rechercher un produit..."
+            class="border border-gray-300 rounded-l px-4 py-2 w-200 ring-1 ring-gray-300"
+        />
+        <button
+            @click="performSearch"
+            class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300"
+        >
+            Rechercher
+        </button>
     </div>
 
     <div

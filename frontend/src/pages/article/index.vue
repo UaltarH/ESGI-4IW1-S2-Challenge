@@ -1,11 +1,9 @@
 <template>
   <div class="container mx-auto py-16">
-    <div class="flex flex-col md:flex-row items-center">
-      <!-- Product Image -->
-      <div class="w-full md:w-1/2 p-4">
-        <img :src="productImage" alt="Product Image" class="rounded-lg shadow-md">
+    <div class="flex flex-col md:flex-row items-center">      
+      <div class="w-full md:w-1/2 p-4 mr-8">
+        <CarouselImages :images="imageUrls" />
       </div>
-      <!-- Product Information -->
       <div class="w-full md:w-1/2 p-4">
         <h2 class="text-3xl font-bold mb-4">{{ article.name }}</h2>
         <p class="text-xl font-semibold mb-4">{{ article.price }} €</p>
@@ -19,7 +17,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </div>  
 </template>
 
 <script setup lang="ts">
@@ -27,6 +25,7 @@ import { ref, onMounted, Ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { ProductService } from '@/composables/api/products.service.ts';
 import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
+import CarouselImages from './CarouselImages.vue';
 
 const article: Ref<mongoArticle> = ref({} as mongoArticle);
 const route = useRoute();
@@ -45,7 +44,13 @@ onMounted(async () => {
   await fetchArticle();
 });
 
-const productImage = 'https://placehold.co/600x400';
+const imageUrls = [
+  'https://placehold.co/150',
+  'https://placehold.co/600x400',
+  'https://placehold.co/600x400',
+  'https://placehold.co/600x400',
+  'https://placehold.co/600x400'
+];
 
 const addToCart = () => {
   console.log(`Adding ${article.value.name} to cart`);

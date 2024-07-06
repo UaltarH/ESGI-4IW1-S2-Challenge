@@ -49,7 +49,7 @@
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, Ref, computed, reactive } from 'vue';
-import ArticleCard from './CardArticle.vue';
+import ArticleCard from '@/components/common/products/CardArticle.vue';
 import { Slider } from '@/components/ui/slider';
 import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
 import { ProductService } from '@/composables/api/products.service.ts'; 

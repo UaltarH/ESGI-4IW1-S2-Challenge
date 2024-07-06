@@ -3,6 +3,7 @@ const cors = require('cors');
 const connectMongoDB = require('./config/mongo_config');
 const indexRouter = require('./routes/index');
 const searchRouter = require('./routes/search');
+const categoryRouter = require('./routes/category');
 const userRouter = require('./routes/user');
 const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
@@ -21,6 +22,7 @@ app.use(cors(corsOptions));
 
 app.use(indexRouter);
 app.use(searchRouter);
+app.use(categoryRouter);
 app.use(userRouter);
 app.use(productRouter);
 app.use(orderRouter);

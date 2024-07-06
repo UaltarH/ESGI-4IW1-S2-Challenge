@@ -19,9 +19,7 @@
     </div>
   </div>  
 
-  <div class="my-16">
-    <hr class="border-gray-300">
-  </div>
+  <Separator/>
 
   <div class="flex flex-col items-center py-8">
     <h3 class="text-2xl font-bold mb-4">Derniers produits ajoutés</h3>
@@ -36,6 +34,7 @@ import { ProductService } from '@/composables/api/products.service.ts';
 import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
 import CarouselImages from './CarouselImages.vue';
 import LastProductsCarousel  from '@/components/common/products/LastProductsCarousel.vue';
+import { Separator } from '@/components/ui/separator';
 
 const product: Ref<mongoArticle> = ref({} as mongoArticle);
 const lastProducts: Ref<mongoArticle[]> = ref([]);

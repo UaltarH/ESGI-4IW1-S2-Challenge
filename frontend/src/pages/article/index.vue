@@ -5,9 +5,9 @@
         <CarouselImages :images="imageUrls" />
       </div>
       <div class="w-full md:w-1/2 p-4">
-        <h2 class="text-3xl font-bold mb-4">{{ article.name }}</h2>
-        <p class="text-xl font-semibold mb-4">{{ article.price }} €</p>
-        <p class="text-gray-700 mb-6">{{ article.description }}</p>
+        <h2 class="text-3xl font-bold mb-4">{{ product.name }}</h2>
+        <p class="text-xl font-semibold mb-4">{{ product.price }} €</p>
+        <p class="text-gray-700 mb-6">{{ product.description }}</p>
         <div class="flex items-center">
           <label for="quantity" class="mr-3">Quantité</label>
           <select id="quantity" class="border rounded p-2">
@@ -18,6 +18,15 @@
       </div>
     </div>
   </div>  
+
+  <div class="my-16">
+    <hr class="border-gray-300">
+  </div>
+
+  <div class="flex flex-col items-center py-8">
+    <h3 class="text-2xl font-bold mb-4">Derniers produits ajoutés</h3>
+    <LastProductsCarousel :contents="lastProducts" />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -26,23 +35,34 @@ import { useRoute } from 'vue-router';
 import { ProductService } from '@/composables/api/products.service.ts';
 import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
 import CarouselImages from './CarouselImages.vue';
+import LastProductsCarousel  from '@/components/common/products/LastProductsCarousel.vue';
 
-const article: Ref<mongoArticle> = ref({} as mongoArticle);
+const product: Ref<mongoArticle> = ref({} as mongoArticle);
+const lastProducts: Ref<mongoArticle[]> = ref([]);
 const route = useRoute();
 
-const fetchArticle = async () => {
+onMounted(async () => {
+  await fetchProduct();
+  await fetchLastProducts();
+});
+const fetchProduct = async () => {
   try {
     let productId = route.params.id as unknown as number;
     const response = await ProductService().getSpecificMongoProduct(productId);
-    article.value = response.product;
+    product.value = response.product;    
   } catch (error) {
     console.error('Error fetching product details:', error);
   }
 };
 
-onMounted(async () => {
-  await fetchArticle();
-});
+const fetchLastProducts = async () => {
+  try {
+    const response = await ProductService().getLastMongoProduct();
+    lastProducts.value = response.products;
+  } catch (error) {
+    console.error('Error fetching last products:', error);
+  }
+};
 
 const imageUrls = [
   'https://placehold.co/150',
@@ -53,7 +73,7 @@ const imageUrls = [
 ];
 
 const addToCart = () => {
-  console.log(`Adding ${article.value.name} to cart`);
+  console.log(`Adding ${product.value.name} to cart`);
 };
 </script>
 

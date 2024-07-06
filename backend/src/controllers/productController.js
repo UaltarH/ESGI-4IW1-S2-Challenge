@@ -59,6 +59,14 @@ class productController {
         }
         res.json({ product: product });
     }
+
+    static async getLast5MongoProduct(req, res) {
+        const products = await MongoProduct.find().sort({ createdAt: -1 }).limit(5);
+        if (!products) {
+            return res.status(404).json({ error: 'Products not found' });
+        }
+        res.json({ products: products });
+    }
 }
 
 module.exports = productController;

@@ -14,5 +14,9 @@ export const ProductService = () => {
         return await fetch(baseUrl + Api.mongoProducts + `/${id}`).then(res => res.json());
     }
 
-    return { getProductById, getAllMongoProducts, getSpecificMongoProduct};
+    const getLastMongoProduct = async () => {
+        return await fetch(baseUrl + Api.mongoProducts + '/last').then(res => res.json());
+    }
+
+    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct};
 }

@@ -27,7 +27,7 @@
           :min="minPrice"
           :step="1"
         />
-        <span>{{ maxPriceFilter.value[0] }}€</span>
+        <span>{{ maxPriceFilter.value[0].toFixed(2) }}€</span>
       </div>      
     </div>
 
@@ -35,8 +35,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       <div v-for="article in filteredArticles">
         <RouterLink :to="`/article/${article._id}`">
-          <ArticleCard          
-            :key="article._id"
+          <ArticleCard              
             :image="getImageUrl(article)"
             :name="article.name"
             :description="article.description"

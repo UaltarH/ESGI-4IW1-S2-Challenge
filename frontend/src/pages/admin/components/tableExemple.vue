@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-12">
+    <div>
       <h1>Composant custom table:</h1>
       <CustomizableTable
         :data="data.datas"

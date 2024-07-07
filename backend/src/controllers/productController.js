@@ -1,5 +1,6 @@
 const { Product } = require('../sequelize/models');
 const crudService = require('../services/crudGeneric');
+const MongoProduct = require('../mongo/models/MongoProduct');
 
 class productController {
     static async getProducts(req, res) {
@@ -41,6 +42,30 @@ class productController {
             return res.status(400).json({ error: error.message });
         }
         res.json({ product: data });
+    }
+
+    static async getMongoProducts(req, res) {
+        const products = await MongoProduct.find();
+        if (!products) {
+            return res.status(404).json({ error: 'Products not found' });
+        }
+        res.json({ products: products });
+    }
+
+    static async getSpecificMongoProduct(req, res) {
+        const product = await MongoProduct.findById(req.params.id);
+        if (!product) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+        res.json({ product: product });
+    }
+
+    static async getLast5MongoProduct(req, res) {
+        const products = await MongoProduct.find().sort({ createdAt: -1 }).limit(5);
+        if (!products) {
+            return res.status(404).json({ error: 'Products not found' });
+        }
+        res.json({ products: products });
     }
 }
 

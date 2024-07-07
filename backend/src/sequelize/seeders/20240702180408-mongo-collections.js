@@ -27,6 +27,8 @@ module.exports = {
         stock: product.stock,
         categoryId: product.Category.id,
         categoryName: product.Category.name,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
         deleteAt: null,
       });
     }

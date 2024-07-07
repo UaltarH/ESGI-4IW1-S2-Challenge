@@ -9,6 +9,8 @@ const afterCreateHook = async (product, options) => {
         stock: product.stock,
         categoryId: product.CategoryId,
         categoryName: category.name,
+        createdAt: product.createdAt,
+        updatedAt: product.updatedAt,
         deleteAt: null,
     });
 };
@@ -22,6 +24,7 @@ const afterUpdateHook = async (product, options) => {
             price: product.price,
             stock: product.stock,
             categoryId: product.CategoryId,
+            updatedAt: product.updatedAt,
         }
     );
 

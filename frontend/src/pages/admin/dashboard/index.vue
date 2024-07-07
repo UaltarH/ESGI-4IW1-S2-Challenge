@@ -425,7 +425,7 @@
 </script>
 
 <template>
-    <div class="py-24">
+    <div>
         <h1>Compta Dashboard</h1>
     </div>
 

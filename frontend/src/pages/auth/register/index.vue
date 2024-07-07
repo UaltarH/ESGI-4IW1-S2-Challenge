@@ -6,7 +6,7 @@
 <script lang="ts" setup>
 import Form from "@/components/CustomForm.vue";
 import { FormField} from "@/dto/formField.dto.ts";
-import { useAuth} from "@/composables/useAuth";
+import { useAuth} from "@/composables/api/useAuth";
 import { ApiResponse} from "@/dto/apiResponse.dto.ts";
 import { z } from "zod";
 import { onUnmounted, Ref, ref  } from "vue";

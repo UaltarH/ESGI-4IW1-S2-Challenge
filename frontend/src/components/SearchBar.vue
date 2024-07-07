@@ -1,6 +1,6 @@
 <template>
-  <div class="search p-4 relative" ref="searchContainer">
-    <div class="flex relative">
+  <div class="search pr-4 relative" ref="searchContainer">
+    <div class="flex relative flex-col lg:flex-row">
       <div class="relative w-200">
         <input
           v-model="searchTerm"
@@ -75,7 +75,7 @@
   
 <script setup lang="ts">
   import { useSearchBarManagement } from "@/composables/api/useSearchBarManagement.ts";
-  import { useCategoryManagement } from "@/composables/useCategoryManagement.ts";
+  import { useCategoryManagement } from "@/composables/api/useCategoryManagement.ts";
   import { ref, onMounted, watchEffect } from "vue";
   import { useRouter, useRoute } from "vue-router";
   

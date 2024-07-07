@@ -9,8 +9,8 @@
       <div class="hidden lg:flex h-full">
         <Menu></Menu>        
       </div>
-      <div class="flex justify-between items-center lg:w-[22%]">
-        <dark-mode-button class="hidden lg:block"></dark-mode-button>
+      <div class="flex justify-between items-center">
+        <dark-mode-button class="hidden lg:block mr-4"></dark-mode-button>
         <search-bar class="hidden lg:block"></search-bar>
         <RouterLink
           to="/register"
@@ -25,7 +25,7 @@
       </div>
     </nav>
 
-    <!-- Mobile menu -->
+    <!-- Mobile header -->
     <div v-if="menuOpen" class="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-50" @click="closeMenu">
       <div class="fixed right-0 top-0 w-72 h-full bg-white dark:bg-gray-800 shadow-md z-50" @click.stop>
         <div class="flex flex-col items-center">

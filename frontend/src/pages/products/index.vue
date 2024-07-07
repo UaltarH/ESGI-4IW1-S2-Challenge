@@ -31,15 +31,15 @@
       </div>      
     </div>
 
-    <!-- Articles Section -->
+    <!-- Products Section -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      <div v-for="article in filteredArticles">
-        <RouterLink :to="`/article/${article._id}`">
-          <ArticleCard              
-            :image="getImageUrl(article)"
-            :name="article.name"
-            :description="article.description"
-            :price="article.price"
+      <div v-for="product in filteredProducts">
+        <RouterLink :to="`/product/${product._id}`">
+          <ProductCard              
+            :image="getImageUrl(product)"
+            :name="product.name"
+            :description="product.description"
+            :price="product.price"
           />
         </RouterLink>
       </div>
@@ -48,9 +48,9 @@
 </template>
 <script lang="ts" setup>
 import { ref, onMounted, Ref, computed, reactive } from 'vue';
-import ArticleCard from '@/components/common/products/CardArticle.vue';
+import ProductCard from '@/components/common/products/CardProduct.vue';
 import { Slider } from '@/components/ui/slider';
-import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
+import { mongoProduct } from '@/dto/MongoProduct.dto.ts';
 import { ProductService } from '@/composables/api/products.service.ts'; 
 
 interface Category {
@@ -58,7 +58,7 @@ interface Category {
   name: string;
 }
 
-const articles:Ref<mongoArticle[]> = ref([]);
+const products:Ref<mongoProduct[]> = ref([]);
 const categories:Ref<Category[]> = ref([]);
 const selectedCategories = ref<string[]>([]);
 
@@ -67,32 +67,32 @@ const minPrice = ref(0);
 const maxPriceFilter = reactive({ value: [0] });
 
 onMounted(() => {
-  fetchArticles();
+  fetchProducts();
 });
 
-const fetchArticles = async () => {
+const fetchProducts = async () => {
   try {    
     ProductService().getAllMongoProducts().then(res => {
-      articles.value = res.products;
+      products.value = res.products;
       setVariables();
     });    
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    console.error('Error fetching products:', error);
   }
 };
 
 const setVariables = () => {
-  let min = articles.value[0].price;
-  let max = articles.value[0].price; 
-  articles.value.forEach((article: mongoArticle) => {
-    if (!categories.value.find(category => category.id === article.categoryId)) {
-      categories.value.push({ id: article.categoryId, name: article.categoryName });
+  let min = products.value[0].price;
+  let max = products.value[0].price; 
+  products.value.forEach((product: mongoProduct) => {
+    if (!categories.value.find(category => category.id === product.categoryId)) {
+      categories.value.push({ id: product.categoryId, name: product.categoryName });
     }
-    if (article.price < min) {
-      min = article.price;
+    if (product.price < min) {
+      min = product.price;
     }
-    if (article.price > max) {
-      max = article.price;
+    if (product.price > max) {
+      max = product.price;
     }
   });  
 
@@ -101,13 +101,13 @@ const setVariables = () => {
   maxPriceFilter.value = [max];
 };
 
-const filteredArticles = computed(() => {
+const filteredProducts = computed(() => {
   if (selectedCategories.value.length === 0 && maxPriceFilter.value[0] === maxPrice.value) {
-    return articles.value;
+    return products.value;
   }
-  return articles.value.filter((article: mongoArticle) => {
-    const categoryFilter = selectedCategories.value.length === 0 || selectedCategories.value.includes(article.categoryId);
-    const priceFilter = article.price <= maxPriceFilter.value[0];
+  return products.value.filter((product: mongoProduct) => {
+    const categoryFilter = selectedCategories.value.length === 0 || selectedCategories.value.includes(product.categoryId);
+    const priceFilter = product.price <= maxPriceFilter.value[0];
     return categoryFilter && priceFilter;
   });
 });
@@ -120,7 +120,7 @@ const toggleCategory = (categoryId: string) => {
   }
 };
 
-const getImageUrl = (article: any) => {
+const getImageUrl = (product: any) => {
   return 'https://via.placeholder.com/150';
 };
 

@@ -9,9 +9,9 @@ export const useMenuItems = () => {
       access: "all",
     },
     {
-      title: "Articles",
+      title: "Produits",
       icon: "",
-      route: "/articles",
+      route: "/products",
       access: "all",
     },
     {

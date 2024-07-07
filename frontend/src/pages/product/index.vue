@@ -31,13 +31,13 @@
 import { ref, onMounted, Ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { ProductService } from '@/composables/api/products.service.ts';
-import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
+import { mongoProduct } from '@/dto/MongoProduct.dto.ts';
 import CarouselImages from './CarouselImages.vue';
 import LastProductsCarousel  from '@/components/common/products/LastProductsCarousel.vue';
 import { Separator } from '@/components/ui/separator';
 
-const product: Ref<mongoArticle> = ref({} as mongoArticle);
-const lastProducts: Ref<mongoArticle[]> = ref([]);
+const product: Ref<mongoProduct> = ref({} as mongoProduct);
+const lastProducts: Ref<mongoProduct[]> = ref([]);
 const route = useRoute();
 
 onMounted(async () => {

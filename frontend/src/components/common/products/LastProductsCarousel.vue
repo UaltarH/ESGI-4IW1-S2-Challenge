@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
-import ArticleCard from '@/components/common/products/CardArticle.vue';
-import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
+import ProductCard from '@/components/common/products/CardProduct.vue';
+import { mongoProduct } from '@/dto/MongoProduct.dto.ts';
 import Autoplay from 'embla-carousel-autoplay'
 
 defineProps<{
-  contents: mongoArticle[];
+  contents: mongoProduct[];
 }>()
 </script>
 
@@ -22,8 +22,8 @@ defineProps<{
     <CarouselContent class="-ml-1">
       <CarouselItem v-for="(content, index) in contents" :key="index" class="pl-1 md:basis-1/2 lg:basis-1/3 h-full">
         <div class="p-1">
-          <RouterLink :to="`/article/${content._id}`">
-            <ArticleCard          
+          <RouterLink :to="`/product/${content._id}`">
+            <ProductCard          
             :image="'https://via.placeholder.com/150'"
             :name="content.name"
             :description="content.description"

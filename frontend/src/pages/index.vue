@@ -45,10 +45,10 @@
 import { ref, onMounted, Ref } from 'vue';
 import { Separator } from '@/components/ui/separator';
 import LastProductsCarousel  from '@/components/common/products/LastProductsCarousel.vue';
-import { mongoArticle } from '@/dto/MongoArticle.dto';
+import { mongoProduct } from '@/dto/MongoProduct.dto';
 import { ProductService } from '@/composables/api/products.service';
 
-const lastProducts: Ref<mongoArticle[]> = ref([]);
+const lastProducts: Ref<mongoProduct[]> = ref([]);
 
 onMounted(async () => {
   await fetchLastProducts();

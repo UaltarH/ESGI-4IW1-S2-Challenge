@@ -58,7 +58,7 @@
           :key="product.productId"
           :class="product.stock === 0 ? 'bg-gray-200' : 'bg-white'"
           class="p-4 border border-gray-300 rounded-lg cursor-pointer"
-          @click="navigateToArticle(product.productId)"
+          @click="navigateToProduct(product.productId)"
         >
           <h4 class="text-xl font-bold">{{ product.name }}</h4>
           <p class="text-gray-900">{{ product.price }} €</p>
@@ -111,15 +111,14 @@
   const open = ref(false);
   const searchContainer = ref<HTMLElement | null>(null);
   
-  const navigateToArticle = (id: number) => {
-    window.location.href = `/article/${id}`;
+  const navigateToProduct = (id: number) => {
+    window.location.href = `/product/${id}`;
   };
   
   const performSearch = () => {
     getSearch(searchTerm.value, categoryName.value, stock.value)
       .then(response => {
         products.value = response.products as Product[];
-        open.value = true;
         router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
       })
       .catch(error => {

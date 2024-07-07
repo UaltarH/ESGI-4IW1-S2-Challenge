@@ -127,37 +127,6 @@ header {
     margin: 0;
   }
 }
-article:not(.card) {
-  header {
-    @apply mb-12;
-  }
-  h2 {
-    @apply text-3xl font-medium mb-6;
-  }
-  h3 {
-    @apply text-2xl font-medium mb-6;
-  }
-  p {
-    @apply mb-4 leading-loose tracking-wide;
-  }
-  ul,ol {
-    @apply list-outside pl-6 mb-6;
-  }
-  ul {
-    @apply list-disc;
-  }
-  ol {
-    @apply list-decimal;
-  }
-  li {
-    @apply mb-2 leading-loose tracking-wide;
-  }
-}
-article.card {
-  .article-preview p{
-    @apply text-ellipsis overflow-hidden ;
-  }
-}
 b {
   @apply font-semibold;
 }

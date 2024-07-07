@@ -1,4 +1,4 @@
-export interface mongoArticle {
+export interface mongoProduct {
     _id: string,
     postgresId: string,
     name: string,

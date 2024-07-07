@@ -22,12 +22,15 @@ defineProps<{
     <CarouselContent class="-ml-1">
       <CarouselItem v-for="(content, index) in contents" :key="index" class="pl-1 md:basis-1/2 lg:basis-1/3 h-full">
         <div class="p-1">
+          <RouterLink :to="`/article/${content._id}`">
             <ArticleCard          
             :image="'https://via.placeholder.com/150'"
             :name="content.name"
             :description="content.description"
             :price="content.price"
             />
+          </RouterLink>
+
         </div>
       </CarouselItem>
     </CarouselContent>

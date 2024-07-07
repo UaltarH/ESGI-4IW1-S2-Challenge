@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, Ref } from 'vue';
+import { ref, onMounted, Ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { ProductService } from '@/composables/api/products.service.ts';
 import { mongoArticle } from '@/dto/MongoArticle.dto.ts';
@@ -43,6 +43,10 @@ const route = useRoute();
 onMounted(async () => {
   await fetchProduct();
   await fetchLastProducts();
+});
+
+watch(() => route.params.id, async () => {
+  await fetchProduct();
 });
 const fetchProduct = async () => {
   try {

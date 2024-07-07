@@ -1,6 +1,6 @@
 <template>
   <div class="container mx-auto p-4">
-    <h1 class="text-2xl font-bold mb-6">Produits</h1>
+    <h1 class="text-2xl font-bold mb-6 text-center">Produits</h1>
 
     <!-- Filters Section -->
     <div class="mb-6 flex flex-col lg:flex-row justify-between">

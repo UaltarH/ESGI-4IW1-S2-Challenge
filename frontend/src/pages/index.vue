@@ -1,5 +1,5 @@
 <template>
-  <div class="relative w-full overflow-hidden">
+<div class="relative w-[119%] overflow-hidden ml-[-3rem]">
     <img src="../../public/home-page-image-test.png" alt="Background Image" class="w-full h-[40rem] object-cover" />
     <div class="absolute inset-0 bg-black bg-opacity-50 text-white flex flex-col justify-center items-start p-5">
       <h1 class="text-4xl font-bold">Découvrez notre entreprise</h1>
@@ -7,14 +7,14 @@
     </div>
 </div>
 
-<div class="max-w-4xl mx-auto p-6 z-10 bg-white">
-    <h2 class="text-3xl font-bold mt-8">À propos de notre entreprise</h2>
-    <p class="text-lg mt-4">
+<div class="mx-auto p-6 z-10 bg-white">
+    <h2 class="text-3xl font-bold mt-8 text-center">À propos de notre entreprise</h2>
+    <p class="text-lg mt-4 text-center">
         Chez BoxToBe, nous sommes spécialisés dans la vente de cartons de haute qualité pour tous vos besoins. Que vous ayez besoin de cartons pour l'expédition, le stockage, ou des projets spéciaux, nous avons ce qu'il vous faut. 
-    </p>    
+    </p>
 </div>
 
-<div class="max-w-4xl p-6 bg-white grid grid-cols-1 md:grid-cols-4 gap-6 mx-auto">
+<div class="p-6 bg-white grid grid-cols-1 md:grid-cols-4 gap-6 mx-auto">
   <div class="flex flex-col items-center">
     <img src="../../public/reassurance-qualite.svg" class="w-16 h-16" />
     <p class="text-center mt-4">Emballage de qualité<br />Réception produit sécurisée</p>

@@ -3,7 +3,6 @@ const { Op } = require('sequelize');
 
 class CategoryController {
     static async getAllCategories(req, res) {
-        console.log("all");
         try {
             const records = await Category.findAll();
             res.json({ categories: records });

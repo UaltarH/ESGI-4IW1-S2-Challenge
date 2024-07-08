@@ -21,6 +21,7 @@ class productController {
     }
 
     static async getProduct(req, res) {
+        console.log("passage dans getProduct");
         const { data, error } = await crudService.findByPk(Product, req.params.id);
         if (error) {
             return res.status(404).json({ error: error.message });
@@ -53,7 +54,11 @@ class productController {
     }
 
     static async getSpecificMongoProduct(req, res) {
-        const product = await MongoProduct.findById(req.params.id);
+        const id = req.params.id
+        if (!id || id.trim() === '') {
+            return res.status(400).json({ status: 'failed', message: 'Invalid Product ID' });
+        }
+        const product = await Product.findOne({ postgresId: id });
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }

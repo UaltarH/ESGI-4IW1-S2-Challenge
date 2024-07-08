@@ -1,15 +1,9 @@
 const validate = (schema) => (req, res, next) => {
   try {
-    let validatedeData = schema.parse(req.body);
-
-    if (validatedeData.password === validatedeData.passwordConfirmation) {
-      delete validatedeData.passwordConfirmation;
-      validatedeData.role = "user";
-    }
-    req.body = validatedeData;
+    schema.parse(req.body);
     next();
   } catch (err) {
-    if (err) {
+    if (err.errors) {
       res.status(400).json({
         errors: err.errors.map((e) => ({
           path: e.path,
@@ -20,11 +14,12 @@ const validate = (schema) => (req, res, next) => {
       res.status(400).json({
         errors: [
           {
-            message: err.message,
+            message: err.message || 'Validation error',
           },
         ],
       });
     }
-  };
-}
+  }
+};
+
 module.exports = validate;

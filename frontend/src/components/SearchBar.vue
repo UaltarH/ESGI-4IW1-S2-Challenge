@@ -1,27 +1,18 @@
 <template>
-  <div class="search pr-4 relative" ref="searchContainer">
-    <div class="flex relative flex-col lg:flex-row">
+  <div class="search p-4 relative" ref="searchContainer">
+    <div class="flex relative">
       <div class="relative w-200">
-        <input
-          v-model="searchTerm"
-          @click="open = true"
-          @keyup.enter="performSearch"
+        <input v-model="searchTerm" @click="open = true" @keyup.enter="performSearch"
           placeholder="Rechercher un produit..."
-          class="border border-gray-300 rounded-l px-4 py-2 ring-1 ring-gray-300 pr-10"
-        />
-        <button
-          v-if="searchTerm"
-          @click="clearSearch"
+          class="border border-gray-300 rounded-l px-4 py-2 ring-1 ring-gray-300 pr-10" />
+        <button v-if="searchTerm" @click="clearSearch"
           class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-          aria-label="Clear search"
-        >
+          aria-label="Clear search">
           &times;
         </button>
       </div>
-      <button
-        @click="performSearch"
-        class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300"
-      >
+      <button @click="performSearch"
+        class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300">
         Rechercher
       </button>
     </div>
@@ -73,7 +64,7 @@
 </template>
 
 
-  
+
 <script setup lang="ts">
   import { useSearchBarManagement } from "@/composables/api/useSearchBarManagement.ts";
   import { useCategoryManagement } from "@/composables/api/useCategoryManagement.ts";
@@ -131,19 +122,19 @@
       });
   };
 
-  const handleStock = () => {
-    stock.value = !stock.value;
-    performSearch();
-  }
+const handleStock = () => {
+  stock.value = !stock.value;
+  performSearch();
+}
 
-  const selectCategory = (name: string) => {
-    if (categoryName.value === name) {
-      categoryName.value = '';
-    } else {
-      categoryName.value = name;
-    }
-    performSearch();
+const selectCategory = (name: string) => {
+  if (categoryName.value === name) {
+    categoryName.value = '';
+  } else {
+    categoryName.value = name;
   }
+  performSearch();
+}
 
   const getAllCategories = () => {
     getCategories()
@@ -181,37 +172,41 @@
       categoryName.value = category;
       stock.value = stockValue;
 
-      router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
-      performSearch();
-    }, 100);
-  });
-  
-  watchEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (searchContainer.value && !searchContainer.value.contains(event.target as Node)) {
-        open.value = false;
-      }
-    };
-  
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  });
+    router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+    performSearch();
+  }, 100);
+});
+
+watchEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (searchContainer.value && !searchContainer.value.contains(event.target as Node)) {
+      open.value = false;
+    }
+  };
+
+  document.addEventListener('mousedown', handleClickOutside);
+  return () => {
+    document.removeEventListener('mousedown', handleClickOutside);
+  };
+});
 </script>
-  
+</script>
+
 <style scoped>
-  .relative {
-    position: relative;
-  }
-  button {
-    transition: background-color 0.3s;
-  }
-  button:focus {
-    outline: none;
-  }
-  button:hover {
-    cursor: pointer;
-  }
+<style scoped>.relative {
+  position: relative;
+}
+
+button {
+  transition: background-color 0.3s;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
 </style>
-  
+</style>

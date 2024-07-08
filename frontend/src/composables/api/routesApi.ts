@@ -4,8 +4,11 @@ export const Api = {
   getUser: "/users/byId",
   getRoles: "/users/roles",
   register: "/register",
+  login: "/login",
   search: "/search",
-  getProductById: "/article",
+  category: "/categories",
   getMockRoles: "/mock/roles",
   mockRegister: "/mock/users",
+  products: "/products",
+  mongoProducts: "/mongoProducts",
 };

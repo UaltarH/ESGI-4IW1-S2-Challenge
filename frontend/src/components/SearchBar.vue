@@ -1,79 +1,225 @@
 <template>
-<div class="search p-4 relative" ref="searchContainer">
-    <div class="flex">
-    <input
-        v-model="searchTerm"
-        @keyup.enter="performSearch"
-        placeholder="Rechercher un produit..."
-        class="border border-gray-300 rounded-l px-4 py-2 ring-1 ring-gray-300"
-    />
-    <button
-        @click="performSearch"
-        class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300"
-    >
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </button>
+  <div class="search p-4 relative" ref="searchContainer">
+    <div class="flex relative">
+      <div class="relative w-200">
+        <input v-model="searchTerm" @click="open = true" @keyup.enter="performSearch"
+          placeholder="Rechercher un produit..."
+          class="border border-gray-300 rounded-l px-4 py-2 ring-1 ring-gray-300 pr-10" />
+        <button v-if="searchTerm" @click="clearSearch"
+          class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+          aria-label="Clear search">
+          &times;
+        </button>
+      </div>
+      <button @click="performSearch"
+        class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
     </div>
 
-    <div
-    v-if="open"
-    class="mt-4 absolute top-full left-0 right-0 bg-white shadow-lg border border-gray-300 rounded-lg z-10 p-4 max-h-96 overflow-y-auto"
-    >
-    <h3 class="text-lg font-semibold mb-2">Résultats:</h3>
-    <ul class="space-y-4">
-        <li
-            v-if="products.length > 0"
-            v-for="product in products"
-            :key="product.productId"
-            class="p-4 border border-gray-300 rounded-lg cursor-pointer"
-            @click="navigateToArticle(product.productId)"
-        >
-            <h4 class="text-xl font-bold">{{ product.name }}</h4>
-            <p class="text-gray-900">{{ product.price }} €</p>
+    <div v-if="open"
+      class="mt-4 absolute top-full left-0 right-0 bg-white shadow-lg border border-gray-300 rounded-lg z-10 p-4 max-h-96 overflow-y-auto">
+      <div class="flex flex-nowrap justify-around">
+        <div>
+          <button @click="handleStock()"
+            :class="stock ? 'bg-gray-500 hover:bg-gray-400' : 'bg-primary hover:bg-primary-light'"
+            class="px-2 py-1 text-white text-sm font-medium rounded">
+            En stock
+          </button>
+        </div>
+        <div v-for="category in categories" :key="category.id">
+          <button @click="selectCategory(category.name)"
+            :class="categoryName === category.name ? 'bg-gray-500 hover:bg-gray-400' : 'bg-primary hover:bg-primary-light'"
+            class="px-2 py-1 text-white text-sm font-medium rounded">
+            {{ category.name }}
+          </button>
+        </div>
+      </div>
+      <h3 class="text-lg font-semibold mb-2">Résultats:</h3>
+      <ul class="space-y-4">
+        <li v-if="products.length > 0" v-for="product in products" :key="product.productId"
+          :class="product.stock === 0 ? 'bg-gray-200' : 'bg-white'"
+          class="p-4 border border-gray-300 rounded-lg cursor-pointer" @click="navigateToArticle(product.productId)">
+          <h4 class="text-xl font-bold">{{ product.name }}</h4>
+          <p class="text-gray-900">{{ product.price }} €</p>
         </li>
         <li v-else class="p-4 border border-gray-300 rounded-lg">
-            <h4 class="text-xl font-bold">Pas de résultats trouvés</h4>
+          <h4 class="text-xl font-bold">Pas de résultats trouvés</h4>
         </li>
-    </ul>
+      </ul>
     </div>
-</div>
+  </div>
 </template>
 
-<script setup lang="ts">
-import {useSearchBarManagement} from "@/composables/useSearchBarManagement.ts";
-import { ref, watchEffect } from "vue";
 
-const {getSearch} = useSearchBarManagement();
+
+<script setup lang="ts">
+import { useSearchBarManagement } from "@/composables/useSearchBarManagement.ts";
+import { useCategoryManagement } from "@/composables/useCategoryManagement.ts";
+import { ref, onMounted, watchEffect } from "vue";
+import { useRouter, useRoute } from "vue-router";
+
+const { getSearch } = useSearchBarManagement();
+const { getCategories } = useCategoryManagement();
+const { getCategories } = useCategoryManagement();
+const router = useRouter();
+const route = useRoute();
 
 interface Product {
-    productId: number;
-    name: string;
-    description: string;
-    price: number;
-    stock: number;
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  CategoryId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: any;
 }
 
-let searchTerm = '';
+interface Category {
+  id: string;
+  name: string;
+  createdAt: Date;
+  deletedAt: any;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  createdAt: Date;
+  deletedAt: any;
+}
+
+const searchTerm = ref<string>('');
+const categoryName = ref<string>('');
+const stock = ref<boolean>(false);
+const categoryName = ref<string>('');
+const stock = ref<boolean>(false);
 const products = ref<Product[]>([]);
+const categories = ref<Category[]>([]);
+const categories = ref<Category[]>([]);
 const open = ref(false);
 const searchContainer = ref<HTMLElement | null>(null);
 
-const navigateToArticle = (id :number) => {
-  window.location.href = `/article/${id}`;
+const navigateToProduct = (id: number) => {
+  window.location.href = `/product/${id}`;
 };
 
-function performSearch() {
-    getSearch(searchTerm)
+const performSearch = () => {
+  getSearch(searchTerm.value, categoryName.value, stock.value)
+  getSearch(searchTerm.value, categoryName.value, stock.value)
     .then(response => {
-        products.value = response.message as Product[];
-        open.value = true;
+      products.value = response.products as Product[];
+      open.value = true;
+      router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
     })
     .catch(error => {
-        console.error('Error fetching search results:', error);
+      console.error('Error fetching search results:', error);
     });
 };
+
+const handleStock = () => {
+  stock.value = !stock.value;
+  performSearch();
+}
+
+const selectCategory = (name: string) => {
+  if (categoryName.value === name) {
+    categoryName.value = '';
+  } else {
+    categoryName.value = name;
+  }
+  performSearch();
+}
+
+const getAllCategories = () => {
+  getCategories()
+    .then(res => {
+      categories.value = res.categories
+
+    })
+    .catch(error => {
+      console.error('Error fetching search results:', error);
+    });
+}
+
+const handleStock = () => {
+  stock.value = !stock.value;
+  performSearch();
+}
+
+const selectCategory = (name: string) => {
+  if (categoryName.value === name) {
+    categoryName.value = '';
+  } else {
+    categoryName.value = name;
+  }
+  performSearch();
+}
+
+const getAllCategories = () => {
+  getCategories()
+    .then(res => {
+      categories.value = res.categories
+
+    })
+    .catch(error => {
+      console.error('Error fetching search results:', error);
+    });
+}
+
+const clearSearch = () => {
+  searchTerm.value = '';
+  categoryName.value = '';
+  stock.value = false;
+  categoryName.value = '';
+  stock.value = false;
+  open.value = false;
+  router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+  performSearch();
+  router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+  performSearch();
+};
+
+onMounted(() => {
+  getAllCategories();
+  getAllCategories();
+  setTimeout(() => {
+    const search = route.query.search as string;
+    const category = route.query.category as string;
+    const stockQuery = route.query.stock;
+    let stockValue: boolean = false;
+    if (Array.isArray(stockQuery) && stockQuery.length > 0) {
+      stockValue = stockQuery.includes('true') || stockQuery.includes('1');
+    } else if (typeof stockQuery === 'string') {
+      stockValue = stockQuery === 'true' || stockQuery === '1';
+    }
+    searchTerm.value = search;
+    categoryName.value = category;
+    stock.value = stockValue;
+
+    router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+    performSearch();
+    const search = route.query.search as string;
+    const category = route.query.category as string;
+    const stockQuery = route.query.stock;
+    let stockValue: boolean = false;
+    if (Array.isArray(stockQuery) && stockQuery.length > 0) {
+      stockValue = stockQuery.includes('true') || stockQuery.includes('1');
+    } else if (typeof stockQuery === 'string') {
+      stockValue = stockQuery === 'true' || stockQuery === '1';
+    }
+    searchTerm.value = search;
+    categoryName.value = category;
+    stock.value = stockValue;
+
+    router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+    performSearch();
+  }, 100);
+});
 
 watchEffect(() => {
   const handleClickOutside = (event: MouseEvent) => {
@@ -88,3 +234,23 @@ watchEffect(() => {
   };
 });
 </script>
+</script>
+
+<style scoped>
+<style scoped>.relative {
+  position: relative;
+}
+
+button {
+  transition: background-color 0.3s;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:hover {
+  cursor: pointer;
+}
+</style>
+</style>

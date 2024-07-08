@@ -1,12 +1,17 @@
 <template>
+  <div class="pt-24">
+    <Form :schema="loginSchema" submit-text="Connexion" @submit="handleLogin" :show-reset="false" />
+  </div>
   <div class="py-24">
+    <h2 class="text-center font-medium">Vous n'avez pas de compte, inscrivez-vous !</h2>
     <Form ref="formRef" :schema="formSchema" @submit="handleSubmit" :disabled="formDisabled" :loading="formLoading" :show-reset="true"/>
   </div>
 </template>
+
 <script lang="ts" setup>
 import Form from "@/components/CustomForm.vue";
 import { FormField} from "@/dto/formField.dto.ts";
-import { useAuth} from "@/composables/useAuth";
+import { useAuth} from "@/composables/api/useAuth";
 import { ApiResponse} from "@/dto/apiResponse.dto.ts";
 import { z } from "zod";
 import { onUnmounted, Ref, ref  } from "vue";
@@ -175,7 +180,35 @@ onUnmounted(() => {
   controller.abort();
 });
 
-async function handleSubmit(schema: FormField<any>[]) {
+const loginSchema: FormSchema[] = [
+  {
+    label: "Email",
+    component: "input",
+    type: "email",
+    name: "email",
+    placeholder: "Entrez votre email",
+    schema: z.object({
+      email: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+        .regex(/[\w\.]{1,20}@[\w\-_]{1,20}\.[a-z]{2,3}/, { message: "Le format de l'e-mail est invalide" }),
+    }),
+    col: 0,
+  },
+  {
+    label: "Mot de passe",
+    component: "input",
+    type: "password",
+    name: "password",
+    placeholder: "Entrez votre mot de passe",
+    schema: z.object({
+      password: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+        .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
+        .max(50, { message: "Le mot de passe doit contenir au maximum 50 caractères" })
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+    }),
+    col: 0,
+  }]
+
+async function handleSubmit(schema: FormField<any>) {
   console.log("Form submitted");
   console.log(schema);
   // build param
@@ -190,10 +223,52 @@ async function handleSubmit(schema: FormField<any>[]) {
     await fetchRegister(param);
   }, 5000);
 }
+
 const fetchRegister = async (param: { [key: string]: string | number | Date }) => {
   await registerUser(param, signal, handleRegister);
 }
-function handleRegister(res: Response) {
+
+async function handleLogin(schema: FormSchema[]) {
+  console.log("Login submitted");
+  console.log(schema);
+  // build param
+  let param: { [key: string]: string | number | Date } = {};
+  schema.forEach((item) => {
+    if (item.value !== undefined)
+      param[item.name] = item.value;
+  });
+  await fetchLogin(param);
+}
+
+const fetchLogin = async (param: { [key: string]: string | number | Date }) => {
+  await loginUser(param, handleLoginResponse);
+}
+
+function handleLoginResponse(res: Promise<ApiResponse>) {
+  res.then((data: ApiResponse) => {
+    if (data.success) {
+      console.log("User logged in");
+      // TODO : popup success
+      // TODO : redirect to home
+    } else {
+      console.error(data.message);
+    }
+  });
+}
+
+function handleRegister(res: Promise<ApiResponse>) {
+  res.then((data: ApiResponse) => {
+    if (data.success) {
+      console.log("User registered");
+      // TODO : popup success
+      // TODO : redirect to login
+    } else {
+      console.error(data.message);
+    }
+  });
+}
+
+/* function handleRegister(res: Response) {
   if(res.status === 201) {
     console.log("User registered");
     formLoading.value = false;
@@ -220,5 +295,5 @@ function handleRegister(res: Response) {
   } else {
     console.error(res.statusText);
   }
-}
+} */
 </script>

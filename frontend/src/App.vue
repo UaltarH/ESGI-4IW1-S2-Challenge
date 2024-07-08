@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import MainMenu from "@/components/MainMenu.vue";
+import MainHeader from "@/components/MainHeader.vue";
 import MainFooter from "@/components/MainFooter.vue";
 import {onMounted} from "vue";
-import {useMenuItems} from "@/composables/useMenuItems";
 import {useDarkMode} from "@/composables/useDarkMode";
 
-const {menuItems} = useMenuItems();
 const { loadDarkModePreference } = useDarkMode();
 onMounted(() => {
   loadDarkModePreference();
@@ -13,11 +11,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <main-menu :menu-items="menuItems"></main-menu>
+  <MainHeader></MainHeader>
   <main class="mx-12 min-h-screen">
     <router-view></router-view>
   </main>
-  <main-footer></main-footer>
+  <MainFooter></MainFooter>
 </template>
 
 <style scoped>

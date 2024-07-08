@@ -83,35 +83,6 @@ header h1 {
   margin: 0;
 }
 
-article:not(.card) header {
-  @apply mb-12;
-}
-article:not(.card) h2 {
-  @apply text-3xl font-medium mb-6;
-}
-article:not(.card) h3 {
-  @apply text-2xl font-medium mb-6;
-}
-article:not(.card) p {
-  @apply mb-4 leading-loose tracking-wide;
-}
-article:not(.card) ul, article:not(.card) ol {
-  @apply list-outside pl-6 mb-6;
-}
-article:not(.card) ul {
-  @apply list-disc;
-}
-article:not(.card) ol {
-  @apply list-decimal;
-}
-article:not(.card) li {
-  @apply mb-2 leading-loose tracking-wide;
-}
-
-article.card .article-preview p {
-  @apply text-ellipsis overflow-hidden;
-}
-
 b {
   @apply font-semibold;
 }
@@ -158,16 +129,23 @@ b {
 }
 @layer components {
   .btn {
-    @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex;
+    @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex
+    ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-500;
   }
   .btn--primary {
     @apply bg-primary hover:bg-primary-light text-white dark:text-gray-900;
+  }
+  .btn--ghost {
+    @apply hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;
   }
   .btn--cancel {
     @apply text-gray-400 hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;
   }
   .btn--danger {
     @apply bg-danger hover:bg-danger-light text-white dark:text-gray-900;
+  }
+  .btn--disabled {
+    @apply bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed hover:bg-gray-200 hover:text-gray-400 dark:hover:text-gray-500 dark:hover:bg-gray-800;
   }
 }
 @layer components {
@@ -277,6 +255,77 @@ b {
 @layer components {
   .spinner {
     @apply absolute top-0 bottom-0 left-0 right-0 inset-0 flex items-center justify-center;
+  }
+}
+@layer components {
+  .cart-modal {
+    @apply fixed -right-[17px] top-0 bottom-0 min-h-screen h-full
+    overflow-y-scroll
+    w-full bg-white dark:bg-dark-blue lg:w-2/5 p-4 z-30
+    drop-shadow-2xl
+    flex flex-col gap-4 justify-between;
+  }
+  .cart-modal--mask {
+    @apply fixed top-0 left-0 right-0 bottom-0
+      w-screen h-screen bg-gray-950 bg-opacity-60 z-20;
+  }
+  .cart-modal--content {
+    @apply flex flex-col gap-4 border rounded-sm flex-1 dark:border-gray-700;
+  }
+  .cart-modal--content ul {
+    @apply [&>*:nth-child(odd)]:bg-white [&>*:nth-child(odd)]:dark:bg-dark-blue [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(even)]:dark:bg-dark-blue-dark;
+  }
+  .cart-modal--item {
+    @apply grid grid-cols-3 p-4 w-full;
+  }
+  .cart-modal--item-name {
+    @apply text-xl font-bold;
+  }
+  .cart-modal--item-prices {
+    @apply flex flex-col justify-start items-start;
+  }
+  .cart-modal--item-price {
+    @apply flex justify-between items-start w-full;
+  }
+  .cart-modal--total {
+    @apply flex flex-col gap-4 p-4 border rounded-sm dark:border-gray-700;
+  }
+  .cart-modal--total h2 {
+    @apply text-xl font-bold;
+  }
+  .cart-modal--total-sub {
+    @apply flex justify-between items-center;
+  }
+  .cart-modal--total-vat {
+    @apply flex justify-between items-center;
+  }
+  .cart-modal--total-vat h2 {
+    @apply font-normal;
+  }
+  .cart-modal--total-total {
+    @apply flex justify-between items-center border-t pt-4 dark:border-gray-700;
+  }
+  .cart-modal--total-total h2 {
+    @apply text-2xl;
+  }
+  .cart-modal--total-total p {
+    @apply text-2xl font-bold;
+  }
+}
+@layer components {
+  .number-field {
+    @apply flex justify-between items-center gap-2
+    bg-white dark:bg-dark-blue dark:border-gray-700
+    border rounded-sm px-2
+    focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 dark:focus-within:ring-offset-dark-blue;
+  }
+  .number-field input {
+    @apply text-center h-min w-12
+        bg-white dark:bg-dark-blue
+      focus:outline-0;
+  }
+  .number-field button {
+    @apply font-medium text-xl;
   }
 }
 

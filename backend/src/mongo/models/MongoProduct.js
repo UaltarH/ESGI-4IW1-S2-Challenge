@@ -8,6 +8,8 @@ const productSchema = new mongoose.Schema({
     stock: Number,
     categoryId: String,
     categoryName: String,
+    createdAt: Date,
+    updatedAt: Date,
     deleteAt: Date,
 });
 

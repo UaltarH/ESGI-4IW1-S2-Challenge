@@ -1,6 +1,8 @@
 const express = require("express");
+const userController = require("../controllers/userController");
 
 const indexRouter = express.Router();
-// indexRouter.get("/", HelloController.index);
+
+indexRouter.post("/login", userController.login);
 
 module.exports = indexRouter;

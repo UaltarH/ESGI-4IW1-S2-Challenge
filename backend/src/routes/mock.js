@@ -1,6 +1,6 @@
 const { Router } = require("express");
 require("../middlewares/validate.js");
-require("../schema/register.js");
+// require("../schema/register.js");
 require("../controllers/userController.js");
 const {MockController} = require("../controllers/mockController");
 

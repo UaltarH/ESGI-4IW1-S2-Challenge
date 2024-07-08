@@ -4,6 +4,7 @@ const { afterCreateHook, afterUpdateHook, afterDestroyHook } = require("../hooks
 
 module.exports = function (sequelize, DataTypes) {
   class User extends Model {
+    
     static associate(models) {
       User.hasMany(models.Order);
       User.hasOne(models.Cart);
@@ -85,6 +86,7 @@ module.exports = function (sequelize, DataTypes) {
   User.afterCreate(afterCreateHook);
   User.afterUpdate(afterUpdateHook);
   User.afterDestroy(afterDestroyHook);
+  User.addHooks();
 
   return User;
 };

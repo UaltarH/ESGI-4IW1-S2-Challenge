@@ -20,10 +20,12 @@
           <RouterLink to="/register" class="menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700" @click="closeMenu">Connexion</RouterLink>
           <dark-mode-button></dark-mode-button>
           <search-bar></search-bar>
+          <menu-cart @open-cart-modal="handleOpenCartModal"></menu-cart>
         </div>
       </div>
     </nav>
   </header>
+  <cart-modal :show="isCartModalOpen" @close="handleCloseCartModal"></cart-modal>
 </template>
 <script lang="ts" setup>
 import {ref} from "vue";
@@ -31,15 +33,26 @@ import DarkModeButton from "@/components/DarkModeButton.vue";
 import LogoWithText from "@/components/icons/logoWithText.vue";
 import Burger from "@/components/icons/burger.vue";
 import SearchBar from "@/components/SearchBar.vue";
+import CartModal from "@/components/CartModal.vue";
+import MenuCart from "@/components/MenuCart.vue";
 
 const props = defineProps(['menuItems']);
 const menuItems = ref(props.menuItems);
 
 const menuOpen = ref(false);
+const isCartModalOpen = ref(false);
+
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 }
 const closeMenu = () => {
   menuOpen.value = false;
+  handleCloseCartModal();
+}
+const handleOpenCartModal = () => {
+  isCartModalOpen.value = true;
+}
+const handleCloseCartModal = () => {
+  isCartModalOpen.value = false;
 }
 </script>

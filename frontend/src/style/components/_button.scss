@@ -1,8 +1,12 @@
 @layer components {
   .btn {
-    @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex;
+    @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex
+    ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-500;
     &--primary {
       @apply bg-primary hover:bg-primary-light text-white dark:text-gray-900;
+    }
+    &--ghost {
+      @apply hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;
     }
     &--cancel {
       @apply text-gray-400 hover:text-dark-blue-dark dark:text-gray-500 dark:hover:text-white hover:drop-shadow-2xl;

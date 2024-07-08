@@ -5,13 +5,15 @@
         v-model="searchTerm"
         @keyup.enter="performSearch"
         placeholder="Rechercher un produit..."
-        class="border border-gray-300 rounded-l px-4 py-2 w-200 ring-1 ring-gray-300"
+        class="border border-gray-300 rounded-l px-4 py-2 ring-1 ring-gray-300"
     />
     <button
         @click="performSearch"
         class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300"
     >
-        Rechercher
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </button>
     </div>
 

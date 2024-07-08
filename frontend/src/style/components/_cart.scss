@@ -1,0 +1,61 @@
+@layer components {
+  .cart-modal {
+    @apply fixed -right-[17px] top-0 bottom-0 min-h-screen h-full
+    overflow-y-scroll
+    w-full bg-white dark:bg-dark-blue lg:w-2/5 p-4 z-30
+    drop-shadow-2xl
+    flex flex-col gap-4 justify-between;
+
+    &--mask {
+      @apply fixed top-0 left-0 right-0 bottom-0
+      w-screen h-screen bg-gray-950 bg-opacity-60 z-20;
+    }
+
+  }
+  .cart-modal--content {
+    @apply flex flex-col gap-4 border rounded-sm flex-1 dark:border-gray-700;
+    ul {
+      @apply [&>*:nth-child(odd)]:bg-white [&>*:nth-child(odd)]:dark:bg-dark-blue [&>*:nth-child(even)]:bg-gray-100 [&>*:nth-child(even)]:dark:bg-dark-blue-dark
+    }
+  }
+  .cart-modal--item {
+    @apply grid grid-cols-3 p-4 w-full;
+    &-name {
+      @apply text-xl font-bold;
+    }
+    &-desc {
+    }
+    &-prices {
+        @apply flex flex-col justify-start items-start;
+    }
+    &-price {
+      @apply flex justify-between items-start w-full;
+    }
+    &-qty {
+    }
+  }
+  .cart-modal--total {
+    @apply flex flex-col gap-4 p-4 border rounded-sm dark:border-gray-700 ;
+    h2 {
+      @apply text-xl font-bold;
+    }
+    &-sub {
+      @apply flex justify-between items-center;
+    }
+    &-vat {
+      @apply flex justify-between items-center;
+      h2 {
+        @apply font-normal;
+      }
+    }
+    &-total {
+      @apply flex justify-between items-center border-t pt-4 dark:border-gray-700;
+      h2 {
+        @apply text-2xl;
+      }
+      p {
+        @apply text-2xl font-bold;
+      }
+    }
+  }
+}

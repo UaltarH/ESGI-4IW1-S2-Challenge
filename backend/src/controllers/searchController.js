@@ -1,5 +1,4 @@
-const { Product, Category } = require('../sequelize/models'); 
-const { Op } = require('sequelize');
+const MongoProduct = require('../mongo/models/MongoProduct');
 
 class SearchController {
     static async getProducts(req, res) {
@@ -8,33 +7,30 @@ class SearchController {
             const categoryName = req.query.category || '';
             const stock = req.query.stock === 'true' || false;
 
-            let query = {
-                [Op.or]: [
-                    { name: { [Op.iLike]: `%${searchTerm}%` } },
-                    { description: { [Op.iLike]: `%${searchTerm}%` } }
-                ],
+            console.log(categoryName);
+
+            let mongoQuery = {
+                $or: [
+                    { name: { $regex: searchTerm, $options: 'i' } },
+                    { description: { $regex: searchTerm, $options: 'i' } }
+                ]
             };
 
             if (categoryName) {
-                const category = await Category.findAll({ where: {name: categoryName} });
-                if (category && category.length === 1) {
-                    console.log(category);
-                    query = {
-                        ...query,
-                        CategoryId: category[0].dataValues.id
-                    }
-                }
-            }
-            if (stock) {
-                query = {
-                    ...query,
-                    stock: {
-                        [Op.gt]: 0
-                    }
+                mongoQuery = {
+                    ...mongoQuery,
+                    category: categoryName
                 };
             }
 
-            const records = await Product.findAll({ where: query });
+            if (stock) {
+                mongoQuery = {
+                    ...mongoQuery,
+                    stock: { $gt: 0 }
+                };
+            }
+
+            const records = await MongoProduct.find(mongoQuery);
             res.json({ products: records });
         } catch (error) {
             console.error('Erreur dans getProducts :', error);

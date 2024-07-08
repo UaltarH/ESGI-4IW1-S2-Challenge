@@ -53,11 +53,7 @@ class productController {
     }
 
     static async getSpecificMongoProduct(req, res) {
-        const id = req.params.id
-        if (!id || id.trim() === '') {
-            return res.status(400).json({ status: 'failed', message: 'Invalid Product ID' });
-        }
-        const product = await Product.findOne({ postgresId: id });
+        const product = await MongoProduct.findById(req.params.id);
         if (!product) {
             return res.status(404).json({ error: 'Product not found' });
         }

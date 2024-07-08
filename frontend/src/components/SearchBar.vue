@@ -58,7 +58,7 @@
           :key="product.id"
           :class="product.stock <= 0 ? 'bg-gray-200 text-gray-500' : 'bg-white'"
           class="p-4 border border-gray-300 rounded-lg cursor-pointer"
-          @click="navigateToProduct(product.id)"
+          @click="navigateToProduct(product._id)"
         >
           <h4 class="text-xl font-bold">{{ product.name }}</h4>
           <p>{{ formatPrice(product.price) }} €</p>

@@ -34,7 +34,7 @@
         <div>
           <button 
             @click="handleStock()"
-            :class="stock ? 'bg-gray-500 hover:bg-gray-400' : 'bg-primary hover:bg-primary-light'"
+            :class="stock ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
             class="px-2 py-1 text-white text-sm font-medium rounded"
           >
             En stock
@@ -43,7 +43,7 @@
         <div v-for="category in categories" :key="category.id">
           <button 
             @click="selectCategory(category.name)"
-            :class="categoryName === category.name ? 'bg-gray-500 hover:bg-gray-400' : 'bg-primary hover:bg-primary-light'"
+            :class="categoryName === category.name ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
             class="px-2 py-1 text-white text-sm font-medium rounded"
           >
             {{ category.name }}
@@ -56,12 +56,13 @@
           v-if="products.length > 0"
           v-for="product in products"
           :key="product.productId"
-          :class="product.stock === 0 ? 'bg-gray-200' : 'bg-white'"
+          :class="product.stock <= 0 ? 'bg-gray-200 text-gray-500' : 'bg-white'"
           class="p-4 border border-gray-300 rounded-lg cursor-pointer"
           @click="navigateToProduct(product.productId)"
         >
           <h4 class="text-xl font-bold">{{ product.name }}</h4>
-          <p class="text-gray-900">{{ product.price }} €</p>
+          <p>{{ product.price }} €</p>
+          <p v-if="product.stock <= 0">Plus de stock</p>
         </li>
         <li v-else class="p-4 border border-gray-300 rounded-lg">
           <h4 class="text-xl font-bold">Pas de résultats trouvés</h4>
@@ -163,8 +164,8 @@
   onMounted(() => {
     getAllCategories();
     setTimeout(() => {
-      const search = route.query.search as string;
-      const category = route.query.category as string;
+      const search = route.query.search as string || '';
+      const category = route.query.category as string || '';
       const stockQuery = route.query.stock; 
       let stockValue: boolean = false;
       if (Array.isArray(stockQuery) && stockQuery.length > 0) {

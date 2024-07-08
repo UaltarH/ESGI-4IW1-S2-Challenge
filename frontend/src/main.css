@@ -83,35 +83,6 @@ header h1 {
   margin: 0;
 }
 
-article:not(.card) header {
-  @apply mb-12;
-}
-article:not(.card) h2 {
-  @apply text-3xl font-medium mb-6;
-}
-article:not(.card) h3 {
-  @apply text-2xl font-medium mb-6;
-}
-article:not(.card) p {
-  @apply mb-4 leading-loose tracking-wide;
-}
-article:not(.card) ul, article:not(.card) ol {
-  @apply list-outside pl-6 mb-6;
-}
-article:not(.card) ul {
-  @apply list-disc;
-}
-article:not(.card) ol {
-  @apply list-decimal;
-}
-article:not(.card) li {
-  @apply mb-2 leading-loose tracking-wide;
-}
-
-article.card .article-preview p {
-  @apply text-ellipsis overflow-hidden;
-}
-
 b {
   @apply font-semibold;
 }
@@ -169,13 +140,15 @@ b {
   .btn--danger {
     @apply bg-danger hover:bg-danger-light text-white dark:text-gray-900;
   }
+  .btn--disabled {
+    @apply bg-gray-200 text-gray-400 dark:bg-gray-800 dark:text-gray-500 cursor-not-allowed hover:bg-gray-200 hover:text-gray-400 dark:hover:text-gray-500 dark:hover:bg-gray-800;
+  }
 }
 @layer components {
   .menu-link {
     @apply font-medium hover:text-secondary-light dark:hover:text-dark-blue;
   }
   .menu-item {
-    @apply flex flex-col lg:flex-row justify-center items-center min-h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
     @apply flex flex-col lg:flex-row justify-center items-center min-h-12 text-center min-w-24 bg-primary hover:bg-primary-light;
   }
   .menu-item .menu-subitem {

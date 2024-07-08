@@ -21,7 +21,6 @@ class productController {
     }
 
     static async getProduct(req, res) {
-        console.log("passage dans getProduct");
         const { data, error } = await crudService.findByPk(Product, req.params.id);
         if (error) {
             return res.status(404).json({ error: error.message });

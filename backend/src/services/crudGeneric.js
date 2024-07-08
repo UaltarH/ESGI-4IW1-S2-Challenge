@@ -16,6 +16,19 @@ const findAll = async (Model, query) => {
     }
 };
 
+const findOne = async (Model, query) => {
+    try {
+        const record = await Model.findOne({ where: query });
+        if (record) {
+            return { data: record, error: null };
+        } else {
+            return { data: null, error: new Error('Record not found') };
+        }
+    } catch (error) {
+        return { data: null, error };
+    }
+};
+
 const findByPk = async (Model, id) => {
     try {
         const record = await Model.findByPk(id);
@@ -66,4 +79,5 @@ module.exports = {
     findByPk,
     update,
     destroy,
+    findOne,
 };

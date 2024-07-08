@@ -46,7 +46,7 @@
         <li
           v-if="products.length > 0"
           v-for="product in products"
-          :key="product.id"
+          :key="product._id"
           :class="product.stock <= 0 ? 'bg-gray-200 text-gray-500' : 'bg-white'"
           class="p-4 border border-gray-300 rounded-lg cursor-pointer"
           @click="navigateToProduct(product._id)"
@@ -70,23 +70,13 @@
   import { useCategoryManagement } from "@/composables/api/useCategoryManagement.ts";
   import { ref, onMounted, watchEffect } from "vue";
   import { useRouter, useRoute } from "vue-router";
+  import { mongoProduct } from "@/dto/MongoProduct.dto";
   
   const { getSearch } = useSearchBarManagement();
   const { getCategories } = useCategoryManagement();
   const router = useRouter();
   const route = useRoute();
-  
-  interface Product {
-    id: string;
-    name: string;
-    description: string;
-    price: number;
-    stock: number;
-    CategoryId: string;
-    createdAt: Date;
-    updatedAt: Date;
-    deletedAt: any;
-  }
+
   
   interface Category {
     id: string;
@@ -98,12 +88,12 @@
   const searchTerm = ref<string>('');
   const categoryName = ref<string>('');
   const stock = ref<boolean>(false);
-  const products = ref<Product[]>([]);
+  const products = ref<mongoProduct[]>([]);
   const categories = ref<Category[]>([]);
   const open = ref(false);
   const searchContainer = ref<HTMLElement | null>(null);
   
-  const navigateToProduct = (id: number) => {
+  const navigateToProduct = (id: string) => {
     window.location.href = `/product/${id}`;
   };
 
@@ -114,8 +104,8 @@
   const performSearch = () => {
     getSearch(searchTerm.value, categoryName.value, stock.value)
       .then(response => {
-        products.value = response.products as Product[];
-        router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+        products.value = response.products as mongoProduct[];
+        router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });        
       })
       .catch(error => {
         console.error('Error fetching search results:', error);
@@ -139,8 +129,7 @@ const selectCategory = (name: string) => {
   const getAllCategories = () => {
     getCategories()
       .then(res => {
-        categories.value = res.categories
-        
+        categories.value = res.categories        
       })
       .catch(error => {
         console.error('Error fetching search results:', error);
@@ -190,10 +179,10 @@ watchEffect(() => {
   };
 });
 </script>
-</script>
 
 <style scoped>
-<style scoped>.relative {
+
+.relative {
   position: relative;
 }
 
@@ -208,5 +197,4 @@ button:focus {
 button:hover {
   cursor: pointer;
 }
-</style>
 </style>

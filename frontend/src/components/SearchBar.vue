@@ -61,7 +61,7 @@
           @click="navigateToProduct(product.id)"
         >
           <h4 class="text-xl font-bold">{{ product.name }}</h4>
-          <p>{{ product.price }} €</p>
+          <p>{{ formatPrice(product.price) }} €</p>
           <p v-if="product.stock <= 0">Plus de stock</p>
         </li>
         <li v-else class="p-4 border border-gray-300 rounded-lg">
@@ -115,6 +115,10 @@
   const navigateToProduct = (id: number) => {
     window.location.href = `/product/${id}`;
   };
+
+  const formatPrice = (price: any) => {
+      return price.toFixed(2);
+  }
   
   const performSearch = () => {
     getSearch(searchTerm.value, categoryName.value, stock.value)

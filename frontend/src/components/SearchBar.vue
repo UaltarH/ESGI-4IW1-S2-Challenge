@@ -30,12 +30,12 @@
       v-if="open"
       class="mt-4 absolute top-full left-0 right-0 bg-white shadow-lg border border-gray-300 rounded-lg z-10 p-4 max-h-96 overflow-y-auto"
     >
-      <div class="flex flex-nowrap justify-around">
+      <div class="flex flex-wrap justify-around">
         <div>
           <button 
             @click="handleStock()"
             :class="stock ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
-            class="px-2 py-1 text-white text-sm font-medium rounded"
+            class="px-2 py-1 mt-1 text-white text-sm font-medium rounded"
           >
             En stock
           </button>
@@ -44,7 +44,7 @@
           <button 
             @click="selectCategory(category.name)"
             :class="categoryName === category.name ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
-            class="px-2 py-1 text-white text-sm font-medium rounded"
+            class="px-2 py-1 mt-1 text-white text-sm font-medium rounded"
           >
             {{ category.name }}
           </button>

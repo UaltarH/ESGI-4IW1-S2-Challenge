@@ -7,8 +7,6 @@ class SearchController {
             const categoryName = req.query.category || '';
             const stock = req.query.stock === 'true' || false;
 
-            console.log(categoryName);
-
             let mongoQuery = {
                 $or: [
                     { name: { $regex: searchTerm, $options: 'i' } },

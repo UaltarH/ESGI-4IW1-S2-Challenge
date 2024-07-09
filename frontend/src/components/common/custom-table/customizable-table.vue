@@ -280,17 +280,13 @@ function onDeleteAllItems() {
 </script>
 
 <template>
-  <div class="w-full">
-    <table class="border-collapse w-full">
+  <div class="w-full overflow-x-auto">
+    <table class="border-collapse w-full min-w-full">
       <thead>
         <tr>
           <th class="border border-solid border-black p-2">
             <select v-model="itemsPerPage" @change="changeItemsPerPage">
-              <option
-                v-for="number in numberOfItemsPerPage"
-                :key="number"
-                :value="number"
-              >
+              <option v-for="number in numberOfItemsPerPage" :key="number" :value="number">
                 {{ number }}
               </option>
             </select>
@@ -306,9 +302,7 @@ function onDeleteAllItems() {
                 <span
                   v-if="col.sort"
                   class="cursor-pointer"
-                  @click="
-                    sortData(col.key, sortDirection == 'asc' ? 'desc' : 'asc')
-                  "
+                  @click="sortData(col.key, sortDirection == 'asc' ? 'desc' : 'asc')"
                 >
                   <ion-icon
                     name="caret-down-outline"
@@ -343,10 +337,7 @@ function onDeleteAllItems() {
               />
             </div>
           </th>
-          <th
-            v-if="actions.edit || actions.delete"
-            class="min-w-fit p-2 text-center border border-solid border-black"
-          >
+          <th v-if="actions.edit || actions.delete" class="min-w-fit p-2 text-center border border-solid border-black">
             Actions
           </th>
         </tr>
@@ -354,24 +345,13 @@ function onDeleteAllItems() {
       <tbody>
         <tr v-for="item in paginatedData" :key="item.name">
           <td class="w-[6%] p-2 text-center border border-solid border-black">
-            <input
-              type="checkbox"
-              v-model="item.isSelected"
-              @change="toggleSelection(item)"
-            />
+            <input type="checkbox" v-model="item.isSelected" @change="toggleSelection(item)" />
           </td>
-          <td
-            v-for="col in columns"
-            :key="col.key"
-            class="p-2 text-left border border-solid border-black"
-          >
+          <td v-for="col in columns" :key="col.key" class="p-2 text-left border border-solid border-black">
             {{ formatValue(item[col.key], col.typeData) }}
           </td>
-          <td
-            v-if="actions.edit || actions.delete"
-            class="p-2 border border-solid border-black"
-          >
-            <div class="flex flex-row justify-around">
+          <td v-if="actions.edit || actions.delete" class="p-2 border border-solid border-black">
+            <div class="flex flex-col lg:flex-row lg:justify-around">
               <button
                 v-if="actions.visualize"
                 @click="onVisualize(item)"
@@ -379,7 +359,6 @@ function onDeleteAllItems() {
               >
                 <p>Visualiser</p>
               </button>
-
               <button
                 v-if="actions.edit"
                 @click="onEdit(item)"
@@ -401,7 +380,7 @@ function onDeleteAllItems() {
       <tfoot>
         <tr>
           <td :colspan="columns.length + 2">
-            <div class="w-full flex flex-row justify-between items-center">
+            <div class="w-full flex flex-col lg:flex-row lg:justify-between items-center">
               <div class="flex flex-col items-start">
                 <button
                   @click="onDeleteMultipleItems"
@@ -413,7 +392,6 @@ function onDeleteAllItems() {
                 >
                   Supprimer les éléments selectionnés
                 </button>
-
                 <button
                   @click="exportToCSV(selectedItems, columns)"
                   class="rounded p-2 mt-2"
@@ -425,15 +403,9 @@ function onDeleteAllItems() {
                   Exporter les éléments selectionnés en CSV
                 </button>
               </div>
-
-              <div>
-                <PaginationTable
-                  :page="pageInfo"
-                  @emitNextPage="nextPage"
-                  @emitPreviousPage="previousPage"
-                />
+              <div class="mt-4 lg:mt-0">
+                <PaginationTable :page="pageInfo" @emitNextPage="nextPage" @emitPreviousPage="previousPage" />
               </div>
-
               <div class="flex flex-col items-end">
                 <button
                   @click="onDeleteAllItems"
@@ -445,7 +417,6 @@ function onDeleteAllItems() {
                 >
                   Supprimer tous les éléments
                 </button>
-
                 <button
                   @click="exportToCSV(paginatedData, columns)"
                   class="rounded p-2 mt-2"

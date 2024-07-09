@@ -7,7 +7,7 @@ export const useUserManagement = () => {
     }
 
     const getUser = async (id: number, handler:Function) => {
-        return await fetch(baseUrl + Api.getUser + `/${id}`).then(res => handler(res.json()));
+        return await fetch(baseUrl + Api.getUser + id).then(res => handler(res.json()));
     }
 
     const deleteUser = async (id: number) => {

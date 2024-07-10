@@ -45,7 +45,19 @@ class productController {
     }
 
     static async getMongoProducts(req, res) {
-        const products = await MongoProduct.find();
+        const limit = parseInt(req.query.limit) || 0;
+        const skip = parseInt(req.query.skip) || 0;
+        const maxPrice = parseFloat(req.query.maxPrice);
+        const categories = req.query.categories ? req.query.categories.split(',') : [];
+        const filter = {};
+        if (!isNaN(maxPrice)) {
+            filter.price = { $lte: maxPrice };
+        }
+        if (categories.length > 0) {
+            filter.categoryName = { $in: categories };
+        }
+
+        const products = await MongoProduct.find(filter).limit(limit).skip(skip);
         if (!products) {
             return res.status(404).json({ error: 'Products not found' });
         }

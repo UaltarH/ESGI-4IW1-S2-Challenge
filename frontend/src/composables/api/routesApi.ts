@@ -1,7 +1,6 @@
 export const Api = {
   deleteUser: "/user/delete",
-  getUsers: "/users/all",
-  getUser: "/users/byId",
+  user: "/users/",
   getRoles: "/users/roles",
   register: "/register",
   login: "/login",

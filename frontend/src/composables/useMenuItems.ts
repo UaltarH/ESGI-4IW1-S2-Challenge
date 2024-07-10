@@ -62,5 +62,17 @@ export const useMenuItems = () => {
     },
   ]);
 
-  return { menuItems };
+  const adminItems = menuItems.filter(item => 
+    item.access === "admin" 
+  );
+
+  adminItems.forEach(item => {
+    if (item.children) {
+      item.children = item.children.filter(child => 
+        child.access === "admin"
+      );
+    }
+  });
+
+  return { menuItems, adminItems };
 };

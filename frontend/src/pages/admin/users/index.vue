@@ -14,32 +14,15 @@
     </div>
 </template>
 <script lang="ts" setup>
-import { reactive } from "vue";
+import { reactive, Ref } from "vue";
 import CustomizableTable from "@/components/common/custom-table/customizable-table.vue";
 import {useUserManagement} from "@/composables/api/useUserManagement";
 import { ref } from "vue";
+import { User } from "@/dto/user.dto";
 
 const { getUsers } = useUserManagement();
 
-interface User {
-    address: string,
-    birthdate: Date,
-    city: string,
-    country: string,
-    createdAt: Date,
-    deletedAt: Date,
-    email: string,
-    firstname: string,
-    id: string,
-    lastname: string,
-    password: string,
-    phone: string,
-    role: string,
-    updatedAt: Date,
-    zipcode: number,
-}
-
-const datas: [] = ref<User[]>([]);
+const datas: Ref<User[]> = ref<User[]>([]);
 getUsers((datas: []) => datas).then(res => datas.value = res.users);
 
 const data = reactive({

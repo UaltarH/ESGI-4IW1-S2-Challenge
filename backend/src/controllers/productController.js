@@ -45,24 +45,39 @@ class productController {
     }
 
     static async getMongoProducts(req, res) {
-        const limit = parseInt(req.query.limit) || 0;
+        const limit = parseInt(req.query.limit) || 9;
         const skip = parseInt(req.query.skip) || 0;
         const maxPrice = parseFloat(req.query.maxPrice);
         const categories = req.query.categories ? req.query.categories.split(',') : [];
+
         const filter = {};
+
         if (!isNaN(maxPrice)) {
             filter.price = { $lte: maxPrice };
         }
+
         if (categories.length > 0) {
-            filter.categoryName = { $in: categories };
+            filter.categoryId = { $in: categories };
         }
 
-        const products = await MongoProduct.find(filter).limit(limit).skip(skip);
-        if (!products) {
-            return res.status(404).json({ error: 'Products not found' });
+        try {
+            const products = await MongoProduct.find(filter).limit(limit).skip(skip);
+            const maxPriceProduct = await MongoProduct.findOne().sort({ price: -1 });
+            const minPriceProduct = await MongoProduct.findOne().sort({ price: 1 });
+            let count = await MongoProduct.countDocuments(filter);
+
+            res.json({
+                products: products,
+                totalCount: count,
+                maxPrice: maxPriceProduct.price,
+                minPrice: minPriceProduct.price
+            });
+        } catch (error) {
+            console.error('Error fetching products:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
-        res.json({ products: products });
     }
+
 
     static async getSpecificMongoProduct(req, res) {
         const product = await MongoProduct.findById(req.params.id);

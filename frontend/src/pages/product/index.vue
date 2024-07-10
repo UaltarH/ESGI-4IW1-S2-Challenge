@@ -50,7 +50,7 @@ watch(() => route.params.id, async () => {
 });
 const fetchProduct = async () => {
   try {
-    let productId = route.params.id as unknown as number;
+    let productId = route.params.id as unknown as string;
     const response = await ProductService().getSpecificMongoProduct(productId);
     product.value = response.product;    
   } catch (error) {

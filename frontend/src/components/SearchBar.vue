@@ -67,13 +67,13 @@
 
 <script setup lang="ts">
   import { useSearchBarManagement } from "@/composables/api/useSearchBarManagement.ts";
-  import { useCategoryManagement } from "@/composables/api/useCategoryManagement.ts";
+  import { CategoriesService } from "@/composables/api/categories.service.ts";
   import { ref, onMounted, watchEffect } from "vue";
   import { useRouter, useRoute } from "vue-router";
   import { mongoProduct } from "@/dto/MongoProduct.dto";
   
   const { getSearch } = useSearchBarManagement();
-  const { getCategories } = useCategoryManagement();
+  const { getCategories } = CategoriesService();
   const router = useRouter();
   const route = useRoute();
 

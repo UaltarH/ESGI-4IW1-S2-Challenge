@@ -2,7 +2,7 @@ export const Api = {
   deleteUser: "/user/delete",
   user: "/users/",
   getRoles: "/users/roles",
-  register: "/register",
+  register: "/users",
   login: "/login",
   search: "/search",
   category: "/categories",

@@ -15,7 +15,7 @@
     @apply lg:top-12 block lg:pt-4;
   }
   ul.menu-submenu {
-    @apply hidden transition-all duration-300 min-w-full;
+    @apply hidden transition-all duration-300 min-w-full z-20;
   }
   .parent-item {
     @apply p-0;

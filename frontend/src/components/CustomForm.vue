@@ -1,5 +1,4 @@
 <template>
-<!--   TODO add ref to form-->
   <component-wrapper :loading="props.loading">
     <form ref="formRef" class="form" @submit.prevent>
       <form-item

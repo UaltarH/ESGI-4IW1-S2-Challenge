@@ -3,6 +3,7 @@ import MainHeader from "@/components/MainHeader.vue";
 import MainFooter from "@/components/MainFooter.vue";
 import {onMounted} from "vue";
 import {useDarkMode} from "@/composables/useDarkMode";
+import Notification from "@/components/ui/notification/Notification.vue";
 
 const { loadDarkModePreference } = useDarkMode();
 onMounted(() => {
@@ -12,10 +13,11 @@ onMounted(() => {
 
 <template>
   <MainHeader></MainHeader>
-  <main class="mx-12 min-h-screen">
+  <main class="min-h-screen">
     <router-view></router-view>
   </main>
   <MainFooter></MainFooter>
+  <Notification/>
 </template>
 
 <style scoped>

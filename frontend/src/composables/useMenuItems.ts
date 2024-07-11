@@ -62,17 +62,31 @@ export const useMenuItems = () => {
     },
   ]);
 
-  const adminItems = menuItems.filter(item => 
-    item.access === "admin" 
+  const adminItems = menuItems.filter(item =>
+    item.access === "admin"
   );
 
   adminItems.forEach(item => {
     if (item.children) {
-      item.children = item.children.filter(child => 
+      item.children = item.children.filter(child =>
         child.access === "admin"
       );
     }
   });
 
-  return { menuItems, adminItems };
+  const profileMenuItems = reactive([
+    {
+      title: "Profil",
+      icon: "",
+      route: "/profile",
+      access: "all",
+    },
+    {
+      title: "Déconnexion",
+      icon: "",
+      route: "/logout",
+      access: "all",
+    },
+  ]);
+  return { menuItems, profileMenuItems, adminItems };
 };

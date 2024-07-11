@@ -9,20 +9,25 @@
       <div class="hidden lg:flex h-full">
         <Menu></Menu>        
       </div>
-      <div class="flex justify-between items-center">
-        <dark-mode-button class="hidden lg:block mr-4"></dark-mode-button>
-        <search-bar class="hidden lg:block"></search-bar>
-        <RouterLink
-          to="/register"
-          class="hidden lg:block menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 mr-3"
-          @click="closeMenu"
-        >
-          Connexion
-        </RouterLink>
+      <nav class="mr-3 flex items-center">
+        <ul class="lg:flex justify-between items-center gap-0.5 h-full hidden">
+          <li class="menu-item relative parent-item hover:!bg-transparent">
+            <dark-mode-button class="hidden lg:block"></dark-mode-button>
+          </li>
+          <li class="menu-item parent-item min-w-16">
+            <search-bar></search-bar>
+          </li>
+          <li class="menu-item relative parent-item min-w-16">
+            <profile-menu @close="closeMenu"/>
+          </li>
+          <li class="menu-item parent-item min-w-16">
+            <menu-cart @open-cart-modal="handleOpenCartModal" class="hidden lg:block menu-link hover:bg-primary-light px-2 py-2.5"></menu-cart>
+          </li>
+        </ul>
         <button type="button" class="lg:hidden mr-3" id="burger" @click="toggleMenu">
           <burger class="fill-dark-blue hover:fill-white" aria-label="Openu menu"></burger>
         </button>
-      </div>
+      </nav>
     </nav>
 
     <!-- Mobile header -->
@@ -30,17 +35,22 @@
       <div class="fixed right-0 top-0 w-72 h-full bg-white dark:bg-gray-800 shadow-md z-50" @click.stop>
         <div class="flex flex-col items-center">
           <div class="flex justify-around items-center h-[60px] w-full">
-            <RouterLink to="/register" class="menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700" @click="closeMenu">
-              Connexion
+            <RouterLink to="/auth" class="menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5" @click="closeMenu">
+              <svg width="24" height="24" viewBox="0 0 24 24" class="fill-dark-blue" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="6" r="4"/>
+                <path d="M20 17.5C20 19.9853 20 22 12 22C4 22 4 19.9853 4 17.5C4 15.0147 7.58172 13 12 13C16.4183 13 20 15.0147 20 17.5Z"/>
+              </svg>
             </RouterLink>
+            <menu-cart @open-cart-modal="handleOpenCartModal"></menu-cart>
             <dark-mode-button></dark-mode-button>
           </div>
-          <search-bar class="w-[83%] mb-[3%]"></search-bar>  
+          <search-bar class="w-[83%] mb-[3%]"></search-bar>
           <MenuMobile></MenuMobile>
         </div>
       </div>
     </div>
   </header>
+  <cart-modal :show="isCartModalOpen" @close="handleCloseCartModal"></cart-modal>
 </template>
 <script lang="ts" setup>
 import { ref } from "vue";
@@ -50,12 +60,25 @@ import Burger from "@/components/icons/burger.vue";
 import SearchBar from "@/components/SearchBar.vue";
 import Menu from "@/components/Menu.vue";
 import MenuMobile from "@/components/MenuMobile.vue";
+import MenuCart from "@/components/MenuCart.vue";
+import CartModal from "@/components/CartModal.vue";
+import ProfileMenu from "@/components/ProfileMenu.vue";
 
 const menuOpen = ref(false);
+const isCartModalOpen = ref(false);
+
 const toggleMenu = () => {
   menuOpen.value = !menuOpen.value;
 };
 const closeMenu = () => {
   menuOpen.value = false;
+  handleCloseCartModal();
 };
+const handleOpenCartModal = () => {
+  isCartModalOpen.value = true;
+}
+const handleCloseCartModal = () => {
+  isCartModalOpen.value = false;
+}
+
 </script>

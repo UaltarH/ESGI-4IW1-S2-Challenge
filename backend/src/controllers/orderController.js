@@ -27,7 +27,8 @@ class orderController {
             };
             const paymentRes = await Payment.create(paymentData, { transaction });
 
-            const trackingNumber = await fetch("http://localhost:7000/shipping")
+            console.log("------------------------FETCHING------------------------");
+            const trackingNumber = await (await fetch("http://laposteapi:7000/shipping")).text()
             console.log(trackingNumber);
 
             const shippingData = {

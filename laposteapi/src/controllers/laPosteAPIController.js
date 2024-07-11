@@ -54,7 +54,7 @@ const isCorrect = (status) => {
 
 const shippingStatus = ["En attente d'expédition", 'En livraison', 'En attente', 'Problème de livraison']
 
-const trackingNumberCreation = ["40333870114531", "14804899007121", "39138761900988"]
+const trackingNumberCreation = [40333870114531, 14804899007121, 39138761900988]
 
 
 module.exports = { LaPosteAPIController };

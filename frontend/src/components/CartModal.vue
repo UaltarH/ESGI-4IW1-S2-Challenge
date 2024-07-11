@@ -73,6 +73,10 @@ function handleClose() {
   emits("close")
 }
 function handleQuantityChange(id: string, quantity: number) {
+  console.group('update quantity')
+  console.log("id : ", id);
+  console.log("quantity : ", quantity);
+  console.groupEnd();
   cart.updateQuantity(id, quantity);
 }
 function handleDeleteItem(item: CartItem) {

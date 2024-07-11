@@ -9,17 +9,7 @@ export const useCartStore = defineStore('cart', () =>{
     if(localStorage.getItem('cart')) {
       rawItems.value = JSON.parse(localStorage.getItem('cart') || '[]');
     }
-    return rawItems.value.reduce((acc, item) => {
-      const existingItem = acc.find((it) => it.name === item.name)
-
-      if (!existingItem) {
-        acc.push({ id: item.id, name: item.name, size: item.size, description: item.description, price: item.price, quantity: item.quantity })
-      } else {
-        existingItem.quantity++;
-      }
-
-      return acc;
-    }, [] as CartItem[])
+    return rawItems.value;
   });
   const cartTotal = computed(() => {
     return cartItems.value.reduce((acc, item) =>
@@ -33,7 +23,11 @@ export const useCartStore = defineStore('cart', () =>{
     return (item.price * item.quantity).toFixed(2);
   }
   async function addToCart(item: CartItem) {
-    rawItems.value.push(item)
+    let existingItem = rawItems.value.find((it) => it.id === item.id)
+    if(existingItem) {
+      await updateQuantity(item.id, existingItem.quantity + item.quantity);
+    }
+    else rawItems.value.push(item);
     // TODO : decrement stock in mongoDB
   }
   async function updateQuantity(id: string, quantity: number) {
@@ -43,6 +37,9 @@ export const useCartStore = defineStore('cart', () =>{
       if(item.quantity <= 0) {
         await removeFromCart(id)
       }
+      // TODO : decrement stock in mongoDB
+    } else {
+      console.error('Item not found in cart');
     }
   }
   async function removeFromCart(id: string) {

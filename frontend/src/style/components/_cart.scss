@@ -1,14 +1,14 @@
 @layer components {
   .cart-modal {
-    @apply fixed -right-[17px] top-0 bottom-0 min-h-screen h-full
+    @apply fixed lg:-right-[17px] top-0 bottom-0 min-h-screen h-full
     overflow-y-scroll
-    w-full bg-white dark:bg-dark-blue lg:w-2/5 p-4 z-30
+    w-full bg-white dark:bg-dark-blue lg:w-2/5 p-4 z-50
     drop-shadow-2xl
     flex flex-col gap-4 justify-between;
 
     &--mask {
       @apply fixed top-0 left-0 right-0 bottom-0
-      w-screen h-screen bg-gray-950 bg-opacity-60 z-20;
+      w-screen h-screen bg-gray-950 bg-opacity-60 z-50;
     }
 
   }

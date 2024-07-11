@@ -12,6 +12,6 @@ userRouter.get("/users/:id", userController.getUser);
 userRouter.delete("/users/:id", userController.deleteUser);
 userRouter.put("/users/:id", validate(registerSchema), addRoleUser(), userController.replaceUser);
 userRouter.patch("/users/:id", validate(modifySchema), userController.modifyUsers);
-userRouter.post("/register", validate(registerSchema), addRoleUser(),userController.register);
+userRouter.post("/users", validate(registerSchema), addRoleUser(),userController.register);
     
 module.exports = userRouter;

@@ -61,6 +61,19 @@ export const useMenuItems = () => {
       ],
     },
   ]);
-
-  return { menuItems };
+  const profileMenuItems = reactive([
+    {
+      title: "Profil",
+      icon: "",
+      route: "/profile",
+      access: "all",
+    },
+    {
+      title: "Déconnexion",
+      icon: "",
+      route: "/logout",
+      access: "all",
+    },
+  ]);
+  return { menuItems, profileMenuItems };
 };

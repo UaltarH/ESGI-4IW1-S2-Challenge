@@ -11,14 +11,14 @@ export const useAuth = () => {
       body: JSON.stringify(data),
     }).then((res) => handler(res));
   };
-  const loginUser = async (data: any, handler: Function) => {
+  const loginUser = async (data: any) => {
     return await fetch(baseUrl + Api.login, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }).then((res) => handler(res.json()));
+    }).then((res) => res);
   };
   return { registerUser, loginUser };
 };

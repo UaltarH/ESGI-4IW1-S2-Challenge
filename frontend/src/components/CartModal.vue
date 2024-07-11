@@ -4,7 +4,7 @@
     <div class="cart-modal">
       <header class="flex justify-between items-center">
         <h2 class="text-2xl font-bold">Panier</h2>
-        <button type="button" @click="handleClose">X</button>
+        <button type="button" @click="handleClose" class="text-2xl">&times;</button>
       </header>
       <div class="cart-modal--content" :class="cart.cartItems.length === 0 ? 'items-center justify-center' : ''">
         <p v-if="cart.cartItems.length === 0" class="text-gray-400">Le panier est vide :'(</p>
@@ -47,7 +47,6 @@
       </div>
       <button class="btn btn--primary justify-center" type="submit" @click="handlePurchase" aria-label="commander">Commander</button>
       <button class="btn btn--ghost justify-center" type="button" @click="handlePurchase" aria-label="voir le panier">Voir le panier</button>
-      <button class="btn btn--cancel" type="button" @click="handleTestAdd">Test add</button>
     </div>
   </div>
 </template>
@@ -81,10 +80,6 @@ function handleDeleteItem(item: CartItem) {
 }
 function handlePurchase() {
 
-}
-function handleTestAdd() {
-  cart.addToCart({ id: '1', name: "Test", description: "description un peu longue quand même, voir un peu trop longue mdr on s'amuse 1", size: "XL", price: 100.99, quantity: 1 });
-  cart.addToCart({ id: '2', name: "Test2", description: "description 2", size: "L", price: 15, quantity: 5 });
 }
 function descriptionShortener(description: string) {
   return description.length > 50 ? description.slice(0, 50) + "..." : description;

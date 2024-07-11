@@ -34,6 +34,7 @@ export const useCartStore = defineStore('cart', () =>{
   }
   async function addToCart(item: CartItem) {
     rawItems.value.push(item)
+    // TODO : decrement stock in mongoDB
   }
   async function updateQuantity(id: string, quantity: number) {
     const item = rawItems.value.find((item) => item.id === id)
@@ -45,12 +46,12 @@ export const useCartStore = defineStore('cart', () =>{
     }
   }
   async function removeFromCart(id: string) {
-    rawItems.value.splice(rawItems.value.findIndex((item) => item.id === id), 1)
+    rawItems.value = rawItems.value.filter((item) => item.id !== id)
   }
   async function purchase() {
     const user = useUserStore();
 
-    if (!user.name) {
+    if (!user.id) {
       throw new Error('User not logged in')
     }
 
@@ -60,7 +61,7 @@ export const useCartStore = defineStore('cart', () =>{
       throw new Error('Cart is empty')
     }
 
-    console.log(`User ${user.name} purchased ${items.length} items for a total of ${ cartTotal}`)
+    console.log(`User ${user.id} purchased ${items.length} items for a total of ${ cartTotal}`)
     $reset();
   }
   function $reset() {

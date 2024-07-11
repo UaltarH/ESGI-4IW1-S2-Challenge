@@ -29,6 +29,10 @@ const orderSchema = new mongoose.Schema({
     },
     shipping: {
         shippingId: String,
+        status: {
+            type: String,
+            enum: ["En attente d'expédition", 'En livraison', 'En attente', 'Problème de livraison'],
+        },
         shippingMethod: {
             type: String,
             enum: ["standard", "express"],

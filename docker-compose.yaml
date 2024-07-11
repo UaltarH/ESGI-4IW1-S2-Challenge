@@ -13,6 +13,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     working_dir: /SampleCollections
+    networks:
+      - default_network
 
   node:
     container_name: ${NODE_CONTAINER_NAME:-app_node}
@@ -30,6 +32,8 @@ services:
     working_dir: /home/node/app
     entrypoint: sh -c
     command: '"npm install && npm run dev"'
+    networks:
+      - default_network
     depends_on:
       - postgres
       - mongo
@@ -45,6 +49,8 @@ services:
    volumes:
       - .:/home/node/app
    entrypoint: sh -c
+   networks:
+      - default_network
 
   postgres:
     container_name: ${POSTGRES_CONTAINER_NAME:-app_postgres}
@@ -55,15 +61,39 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - default_network
     
   adminer:
     container_name: ${ADMINER_CONTAINER_NAME:-app_adminer}
     image: adminer
     ports:
       - 8080:8080
+    networks:
+      - default_network
     depends_on:
       - postgres
+
+  laposteapi:
+    container_name: ${LAPOSTEAPI_CONTAINER_NAME:-app_laposteapi}
+    image: node:22.3-alpine3.20
+    environment:
+      PORT: 7000
+    ports:
+      - 7000:7000
+    volumes:
+      - ./laposteapi:/home/node/app
+    working_dir: /home/node/app
+    entrypoint: sh -c
+    command: '"npm install && npm run dev"'
+    networks:
+      - default_network
+    depends_on:
+      - postgres
+      - mongo
 
 volumes:
   mongo-data: {}
   postgres-data: {}
+networks:
+  default_network: {}

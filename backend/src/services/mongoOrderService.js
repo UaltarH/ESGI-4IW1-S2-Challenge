@@ -34,6 +34,7 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
             },
             shipping: {
                 shippingId: shippingRes.id,
+                status: shippingRes.status,
                 shippingMethod: shippingRes.shippingMethod,
                 trackingNumber: shippingRes.trackingNumber,
                 address: shippingRes.address,

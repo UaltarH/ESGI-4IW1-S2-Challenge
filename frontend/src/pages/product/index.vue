@@ -68,7 +68,7 @@ const imageUrls = [
 
 const fetchProduct = async () => {
   try {
-    let productId = route.params.id as unknown as number;
+    let productId = route.params.id as unknown as string;
     const response = await ProductService().getSpecificMongoProduct(productId);
     product.value = response.product;
     product.value.price = parseFloat(product.value.price.toFixed(2));

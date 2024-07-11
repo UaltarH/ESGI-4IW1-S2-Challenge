@@ -61,6 +61,19 @@ export const useMenuItems = () => {
       ],
     },
   ]);
+
+  const adminItems = menuItems.filter(item =>
+    item.access === "admin"
+  );
+
+  adminItems.forEach(item => {
+    if (item.children) {
+      item.children = item.children.filter(child =>
+        child.access === "admin"
+      );
+    }
+  });
+
   const profileMenuItems = reactive([
     {
       title: "Profil",
@@ -75,5 +88,5 @@ export const useMenuItems = () => {
       access: "all",
     },
   ]);
-  return { menuItems, profileMenuItems };
+  return { menuItems, profileMenuItems, adminItems };
 };

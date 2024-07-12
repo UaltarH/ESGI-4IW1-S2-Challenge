@@ -33,7 +33,7 @@ class userController {
     if (error) {
       return res.status(404);
     }
-    res.sendStatus(204);
+    res.status(204).json({ user: data });
   }
 
   static async replaceUser(req, res) {

@@ -21,9 +21,9 @@ export const useUserManagement = () => {
     }
 
     const deleteUser = async (id: number) => {
-        return await fetch(baseUrl + Api.deleteUser + `/${id}`, {
+        return await fetch(baseUrl + Api.user + id, {
             method: 'DELETE',
-        }).then(res => res.json());
+        }).then(res => res);
     }
 
     const getRoles = async (handler:Function) => {

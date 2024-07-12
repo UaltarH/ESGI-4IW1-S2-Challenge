@@ -26,7 +26,7 @@
           <p v-if="item.error" class="text-danger pl-2 text-xs">{{ item.error }}</p>
         </template>
       </form-item>
-      <footer class="w-full flex justify-center gap-4">
+      <footer class="w-full flex justify-center gap-4 mt-4">
         <button type="submit" class="btn btn--primary" :class="props.disabled ? 'btn--disabled' : ''" @click="handleSubmit" :disabled="props.disabled">{{ submitText }}</button>
         <button v-if="showReset" type="reset" class="btn btn--danger" :class="props.disabled ? 'btn--disabled' : ''" @click="handleReset" :disabled="props.disabled">Reset</button>
         <span v-if="props.loading">Veuillez patienter</span>

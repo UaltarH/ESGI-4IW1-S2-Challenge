@@ -168,7 +168,7 @@ const formSchema = ref<FormField<any>[]>([
           .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" })
           .optional(),
     }),
-    col: 0,
+    col: 1,
   },
 ]);
 const formLoading = ref(false);

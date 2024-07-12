@@ -11,8 +11,6 @@ export const useUserManagement = () => {
     }
 
     const updateUser = async (id: number, handler:Function, bodyValues: any) => {
-        console.log(bodyValues);
-        
         return await fetch(baseUrl + Api.user + id, {
             method: 'PATCH',
             headers: {

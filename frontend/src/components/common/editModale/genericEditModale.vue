@@ -47,7 +47,6 @@ const emits = defineEmits(['close', 'save']);
 
 const item = reactive({ ...props.model });
 
-// Optional: Watch for changes in props.model to update item reactively
 watch(() => props.model, (newVal) => {
     Object.assign(item, newVal);
 }, { deep: true });

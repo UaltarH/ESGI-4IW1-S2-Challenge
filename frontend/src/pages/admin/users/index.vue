@@ -50,7 +50,6 @@
   const selectedItem = ref<Record<string, any> | null>(null);
   
   function handleVisualize(item: any) {
-    console.log('Visualize item:', item);
     window.location.href = `/admin/users/${item.id}`;
   }
   

@@ -14,6 +14,11 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 allowNull: false,
             },
+            status: {
+                type: DataTypes.ENUM("En attente d'expédition", 'En livraison', 'En attente', 'Problème de livraison'),
+                allowNull: false,
+                defaultValue: 'En attente',
+            },
             shippingMethod: {
                 type: DataTypes.ENUM('standard', 'express'),
                 allowNull: false,

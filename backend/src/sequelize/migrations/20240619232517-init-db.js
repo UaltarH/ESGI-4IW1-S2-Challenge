@@ -162,6 +162,11 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "En attente",
+      },
       shippingMethod: {
         type: DataTypes.ENUM("standard", "express"),
         allowNull: false,

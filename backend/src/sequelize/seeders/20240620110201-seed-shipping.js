@@ -14,9 +14,10 @@ module.exports = {
 
       shippings.push({
         id: uuidv4(),
+        status: faker.helpers.arrayElement(["En attente d'expédition", 'En livraison', 'En attente', 'Problème de livraison']),
         OrderId: orderId,
         shippingMethod: faker.helpers.arrayElement(['standard', 'express']),
-        trackingNumber: faker.number.int({ min: 10000 }),
+        trackingNumber: faker.helpers.arrayElement(['40333870114531', '14804899007121', '39138761900988']),
         address: faker.location.streetAddress(),
         city: faker.location.city(),
         zipcode: Number(faker.location.zipCode("####")),

@@ -37,10 +37,7 @@ const afterUpdateHook = async (product, options) => {
 };
 
 const afterDestroyHook = async (product, options) => {
-    const mongoProduct = await MongoProduct.findOneAndUpdate(
-        { postgresId: product.id },
-        { deleteAt: new Date() }
-    );
+    const mongoProduct = await MongoProduct.findOneAndDelete({ postgresId: product.id });
 
     if (!mongoProduct) {
         console.error(`MongoProduct with postgresId ${product.id} not found`);

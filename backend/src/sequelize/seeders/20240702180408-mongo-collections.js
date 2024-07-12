@@ -1,6 +1,5 @@
 const { Product, Category, User, Order, Order_item, Payment, Shipping } = require('../models');
 const MongoProduct = require('../../mongo/models/MongoProduct');
-const MongoUser = require('../../mongo/models/MongoUser');
 const MongoOrder = require('../../mongo/models/MongoOrder');
 const mongoose = require('mongoose');
 const { createMongoOrder } = require('../../services/mongoOrderService')
@@ -33,26 +32,6 @@ module.exports = {
       });
     }
 
-    //user
-    const users = await User.findAll();
-
-    for (const user of users) {
-      await MongoUser.create({
-        postgresId: user.id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        address: user.address,
-        city: user.city,
-        zipcode: user.zipcode,
-        country: user.country,
-        phone: user.phone,
-        birthdate: user.birthdate,
-        role: user.role,
-        deleteAt: null,
-      });
-    }
-
     //orders
     const orders = await Order.findAll({
       include: [
@@ -79,7 +58,6 @@ module.exports = {
     console.log('Connected to MongoDB for migration rollback');
 
     await MongoProduct.deleteMany({});
-    await MongoUser.deleteMany({});
     await MongoOrder.deleteMany({});
     console.log('Migration rollback completed successfully');
   }

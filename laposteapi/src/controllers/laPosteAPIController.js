@@ -1,20 +1,6 @@
 const { useOrders } = require('../composables/useOrders');
 
 class LaPosteAPIController {
-    static async index(req, res) {
-        const trackingNumber = req.params.trackingNumber;
-        
-        const { getAllOrders } = useOrders();
-        try {
-            const orders = await getAllOrders(); 
-            console.log(orders);
-            res.json(orders); 
-        } catch (error) {
-            console.error('Error fetching orders:', error);
-            res.status(500).json({ error: "Failed to retrieve orders" }); 
-        }
-    }
-
     static async create(req, res) {
         try {
             const trackingNumber = trackingNumberCreation[Math.floor(Math.random() * 3)]

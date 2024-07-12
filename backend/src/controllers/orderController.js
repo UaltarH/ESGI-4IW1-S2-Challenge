@@ -27,9 +27,21 @@ class orderController {
             };
             const paymentRes = await Payment.create(paymentData, { transaction });
 
-            console.log("------------------------FETCHING------------------------");
-            const trackingNumber = await (await fetch("http://laposteapi:7000/shipping")).text()
-            console.log(trackingNumber);
+            const response = await fetch("http://laposteapi:7000/shipping", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    shippingMethod: shipping.shippingMethod,
+                    address: shipping.address,
+                    city: shipping.city,
+                    zipcode: shipping.zipcode,
+                    country: shipping.country
+                })
+            });
+            
+            const trackingNumber = await response.text();
 
             const shippingData = {
                 OrderId: order.id,
@@ -40,7 +52,6 @@ class orderController {
                 city: shipping.city,
                 zipcode: shipping.zipcode,
                 country: shipping.country,
-                status: shipping.status,
             };
             const shippingRes = await Shipping.create(shippingData, { transaction });
             await transaction.commit();
@@ -64,12 +75,12 @@ class orderController {
             const trackingNumber = req.body.trackingNumber;
             const status = req.body.status;
     
-            const mongoUpdateResult = await MongoOrder.updateMany(
+            const mongoUpdateResult = await MongoOrder.updateOne(
                 { 'shipping.trackingNumber': trackingNumber },
                 { $set: { 'shipping.status': status } }
             );
-    
-            if (mongoUpdateResult.nModified === 0) {
+
+            if (mongoUpdateResult.modifiedCount === 0) {
                 return res.status(404).json({ message: 'No orders found in MongoDB with the given tracking number' });
             }
     
@@ -84,8 +95,7 @@ class orderController {
             }
     
             await transaction.commit();
-            const updatedOrders = await MongoOrder.find({ 'shipping.trackingNumber': trackingNumber });
-            res.json(updatedOrders);
+            return res.json("ok");
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

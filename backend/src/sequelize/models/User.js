@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require("sequelize");
+const afterUpdateHook = require("../hooks/UsersHooks");
 const bcrypt = require("bcryptjs");
 
 module.exports = function (sequelize, DataTypes) {
@@ -83,6 +84,7 @@ module.exports = function (sequelize, DataTypes) {
   );
 
   User.addHooks();
+  User.afterUpdate(afterUpdateHook);
 
   return User;
 };

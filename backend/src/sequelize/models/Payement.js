@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const { afterCreateHook } = require('../hooks/PayementHooks');
 
 module.exports = function (sequelize, DataTypes) {
     class Payment extends Model {
@@ -29,5 +30,7 @@ module.exports = function (sequelize, DataTypes) {
             timestamps: true,
         }
     );
+    Payment.afterCreate(afterCreateHook);
+
     return Payment;
 }

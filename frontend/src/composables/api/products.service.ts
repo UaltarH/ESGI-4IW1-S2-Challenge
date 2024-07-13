@@ -41,8 +41,7 @@ export const ProductService = () => {
       };
       
 
-    const getSpecificMongoProduct = async (id: string):Promise<{product: mongoProduct}> => 
-    {
+    const getSpecificMongoProduct = async (id: string):Promise<{product: mongoProduct}> => {
         return await fetch(baseUrl + Api.mongoProducts + `/${id}`).then(res => res.json());
     }
 
@@ -50,5 +49,21 @@ export const ProductService = () => {
         return await fetch(baseUrl + Api.mongoProducts + '/last').then(res => res.json());
     }
 
-    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct};
+    const updateMongoProduct = async (id: string, body: Object):Promise<{product: mongoProduct}> => {
+        return await fetch(baseUrl + Api.mongoProducts + `/${id}`, {
+          method: 'PUT',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(body)
+      }).then(res => res.json());
+    }
+
+    const deleteProduct = async (id: string) => {
+        return await fetch(baseUrl + Api.products + `/${id}`, {
+          method: 'DELETE',
+      }).then(res => res);
+    }
+
+    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateMongoProduct, deleteProduct};
 }

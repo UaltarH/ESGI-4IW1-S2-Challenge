@@ -20,6 +20,8 @@ const routes = [
       { path: 'dashboard', component: () => import('@/pages/admin/dashboard/index.vue') },
       { path: 'users', component: () => import('@/pages/admin/users/index.vue') },
       { path: 'users/:id', component: () => import('@/pages/admin/users/show/index.vue') },
+      { path: 'products', component: () => import('@/pages/admin/products/index.vue') },
+      { path: 'products/:id', component: () => import('@/pages/admin/products/show/index.vue') },
       { path: 'roles', component: Roles },
       { path: '', redirect: 'dashboard' },
     ]

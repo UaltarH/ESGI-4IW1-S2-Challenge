@@ -11,5 +11,6 @@ productRouter.delete('/products/:id', productController.deleteProduct);
 productRouter.get('/mongoProducts', productController.getMongoProducts);
 productRouter.get('/mongoProducts/last', productController.getLast5MongoProduct);
 productRouter.get('/mongoProducts/:id', productController.getSpecificMongoProduct);
+productRouter.put('/mongoProducts/:id', productController.updateMongoProduct);
 
 module.exports = productRouter;

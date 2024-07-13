@@ -1,4 +1,4 @@
-import {Api} from './api';
+import {Api} from './api/routesApi';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 export const useCategoryManagement = () => {

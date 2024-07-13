@@ -1,5 +1,6 @@
 const { Product } = require('../sequelize/models');
 const crudService = require('../services/crudGeneric');
+const mongoose = require('mongoose');
 const MongoProduct = require('../mongo/models/MongoProduct');
 
 class productController {
@@ -29,11 +30,28 @@ class productController {
     }
 
     static async deleteProduct(req, res) {
-        const { data, error } = await crudService.destroy(Product, req.params.id);
-        if (error) {
-            return res.status(404).json({ error: error.message });
+        const { id } = req.params;
+
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json({ error: 'Invalid product ID' });
+            }
+
+            const deletedProduct = await MongoProduct.findByIdAndDelete(id);
+            if (!deletedProduct) {
+                return res.status(404).json({ error: 'Product not found in MongoDB' });
+            }
+
+            const { data, error } = await crudService.destroy(Product, deletedProduct.postgresId);
+            if (error) {
+                return res.status(404).json({ error: error.message });
+            }
+
+            res.sendStatus(204);
+        } catch (error) {
+            console.error('Deletion error:', error);
+            res.status(500).json({ error: 'An error occurred while deleting the product' });
         }
-        res.sendStatus(204);
     }
 
     static async updateProduct(req, res) {
@@ -93,6 +111,34 @@ class productController {
             return res.status(404).json({ error: 'Products not found' });
         }
         res.json({ products: products });
+    }
+
+    static async updateMongoProduct(req, res) {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        try {
+            if (!mongoose.Types.ObjectId.isValid(id)) {
+                return res.status(400).json({ error: 'Invalid product ID' });
+            }
+
+            const updatedProduct = await MongoProduct.findByIdAndUpdate(id, updateData, { new: true, runValidators: true});
+            if (!updatedProduct) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            
+            const postgresUpdateData = { ...updateData, CategoryId: updateData.categoryId };
+            delete postgresUpdateData.categoryId;
+            const { data, error } = await crudService.update(Product, updatedProduct.postgresId, postgresUpdateData);
+            if (error) {
+                return res.status(404).json({ error: 'Product not found in postgres' });
+            }
+
+            return res.json({ product: updatedProduct });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'An error occurred while updating the product' });
+        }
     }
 }
 

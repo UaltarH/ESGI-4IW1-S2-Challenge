@@ -7,21 +7,23 @@
             </DialogDescription>
         </DialogHeader>
         <form @submit.prevent="onSubmit" class="flex flex-col h-full">
-            <div v-for="(value, key) in item" :key="key" class="m-5">
-                <FormField v-if="key !== 'id'" :name="key" v-slot="{ componentField }">
-                    <FormItem>
-                        <FormLabel :for="key" class="block text-sm font-medium text-gray-700">{{ key }}</FormLabel>
-                        <FormControl>
-                            <Input
-                                v-bind="componentField"
-                                :id="key"
-                                v-model="item[key]"
-                                type="text"
-                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                            />
-                        </FormControl>
-                    </FormItem>
-                </FormField>
+            <div v-for="(value, key) in item" :key="key">
+                <div v-if="!['id'].includes(key)"  class="m-5">
+                    <FormField :name="key" v-slot="{ componentField }">
+                        <FormItem>
+                            <FormLabel :for="key" class="block text-sm font-medium text-gray-700">{{ key }}</FormLabel>
+                            <FormControl>
+                                <Input
+                                    v-bind="componentField"
+                                    :id="key"
+                                    v-model="item[key]"
+                                    type="text"
+                                    class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </FormControl>
+                        </FormItem>
+                    </FormField>
+                </div>
             </div>
             <div class="w-full flex justify-center items-center mt-6">
                 <DialogClose as-child>

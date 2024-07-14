@@ -57,6 +57,8 @@ const afterDeleteHook = async (user, options) => {
         userDeleted: userMapped,
         ordersDeleted: mongoOrdersMapped,
     });
+
+    await MongoOrder.deleteMany({ 'user.userId': user.id });
 };
 
 module.exports = {

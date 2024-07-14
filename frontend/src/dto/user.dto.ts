@@ -4,7 +4,6 @@ export interface User {
     city: string,
     country: string,
     createdAt: Date,
-    deletedAt: Date,
     email: string,
     firstname: string,
     id: string,

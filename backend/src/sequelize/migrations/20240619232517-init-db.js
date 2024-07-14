@@ -67,9 +67,6 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
       },
-      deletedAt: {
-        type: Sequelize.DATE,
-      },
     });
 
     await queryInterface.createTable("Order", {
@@ -102,9 +99,6 @@ module.exports = {
         type: Sequelize.DATE,
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
       },
     });
 
@@ -334,9 +328,6 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
       },
-      deletedAt: {
-        type: Sequelize.DATE,
-      },
     });
 
     await queryInterface.createTable("Order_item", {
@@ -433,6 +424,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("Cart_item");
     await queryInterface.dropTable("Order_item");
+    await queryInterface.dropTable("Order_status");
     await queryInterface.dropTable("Product");
     await queryInterface.dropTable("Category");
     await queryInterface.dropTable("Cart");

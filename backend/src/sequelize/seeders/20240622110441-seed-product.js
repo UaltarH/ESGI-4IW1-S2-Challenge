@@ -27,7 +27,6 @@ module.exports = {
         CategoryId: categoryId,
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
       });
     }
 

@@ -27,7 +27,6 @@ module.exports = function (sequelize, DataTypes) {
         {
             sequelize: sequelize,
             modelName: 'Order',
-            paranoid: true,
             timestamps: true,
         }
     );

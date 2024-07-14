@@ -1,6 +1,7 @@
 const { Product, Category, User, Order, Order_item, Payment, Shipping, Order_status } = require('../models');
 const MongoProduct = require('../../mongo/models/MongoProduct');
 const MongoOrder = require('../../mongo/models/MongoOrder');
+const MongoAppHistory = require('../../mongo/models/MongoAppHistory');
 const mongoose = require('mongoose');
 const { createMongoOrder } = require('../../services/mongoOrderService');
 
@@ -59,6 +60,7 @@ module.exports = {
 
     await MongoProduct.deleteMany({});
     await MongoOrder.deleteMany({});
+    await MongoAppHistory.deleteMany({});
     console.log('Migration rollback completed successfully');
   }
 };

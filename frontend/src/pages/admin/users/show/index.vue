@@ -28,7 +28,6 @@ interface User {
     city: string,
     country: string,
     createdAt: Date,
-    deletedAt: Date,
     email: string,
     firstname: string,
     id: string,
@@ -45,7 +44,7 @@ getUser(route.params.id, (datas: []) => datas).then(res => user.value = res.user
 
 
 const formatValue = (value: any, key: string) => {
-  if (key === 'birthdate' || key === 'createdAt' || key === 'updatedAt' || key === 'deletedAt') {
+  if (key === 'birthdate' || key === 'createdAt' || key === 'updatedAt') {
     return value ? new Date(value).toLocaleDateString() : 'N/A';
   }
   if (key === 'password') {

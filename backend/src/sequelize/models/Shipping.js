@@ -1,5 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
-const { afterCreateHook, afterUpdateHook } = require('../hooks/ShippingsHooks');
+const { afterCreateHook } = require('../hooks/ShippingsHooks');
 
 module.exports = function (sequelize, DataTypes) {
     class Shipping extends Model {
@@ -14,11 +14,6 @@ module.exports = function (sequelize, DataTypes) {
                 defaultValue: DataTypes.UUIDV4,
                 primaryKey: true,
                 allowNull: false,
-            },
-            status: {
-                type: DataTypes.ENUM("En attente d'expédition", 'En livraison', 'En attente', 'Problème de livraison'),
-                allowNull: false,
-                defaultValue: 'En attente',
             },
             shippingMethod: {
                 type: DataTypes.ENUM('standard', 'express'),
@@ -53,7 +48,6 @@ module.exports = function (sequelize, DataTypes) {
         }
     );
     Shipping.afterCreate(afterCreateHook);
-    Shipping.afterUpdate(afterUpdateHook);
 
     return Shipping;
 }

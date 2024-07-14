@@ -10,6 +10,16 @@ const orderSchema = new mongoose.Schema({
         email: String,
         phone: String,
     },
+    status: [
+        {
+            statusId: String,
+            status: {
+                type: String,
+                enum: ["En attente", "Confirmée", "Expédiée", "Livrée", "Annulée", "Remboursée"],
+            },
+            date: Date,
+        },
+    ],
     orderItems: [
         {
             orderItemId: String,
@@ -29,10 +39,6 @@ const orderSchema = new mongoose.Schema({
     },
     shipping: {
         shippingId: String,
-        status: {
-            type: String,
-            enum: ["En attente d'expédition", 'En livraison', 'En attente', 'Problème de livraison'],
-        },
         shippingMethod: {
             type: String,
             enum: ["standard", "express"],

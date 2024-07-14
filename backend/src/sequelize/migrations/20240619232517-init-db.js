@@ -108,6 +108,46 @@ module.exports = {
       },
     });
 
+    await queryInterface.createTable("Order_status", {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+      },
+      OrderId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "Order",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      status: {
+        type: DataTypes.ENUM(
+          "En attente",
+          "Confirmée",
+          "Expédiée",
+          "Livrée",
+          "Annulée",
+          "Remboursée"
+        ),
+        allowNull: false,
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+    });
+
     await queryInterface.createTable("Payment", {
       id: {
         type: DataTypes.UUID,
@@ -161,11 +201,6 @@ module.exports = {
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
-      },
-      status: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "En attente",
       },
       shippingMethod: {
         type: DataTypes.ENUM("standard", "express"),

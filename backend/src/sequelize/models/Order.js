@@ -6,6 +6,7 @@ module.exports = function (sequelize, DataTypes) {
         static associate(models) {
             Order.belongsTo(models.User);
             Order.hasMany(models.Order_item);
+            Order.hasMany(models.Order_status);
             Order.hasOne(models.Payment);
             Order.hasOne(models.Shipping);
         }

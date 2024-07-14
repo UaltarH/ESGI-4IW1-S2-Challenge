@@ -80,7 +80,7 @@ services:
     environment:
       PORT: 7000
     ports:
-      - 7000:7000
+      - 7001:7000
     volumes:
       - ./laposteapi:/home/node/app
     working_dir: /home/node/app

@@ -7,7 +7,6 @@ const afterCreateHook = async (shipping, options) => {
             $set: {
                 shipping: {
                     shippingId: shipping.id,
-                    status: shipping.status,
                     shippingMethod: shipping.shippingMethod,
                     trackingNumber: shipping.trackingNumber,
                     address: shipping.address,
@@ -27,27 +26,7 @@ const afterCreateHook = async (shipping, options) => {
     console.log(`MongoOrder updated: ${mongoOrder}`);
 };
 
-const afterUpdateHook = async (shipping, options) => {
-    const mongoOrder = await MongoOrder.findOneAndUpdate(
-        { postgresId: shipping.OrderId },
-        {
-            $set: {
-                shipping: {
-                    status: shipping.status,
-                },
-            },
-        },
-    );
-
-    if (!mongoOrder) {
-        console.error(`MongoOrder with postgresId ${shipping.OrderId} not found`);
-        return;
-    }
-
-    console.log(`MongoOrder updated: ${mongoOrder}`);
-};
 
 module.exports = {
     afterCreateHook,
-    afterUpdateHook,
 };

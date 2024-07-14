@@ -1,6 +1,10 @@
 const MongoOrder = require('../../mongo/models/MongoOrder');
 const MongoAppHistory = require('../../mongo/models/MongoAppHistory');
 
+const anonymizeValue = (prefix) => {
+    return `${prefix}-${Math.random().toString(36).substring(2, 10)}`;
+};
+
 const afterUpdateHook = async (user, options) => {
     const mongoOrder = await MongoOrder.findOneAndUpdate(
         { 'user.userId': user.id },
@@ -23,42 +27,48 @@ const afterUpdateHook = async (user, options) => {
 };
 
 const afterDeleteHook = async (user, options) => {
-    const mongoOrders = await MongoOrder.find({ 'user.userId': user.id });
-    let mongoOrdersMapped = [];
-    if (!mongoOrders) {
-        console.error(`MongoOrders with userId ${user.id} not found`);
-    }
-    mongoOrdersMapped = mongoOrders.map((mongoOrder) => {
-        return {
-            orderId: mongoOrder.postgresId,
-            date: mongoOrder.date,
-            status: mongoOrder.status,
-            orderItems: mongoOrder.orderItems,
-            payment: mongoOrder.payment,
-            shipping: mongoOrder.shipping,
+    try {
+        const mongoOrders = await MongoOrder.find({ 'user.userId': user.id });
+        let mongoOrdersMapped = [];
+        if (!mongoOrders) {
+            console.error(`MongoOrders with userId ${user.id} not found`);
+        }
+        mongoOrdersMapped = mongoOrders.map((mongoOrder) => {
+            return {
+                orderId: mongoOrder.postgresId,
+                date: mongoOrder.date,
+                status: mongoOrder.status,
+                orderItems: mongoOrder.orderItems,
+                payment: mongoOrder.payment,
+                shipping: mongoOrder.shipping,
+            };
+        });
+
+        const userMapped = {
+            userId: anonymizeValue('user'),
+            firstname: 'Anonymous',
+            lastname: 'Anonymous',
+            email: anonymizeValue('email@example.com'),
+            phone: anonymizeValue('phone'),
+            address: 'Anonymous Address',
+            city: 'Anonymous City',
+            zipcode: 11111,
+            country: 'Anonymous Country',
+            birthdate: new Date(),
+            role: user.role,
         };
-    });
-    const userMapped = {
-        userId: user.id,
-        firstname: user.firstname,
-        lastname: user.lastname,
-        email: user.email,
-        phone: user.phone,
-        address: user.address,
-        city: user.city,
-        zipcode: user.zipcode,
-        country: user.country,
-        birthdate: user.birthdate,
-        role: user.role,
-    };
 
-    await MongoAppHistory.create({
-        date: new Date(),
-        userDeleted: userMapped,
-        ordersDeleted: mongoOrdersMapped,
-    });
+        await MongoAppHistory.create({
+            date: new Date(),
+            userDeleted: userMapped,
+            ordersDeleted: mongoOrdersMapped,
+        });
 
-    await MongoOrder.deleteMany({ 'user.userId': user.id });
+        await MongoOrder.deleteMany({ 'user.userId': user.id });
+    } catch (error) {
+        console.error(error);
+    }
+
 };
 
 module.exports = {

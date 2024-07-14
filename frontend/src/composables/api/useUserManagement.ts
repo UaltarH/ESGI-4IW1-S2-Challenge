@@ -10,7 +10,7 @@ export const useUserManagement = () => {
         return await fetch(baseUrl + Api.user + id).then(res => handler(res.json()));
     }
 
-    const updateUser = async (id: number, handler:Function, bodyValues: any) => {
+    const updateUser = async (id: string, handler:Function, bodyValues: any) => {
         return await fetch(baseUrl + Api.user + id, {
             method: 'PATCH',
             headers: {
@@ -20,15 +20,27 @@ export const useUserManagement = () => {
         }).then(res => handler(res.json()));
     }
 
-    const deleteUser = async (id: number) => {
+    const deleteUser = async (id: string) => {
         return await fetch(baseUrl + Api.user + id, {
             method: 'DELETE',
         }).then(res => res);
+    }
+
+    const deleteMultiplesUsers = async (usersId: string) => {
+        console.log(JSON.stringify(usersId));
+        
+        return await fetch(baseUrl + Api.user, {
+          method: 'DELETE',
+          headers: {
+              'Content-Type': 'application/json' 
+          },
+          body: JSON.stringify({usersId})
+      }).then(res => res);
     }
 
     const getRoles = async (handler:Function) => {
         return await fetch(baseUrl + Api.getRoles).then(res => handler(res.json()));
     }
 
-    return {getUsers, getUser, deleteUser, getRoles, updateUser};
+    return {getUsers, getUser, deleteUser, getRoles, updateUser, deleteMultiplesUsers};
 }

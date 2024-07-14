@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Utilisateurs:</h1>
+        <h1>Produits:</h1>
         <CustomizableTable
             :data="data.datas"
             :columns="data.columns"
@@ -28,10 +28,10 @@
   import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
   import { ProductService } from '@/composables/api/products.service.ts';
   import { mongoProduct } from '@/dto/MongoProduct.dto';
-  import ProductEditModale from '@/components/common/editModale/productsEditModale.vue';
+  import ProductEditModale from '@/pages/admin/products/productsEditModale.vue';
   import { Dialog } from '@/components/ui/dialog'; 
   
-  const { getAllMongoProducts, updateMongoProduct, deleteProduct } = ProductService();
+  const { getAllMongoProducts, updateMongoProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
   
   const datas = ref<mongoProduct[]>([]);
   const refreshProducts = () => {
@@ -52,12 +52,12 @@
   const isModalVisible = ref(false);
   const selectedItem = ref<Record<string, any> | null>(null);
   
-  function handleVisualize(item: any) {
+  function handleVisualize(item: mongoProduct) {
     window.location.href = `/admin/products/${item._id}`;
   }
   
-  function handleEdit(item: any) {
-    const itemCopy = { ...item };
+  function handleEdit(item: mongoProduct) {
+    const itemCopy = { ...item } as Partial<typeof item>;
     delete itemCopy.createdAt;
     delete itemCopy.updatedAt;
     delete itemCopy.deleteAt;
@@ -65,7 +65,7 @@
     isModalVisible.value = true;
   }
   
-  function handleSave(item: Record<string, any>) {
+  function handleSave(item: mongoProduct) {
     const itemCopy = { ...item };
     const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
@@ -86,29 +86,19 @@
       return result;
   };
   
-  function handleDelete(item: any) {
-    deleteProduct(item._id).then(() => refreshProducts())
+  function handleDelete(item: mongoProduct) {
+    deleteProduct(item.postgresId).then(() => refreshProducts())
   }
 
-  function handleMultipleDelete(items: any[]) {
-    Promise.all(items.map(item => {
-      if (item && item._id) {
-        return deleteProduct(item._id);
-      } else {
-        console.error('Item does not have an ID');
-        return Promise.reject('Item ID is missing');
-      }
-    }))
+  function handleMultipleDelete(items: mongoProduct[]) {
+    deleteMultiplesProducts(items.map(item => item.postgresId).join(','))
     .then(() => {
-      refreshProducts();  
+      refreshProducts();
     })
-    .catch(error => {
-      console.error('Error deleting multiple items:', error);
-    });
   }
 
-    onMounted(() => {
-      refreshProducts();
-    });
-  </script>
+  onMounted(() => {
+    refreshProducts();
+  });
+</script>
   

@@ -1,6 +1,5 @@
 const { Product } = require('../sequelize/models');
 const crudService = require('../services/crudGeneric');
-const mongoose = require('mongoose');
 const MongoProduct = require('../mongo/models/MongoProduct');
 
 class productController {
@@ -33,16 +32,7 @@ class productController {
         const { id } = req.params;
 
         try {
-            if (!mongoose.Types.ObjectId.isValid(id)) {
-                return res.status(400).json({ error: 'Invalid product ID' });
-            }
-
-            const deletedProduct = await MongoProduct.findByIdAndDelete(id);
-            if (!deletedProduct) {
-                return res.status(404).json({ error: 'Product not found in MongoDB' });
-            }
-
-            const { data, error } = await crudService.destroy(Product, deletedProduct.postgresId);
+            const { data, error } = await crudService.destroy(Product, id);
             if (error) {
                 return res.status(404).json({ error: error.message });
             }
@@ -53,6 +43,27 @@ class productController {
             res.status(500).json({ error: 'An error occurred while deleting the product' });
         }
     }
+
+    static async deleteMultiplesProducts(req, res) {
+        const { productsId } = req.body;
+        const ids = productsId.split(',');
+    
+        try {
+            const deletionPromises = ids.map(async (id) => {
+                const { data, error } = await crudService.destroy(Product, id);
+                if (error) {
+                    throw new Error(`Product with ID ${id} not found: ${error.message}`);
+                }
+            });
+    
+            await Promise.all(deletionPromises);
+    
+            res.sendStatus(204);
+        } catch (error) {
+            console.error('Deletion error:', error);
+            res.status(500).json({ error: 'An error occurred while deleting the products' });
+        }
+    }    
 
     static async updateProduct(req, res) {
         const { data, error } = await crudService.update(Product, req.params.id, req.body);
@@ -68,7 +79,7 @@ class productController {
         const maxPrice = parseFloat(req.query.maxPrice);
         const categories = req.query.categories ? req.query.categories.split(',') : [];
 
-        const filter = {};
+        const filter = { deleteAt: null };
 
         if (!isNaN(maxPrice)) {
             filter.price = { $lte: maxPrice };
@@ -118,18 +129,9 @@ class productController {
         const updateData = req.body;
 
         try {
-            if (!mongoose.Types.ObjectId.isValid(id)) {
-                return res.status(400).json({ error: 'Invalid product ID' });
-            }
-
-            const updatedProduct = await MongoProduct.findByIdAndUpdate(id, updateData, { new: true, runValidators: true});
-            if (!updatedProduct) {
-                return res.status(404).json({ error: 'Product not found' });
-            }
-            
             const postgresUpdateData = { ...updateData, CategoryId: updateData.categoryId };
             delete postgresUpdateData.categoryId;
-            const { data, error } = await crudService.update(Product, updatedProduct.postgresId, postgresUpdateData);
+            const { data, error } = await crudService.update(Product, id, postgresUpdateData);
             if (error) {
                 return res.status(404).json({ error: 'Product not found in postgres' });
             }

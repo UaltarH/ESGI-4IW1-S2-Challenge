@@ -31,7 +31,7 @@ import { User } from '@/dto/user.dto';
 import GenericEditModal from '@/components/common/editModale/genericEditModale.vue';
 import { Dialog } from '@/components/ui/dialog'; 
 
-const { getUsers, updateUser, deleteUser } = useUserManagement();
+const { getUsers, updateUser, deleteUser, deleteMultiplesUsers } = useUserManagement();
 
 const datas = ref<User[]>([]);
 
@@ -57,8 +57,8 @@ function handleVisualize(item: any) {
   window.location.href = `/admin/users/${item.id}`;
 }
 
-function handleEdit(item: any) {
-  const itemCopy = { ...item };
+function handleEdit(item: User) {
+  const itemCopy = { ...item } as Partial<typeof item>;
   delete itemCopy.createdAt;
   delete itemCopy.updatedAt;
   delete itemCopy.deletedAt;
@@ -66,8 +66,8 @@ function handleEdit(item: any) {
   isModalVisible.value = true;
 }
 
-function handleSave(item: Record<string, any>) {
-  const itemCopy = { ...item };
+function handleSave(item: User) {
+  const itemCopy = { ...item } as Partial<typeof item>;
   delete itemCopy.id;
   const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
@@ -89,28 +89,17 @@ function handleSave(item: Record<string, any>) {
   };
 
 
-function handleDelete(item: any) {
+function handleDelete(item: User) {
   deleteUser(item.id);
   refreshUsers();
 }
 
-function handleMultipleDelete(items: any[]) {
-  Promise.all(items.map(item => {
-    if (item && item.id) {
-      return deleteUser(item.id);
-    } else {
-      console.error('Item does not have an ID');
-      return Promise.reject('Item ID is missing');
-    }
-  }))
+function handleMultipleDelete(items: User[]) {
+  deleteMultiplesUsers(items.map(item => item.id).join(','))
   .then(() => {
-    refreshUsers();  
+    refreshUsers();
   })
-  .catch(error => {
-    console.error('Error deleting multiple items:', error);
-  });
 }
-
 
 onMounted(() => {
   refreshUsers();

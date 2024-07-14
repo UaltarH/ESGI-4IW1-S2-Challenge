@@ -65,5 +65,17 @@ export const ProductService = () => {
       }).then(res => res);
     }
 
-    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateMongoProduct, deleteProduct};
+    const deleteMultiplesProducts = async (productsId: string) => {
+      console.log(JSON.stringify({productsId}));
+      
+      return await fetch(baseUrl + Api.products, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({productsId})
+      }).then(res => res);
+    }
+
+    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateMongoProduct, deleteProduct, deleteMultiplesProducts};
 }

@@ -24,6 +24,7 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
 
         await MongoOrder.create({
             postgresId: order.id,
+            totalPrice: order.totalPrice,
             date: order.date,
             user: {
                 userId: order.UserId,

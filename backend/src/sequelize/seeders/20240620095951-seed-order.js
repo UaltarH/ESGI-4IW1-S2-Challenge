@@ -19,6 +19,7 @@ module.exports = {
 
       orders.push({
         id: orderId,
+        totalPrice: faker.number.float({ min: 1, max: 1000, fixed: 2 }),
         date: faker.date.past(),
         UserId: userId,
         createdAt: new Date(),

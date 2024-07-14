@@ -4,12 +4,12 @@ const { Order, Order_item, Payment, Shipping, sequelize, Order_status } = requir
 
 class orderController {
     static async createOrder(req, res, next) {
-        const { UserId, products, date, payment, shipping } = req.body;
+        const { UserId, products, date, payment, shipping, totalPrice } = req.body;
         const transaction = await sequelize.transaction();
 
         try {
             const order = await Order.create(
-                { UserId, date },
+                { UserId, date, totalPrice },
                 { transaction }
             );
             const orderItems = products.map(product => ({

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
     postgresId: String,
+    totalPrice: Number,
     date: Date,
     user: {
         userId: String,

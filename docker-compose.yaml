@@ -25,6 +25,8 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV}
+      USER_MAIL: ${USER_MAIL}
+      USER_MAIL_PASSWORD: ${USER_MAIL_PASSWORD}
     ports:
       - 8000:3000
     volumes:

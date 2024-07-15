@@ -10,7 +10,7 @@
             @visualize-item="handleVisualize"
             @edit-item="handleEdit"
             @delete-item="handleDelete"
-            @delete-multiple-items="handleMultipleDelete"
+            @delete-multiple-items="handleDeleMultiple"
         ></CustomizableTable>
   
       <Dialog v-model:open="isModalVisible">
@@ -20,6 +20,26 @@
             @save="handleSave"
           />
       </Dialog>
+      <confirm-modal
+          v-if="openModal"
+          :data="selectedItem"
+          :title="'Confirmer la suppression de ' + selectedItem?.name + ' ?'"
+          size="sm"
+          @confirm="openModal = false"
+          @close="openModal = false"
+          :action="deleteItem"
+      >
+      </confirm-modal>
+      <confirm-modal
+          v-if="openModalMultiple"
+          :data="selectedItems"
+          :title="'Confirmer la suppression de ' + selectedItems?.length + ' utilisateurs ?'"
+          size="sm"
+          @confirm="openModalMultiple = false"
+          @close="openModalMultiple = false"
+          :action="deleteItems"
+      >
+      </confirm-modal>
     </div>
   </template>
   
@@ -30,9 +50,13 @@
   import { mongoProduct } from '@/dto/MongoProduct.dto';
   import ProductEditModale from '@/pages/admin/products/productsEditModale.vue';
   import { Dialog } from '@/components/ui/dialog'; 
+  import ConfirmModal from '@/components/ConfirmModal.vue';
   
   const { getAllMongoProducts, updateMongoProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
   
+  const openModal = ref<boolean>(false);
+  const openModalMultiple = ref<boolean>(false);
+
   const datas = ref<mongoProduct[]>([]);
   const refreshProducts = () => {
     getAllMongoProducts(datas => datas).then(res => datas.value = res.products);
@@ -50,7 +74,8 @@
   });
   
   const isModalVisible = ref(false);
-  const selectedItem = ref<Record<string, any> | null>(null);
+  const selectedItem = ref<mongoProduct | null>(null);
+  const selectedItems = ref<mongoProduct[] | null>(null);
   
   function handleVisualize(item: mongoProduct) {
     window.location.href = `/admin/products/${item._id}`;
@@ -87,14 +112,26 @@
   };
   
   function handleDelete(item: mongoProduct) {
+    selectedItem.value = item
+    openModal.value = true
+  }
+  
+  function handleDeleMultiple(items: mongoProduct[]) {
+    selectedItems.value = items
+    openModalMultiple.value = true
+  }
+  
+  function deleteItem(item: mongoProduct) {
     deleteProduct(item.postgresId).then(() => refreshProducts())
+    openModal.value = false
   }
 
-  function handleMultipleDelete(items: mongoProduct[]) {
+  function deleteItems(items: mongoProduct[]) {
     deleteMultiplesProducts(items.map(item => item.postgresId).join(','))
     .then(() => {
       refreshProducts();
     })
+    openModalMultiple.value = false
   }
 
   onMounted(() => {

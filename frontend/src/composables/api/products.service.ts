@@ -66,8 +66,6 @@ export const ProductService = () => {
     }
 
     const deleteMultiplesProducts = async (productsId: string) => {
-      console.log(JSON.stringify({productsId}));
-      
       return await fetch(baseUrl + Api.products, {
         method: 'DELETE',
         headers: {

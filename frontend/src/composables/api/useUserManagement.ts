@@ -27,8 +27,6 @@ export const useUserManagement = () => {
     }
 
     const deleteMultiplesUsers = async (usersId: string) => {
-        console.log(JSON.stringify(usersId));
-        
         return await fetch(baseUrl + Api.user, {
           method: 'DELETE',
           headers: {

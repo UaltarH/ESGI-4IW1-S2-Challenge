@@ -1,6 +1,6 @@
 const { User } = require('../sequelize/models/');
 const crudService = require('../services/crudGeneric');
-const { sendMail, generatePdfAndSendMail } = require('../services/sendMail');
+const { sendMail } = require('../services/sendMail');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -22,34 +22,6 @@ class userController {
     // };
     // try {
     //   await sendMail(mailOptions);
-    // } catch (err) {
-    //   console.error('Failed to send email controller', err);
-    // }
-
-    //test generate pdf and send mail:
-    // const htmlContent = `
-    // <!DOCTYPE html>
-    // <html>
-    // <head>
-    //     <title>Exemple de PDF</title>
-    //     <style>
-    //         body {
-    //             font-family: Arial, sans-serif;
-    //             margin: 20px;
-    //         }
-    //         h1 {
-    //             color: #333;
-    //         }
-    //     </style>
-    // </head>
-    // <body>
-    //     <h1>Bonjour, voici un exemple de PDF généré avec Puppeteer !</h1>
-    //     <p>Ceci est un contenu HTML qui sera converti en PDF.</p>
-    // </body>
-    // </html>
-    // `;
-    // try {
-    //   await generatePdfAndSendMail(htmlContent, 'mathieupannetrat5@gmail.com');
     // } catch (err) {
     //   console.error('Failed to send email controller', err);
     // }

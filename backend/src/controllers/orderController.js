@@ -95,7 +95,7 @@ class orderController {
     static async getAllOrders(req, res, next) {
         try {
             const order = await MongoOrder.find();
-            res.json(order);
+            res.json({ orders: order });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

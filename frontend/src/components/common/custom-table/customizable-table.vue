@@ -337,7 +337,7 @@ function onDeleteAllItems() {
               />
             </div>
           </th>
-          <th v-if="actions.edit || actions.delete" class="min-w-fit p-2 text-center border border-solid border-black">
+          <th v-if="actions.edit || actions.delete || actions.visualize" class="min-w-fit p-2 text-center border border-solid border-black">
             Actions
           </th>
         </tr>
@@ -350,7 +350,7 @@ function onDeleteAllItems() {
           <td v-for="col in columns" :key="col.key" class="p-2 text-left border border-solid border-black">
             {{ formatValue(item[col.key], col.typeData) }}
           </td>
-          <td v-if="actions.edit || actions.delete" class="p-2 border border-solid border-black">
+          <td v-if="actions.edit || actions.delete || actions.visualize" class="p-2 border border-solid border-black">
             <div class="flex flex-col lg:flex-row lg:justify-around">
               <button
                 v-if="actions.visualize"

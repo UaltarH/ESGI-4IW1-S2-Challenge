@@ -1,5 +1,4 @@
 const nodemailer = require('nodemailer');
-const puppeteer = require('puppeteer');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -22,34 +21,6 @@ const sendMail = async (mailOptions) => {
 };
 
 
-const generatePdfAndSendMail = async (htmlContent, recipientEmail) => {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
-    const pdfBuffer = await page.pdf({ format: 'A4' });
-
-    await browser.close();
-
-    const mailOptions = {
-        from: {
-            name: 'BoxToBe Administration',
-            address: process.env.USER_MAIL
-        },
-        to: recipientEmail,
-        subject: 'Test email with PDF attachment',
-        text: 'This is a test email with a PDF attachment',
-        attachments: [
-            {
-                filename: 'test.pdf',
-                content: pdfBuffer
-            }
-        ]
-    };
-
-    await sendMail(mailOptions);
-};
-
 module.exports = {
     sendMail,
-    generatePdfAndSendMail
 };

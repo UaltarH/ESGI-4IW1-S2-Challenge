@@ -15,6 +15,7 @@ const props = defineProps<{
   columns: columnsModel[];
   actions: actionsModel;
   numberOfItemsPerPage: number[];
+  canDeleteAll: boolean; 
 }>();
 
 // emit (output parent component)
@@ -408,6 +409,7 @@ function onDeleteAllItems() {
               </div>
               <div class="flex flex-col items-end">
                 <button
+                  v-if="canDeleteAll"
                   @click="onDeleteAllItems"
                   class="rounded p-2 mt-2"
                   :class="{

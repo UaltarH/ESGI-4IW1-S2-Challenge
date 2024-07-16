@@ -50,8 +50,29 @@ class userController {
     if (error) {
       return res.status(404);
     }
-    res.sendStatus(204);
+    res.status(204).json({ user: data });
   }
+
+  static async deleteMultiplesUsers(req, res) {
+    const { usersId } = req.body; 
+    const ids = usersId.split(',');
+
+    try {
+        const deletionPromises = ids.map(async (id) => {
+            const { data, error } = await crudService.destroy(User, id);
+            if (error) {
+                throw new Error(`User with ID ${id} not found: ${error.message}`);
+            }
+        });
+
+        await Promise.all(deletionPromises);
+
+        res.sendStatus(204);
+    } catch (error) {
+        console.error('Deletion error:', error);
+        res.status(500).json({ error: 'An error occurred while deleting the users' });
+    }
+  } 
 
   static async replaceUser(req, res) {
     const { data: deletedData, error: deleteError } = await crudService.destroy(User, req.params.id);

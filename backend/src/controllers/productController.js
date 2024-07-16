@@ -29,12 +29,41 @@ class productController {
     }
 
     static async deleteProduct(req, res) {
-        const { data, error } = await crudService.destroy(Product, req.params.id);
-        if (error) {
-            return res.status(404).json({ error: error.message });
+        const { id } = req.params;
+
+        try {
+            const { data, error } = await crudService.destroy(Product, id);
+            if (error) {
+                return res.status(404).json({ error: error.message });
+            }
+
+            res.sendStatus(204);
+        } catch (error) {
+            console.error('Deletion error:', error);
+            res.status(500).json({ error: 'An error occurred while deleting the product' });
         }
-        res.sendStatus(204);
     }
+
+    static async deleteMultiplesProducts(req, res) {
+        const { productsId } = req.body;
+        const ids = productsId.split(',');
+    
+        try {
+            const deletionPromises = ids.map(async (id) => {
+                const { data, error } = await crudService.destroy(Product, id);
+                if (error) {
+                    throw new Error(`Product with ID ${id} not found: ${error.message}`);
+                }
+            });
+    
+            await Promise.all(deletionPromises);
+    
+            res.sendStatus(204);
+        } catch (error) {
+            console.error('Deletion error:', error);
+            res.status(500).json({ error: 'An error occurred while deleting the products' });
+        }
+    }    
 
     static async updateProduct(req, res) {
         const { data, error } = await crudService.update(Product, req.params.id, req.body);
@@ -50,7 +79,7 @@ class productController {
         const maxPrice = parseFloat(req.query.maxPrice);
         const categories = req.query.categories ? req.query.categories.split(',') : [];
 
-        const filter = {};
+        const filter = { deleteAt: null };
 
         if (!isNaN(maxPrice)) {
             filter.price = { $lte: maxPrice };
@@ -93,6 +122,25 @@ class productController {
             return res.status(404).json({ error: 'Products not found' });
         }
         res.json({ products: products });
+    }
+
+    static async updateMongoProduct(req, res) {
+        const { id } = req.params;
+        const updateData = req.body;
+
+        try {
+            const postgresUpdateData = { ...updateData, CategoryId: updateData.categoryId };
+            delete postgresUpdateData.categoryId;
+            const { data, error } = await crudService.update(Product, id, postgresUpdateData);
+            if (error) {
+                return res.status(404).json({ error: 'Product not found in postgres' });
+            }
+
+            return res.json({ product: updatedProduct });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'An error occurred while updating the product' });
+        }
     }
 }
 

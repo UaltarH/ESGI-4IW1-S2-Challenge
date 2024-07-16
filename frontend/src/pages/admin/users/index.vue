@@ -1,66 +1,107 @@
 <template>
-    <div>
-        <h1>Utilisateurs:</h1>
-        <CustomizableTable
-        :data="data.datas"
-        :columns="data.columns"
-        :actions="data.actions"
-        :numberOfItemsPerPage="data.numberOfItemsPerPage"
-        @visualize-item="handleVisualize"
-        @edit-item="handleEdit"
-        @delete-item="handleDelete"
-        @delete-multiple-items="handleMultipleDelete"
-        ></CustomizableTable>
-    </div>
+  <div>
+      <h1>Utilisateurs:</h1>
+      <CustomizableTable
+          :data="data.datas"
+          :columns="data.columns"
+          :actions="data.actions"
+          :numberOfItemsPerPage="data.numberOfItemsPerPage"
+          :canDeleteAll="false"
+          @visualize-item="handleVisualize"
+          @edit-item="handleEdit"
+          @delete-item="handleDelete"
+          @delete-multiple-items="handleMultipleDelete"
+      ></CustomizableTable>
+
+    <Dialog v-model:open="isModalVisible">
+        <GenericEditModal
+          :model="selectedItem"
+          @close="isModalVisible = false"
+          @save="handleSave"
+        />
+    </Dialog>
+  </div>
 </template>
+
 <script lang="ts" setup>
-import { reactive, Ref } from "vue";
-import CustomizableTable from "@/components/common/custom-table/customizable-table.vue";
-import {useUserManagement} from "@/composables/api/useUserManagement";
-import { ref } from "vue";
-import { User } from "@/dto/user.dto";
+import { reactive, ref, onMounted } from 'vue';
+import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
+import { useUserManagement } from '@/composables/api/useUserManagement';
+import { User } from '@/dto/user.dto';
+import GenericEditModal from '@/components/common/editModale/genericEditModale.vue';
+import { Dialog } from '@/components/ui/dialog'; 
 
-const { getUsers } = useUserManagement();
+const { getUsers, updateUser, deleteUser, deleteMultiplesUsers } = useUserManagement();
 
-const datas: Ref<User[]> = ref<User[]>([]);
-getUsers((datas: []) => datas).then(res => datas.value = res.users);
+const datas = ref<User[]>([]);
+
+const refreshUsers = () => {
+  getUsers((datas: []) => datas).then(res => datas.value = res.users);
+}
 
 const data = reactive({
-    datas: datas,
-    columns: [
-    { name: "ID", key: "id", sort: true, typeData: "string" },
-    { name: "Email", key: "email", sort: true, typeData: "string" },
-    { name: "Téléphone", key: "phone", sort: false, typeData: "string" },
-    ],
-    actions: { edit: true, delete: true, visualize: true },
-    numberOfItemsPerPage: [5, 10, 15, 20],
+  datas: datas,
+  columns: [
+    { name: 'ID', key: 'id', sort: true, typeData: 'string' },
+    { name: 'Email', key: 'email', sort: true, typeData: 'string' },
+    { name: 'Téléphone', key: 'phone', sort: false, typeData: 'string' },
+  ],
+  actions: { edit: true, delete: true, visualize: true },
+  numberOfItemsPerPage: [5, 10, 15, 20],
 });
 
+const isModalVisible = ref(false);
+const selectedItem = ref<Record<string, any> | null>(null);
+
 function handleVisualize(item: any) {
-    console.log("Visualize item:", item);
-    window.location.href = `/admin/users/${item.id}`;
+  window.location.href = `/admin/users/${item.id}`;
 }
 
-function handleEdit(item: any) {
-    console.log("Edit item:", item);
-    // todo: open modal to edit item
-    // todo: make query to edit item from database using backend
-    alert("Edit item: " + JSON.stringify(item));
+function handleEdit(item: User) {
+  const itemCopy = { ...item } as Partial<typeof item>;
+  delete itemCopy.createdAt;
+  delete itemCopy.updatedAt;
+  delete itemCopy.deletedAt;
+  selectedItem.value = { ...itemCopy };
+  isModalVisible.value = true;
 }
 
-function handleDelete(item: any) {
-    console.log("Delete item:", item);
-    alert("Delete item: " + JSON.stringify(item));
-    //delete item from data
-    //todo: make query to delete item from database using backend
-    data.datas = data.datas.filter((data) => data !== item);
+function handleSave(item: User) {
+  const itemCopy = { ...item } as Partial<typeof item>;
+  delete itemCopy.id;
+  const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
+
+  updateUser(item.id, data => {
+    refreshUsers();
+  }, itemCopyWithStringValues).catch(error => {
+    console.error('Error in handleSave:', error);
+  });
 }
 
-function handleMultipleDelete(items: any[]) {
-    console.log("Delete items:", items);
-    alert("Delete items: " + JSON.stringify(items));
-    // delete items from data
-    // todo: make query to delete items from database using backend
-    data.datas = data.datas.filter((data) => !items.includes(data));
+  const convertValuesToStrings = (obj: Record<string, any>): Record<string, string> => {
+      const result: Record<string, string> = {};
+      for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+              result[key] = String(obj[key]);
+          }
+      }
+      return result;
+  };
+
+
+function handleDelete(item: User) {
+  deleteUser(item.id);
+  refreshUsers();
 }
+
+function handleMultipleDelete(items: User[]) {
+  deleteMultiplesUsers(items.map(item => item.id).join(','))
+  .then(() => {
+    refreshUsers();
+  })
+}
+
+onMounted(() => {
+  refreshUsers();
+});
 </script>

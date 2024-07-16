@@ -35,6 +35,13 @@ jobs:
       - name: Start node test
         run: docker compose up -d node
 
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          echo "Waiting for PostgreSQL to be ready..."
+          while ! docker-compose exec postgres_test pg_isready --host=postgres_test --username=testuser --dbname=test_app; do
+            sleep 5
+          done
+
       - name: Clean database schema
         run: docker compose exec node npm run migrate-down-all-test
 

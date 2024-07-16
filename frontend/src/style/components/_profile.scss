@@ -1,0 +1,15 @@
+@layer components {
+  .account-side-menu {
+    @apply w-full;
+    li {
+      @apply border-b w-full h-full;
+    }
+    li a {
+      @apply h-full py-4 px-2 flex justify-between items-center
+      hover:bg-gray-50 dark:hover:bg-gray-950;
+    }
+    li a.router-link-active {
+      @apply bg-gray-50 dark:bg-gray-950;
+    }
+  }
+}

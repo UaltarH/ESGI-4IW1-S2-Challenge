@@ -35,15 +35,10 @@ export const useForm = (formSchema: Ref<FormField<any>[]>) => {
         return getFieldShape(name).maxLength;
     }
     function validateField (item: FormField<any>): boolean {
-        console.log(`Validating ${item.name}`);
-        console.log(`Value: ${item.value}`)
         item.error = "";
         const res = item.schema.safeParse({[item.name]: item.value});
-        console.log(res);
         if(!res.success) {
             item.error = res.error.issues[0].message;
-            console.log(res.error.issues)
-            console.log('schema invalid');
             return false;
         }
         if(item.dependsOn !== undefined) {
@@ -52,18 +47,14 @@ export const useForm = (formSchema: Ref<FormField<any>[]>) => {
                 throw new Error(`Dependent field ${item.dependsOn} not found`);
             }
             if(dependency.value !== item.value) {
-                console.log('schema invalid : depends');
                 item.error = item.dependsOn.errorMessage;
                 return false;
             }
         }
-        console.log('schema valid');
         return true;
     }
     function validate(): boolean {
-        console.log("Validating form");
         let res = getValidationSchema().safeParse(getFieldValues());
-        console.log(res);
         if(!res.success) {
             for (const issue of res.error.issues) {
                 const field =  formSchema.value.find((item) => {

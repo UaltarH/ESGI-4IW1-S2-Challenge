@@ -27,17 +27,13 @@ jobs:
           export NODE_ENV=test
           export POSTGRES_USER=testuser
           export POSTGRES_PASSWORD=testpassword
-          export POSTGRES_DB=test_app
+          export POSTGRES_DB=app
           export TEST_DATABASE_URL=postgres://testuser:testpassword@postgres_test:5432/test_app
           export MONGO_INITDB_ROOT_USERNAME=testmongo
           export MONGO_INITDB_ROOT_PASSWORD=testmongo
 
       - name: Start node test
         run: docker compose up -d node
-
-      - name: Wait for PostgreSQL to be ready
-        run: |
-          sleep 5
 
       - name: Clean database schema
         run: docker compose exec node npm run migrate-down-all-test

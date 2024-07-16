@@ -12,6 +12,8 @@
             @delete-item="handleDelete"
             @delete-multiple-items="handleDeleMultiple"
         ></CustomizableTable>
+
+        <visualizer class="mt-4" v-if="productVisualizer != undefined" :title="'Produit'" :data="productVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
   
       <Dialog v-model:open="isModalVisible">
           <ProductEditModale
@@ -44,18 +46,21 @@
   </template>
   
   <script lang="ts" setup>
-  import { reactive, ref, onMounted } from 'vue';
+  import { reactive, ref, onMounted, Ref } from 'vue';
   import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
   import { ProductService } from '@/composables/api/products.service.ts';
   import { mongoProduct } from '@/dto/MongoProduct.dto';
   import ProductEditModale from '@/pages/admin/products/productsEditModale.vue';
   import { Dialog } from '@/components/ui/dialog'; 
   import ConfirmModal from '@/components/ConfirmModal.vue';
+  import visualizer from '@/components/common/visualizer.vue';
   
   const { getAllMongoProducts, updateMongoProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
   
   const openModal = ref<boolean>(false);
   const openModalMultiple = ref<boolean>(false);
+
+  const productVisualizer: Ref<mongoProduct | undefined> = ref<mongoProduct>();
 
   const datas = ref<mongoProduct[]>([]);
   const refreshProducts = () => {
@@ -78,14 +83,13 @@
   const selectedItems = ref<mongoProduct[] | null>(null);
   
   function handleVisualize(item: mongoProduct) {
-    window.location.href = `/admin/products/${item._id}`;
+    productVisualizer.value = item;
   }
   
   function handleEdit(item: mongoProduct) {
     const itemCopy = { ...item } as Partial<typeof item>;
     delete itemCopy.createdAt;
     delete itemCopy.updatedAt;
-    delete itemCopy.deleteAt;
     selectedItem.value = { ...itemCopy };
     isModalVisible.value = true;
   }
@@ -94,7 +98,7 @@
     const itemCopy = { ...item };
     const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
-    updateMongoProduct(item._id, itemCopyWithStringValues)
+    updateMongoProduct(item.postgresId, itemCopyWithStringValues)
     .then(() => refreshProducts())
     .catch(error => {
         console.error('Error in handleSave:', error);
@@ -132,6 +136,10 @@
       refreshProducts();
     })
     openModalMultiple.value = false
+  }
+
+  function onCloseVisualizer() {
+    productVisualizer.value = undefined;
   }
 
   onMounted(() => {

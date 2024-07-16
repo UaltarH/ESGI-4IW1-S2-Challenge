@@ -38,7 +38,6 @@ module.exports = function (sequelize, DataTypes) {
         {
             sequelize: sequelize,
             modelName: 'Product',
-            paranoid: true,
             timestamps: true,
         }
     );

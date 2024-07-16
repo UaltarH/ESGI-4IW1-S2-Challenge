@@ -10,7 +10,6 @@ const productSchema = new mongoose.Schema({
     categoryName: String,
     createdAt: Date,
     updatedAt: Date,
-    deleteAt: Date,
 });
 
 const MongoProduct = mongoose.model('Product', productSchema);

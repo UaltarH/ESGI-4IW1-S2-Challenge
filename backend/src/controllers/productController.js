@@ -47,7 +47,7 @@ class productController {
     static async deleteMultiplesProducts(req, res) {
         const { productsId } = req.body;
         const ids = productsId.split(',');
-    
+
         try {
             const deletionPromises = ids.map(async (id) => {
                 const { data, error } = await crudService.destroy(Product, id);
@@ -55,15 +55,15 @@ class productController {
                     throw new Error(`Product with ID ${id} not found: ${error.message}`);
                 }
             });
-    
+
             await Promise.all(deletionPromises);
-    
+
             res.sendStatus(204);
         } catch (error) {
             console.error('Deletion error:', error);
             res.status(500).json({ error: 'An error occurred while deleting the products' });
         }
-    }    
+    }
 
     static async updateProduct(req, res) {
         const { data, error } = await crudService.update(Product, req.params.id, req.body);
@@ -79,7 +79,7 @@ class productController {
         const maxPrice = parseFloat(req.query.maxPrice);
         const categories = req.query.categories ? req.query.categories.split(',') : [];
 
-        const filter = { deleteAt: null };
+        const filter = {};
 
         if (!isNaN(maxPrice)) {
             filter.price = { $lte: maxPrice };
@@ -124,7 +124,7 @@ class productController {
         res.json({ products: products });
     }
 
-    static async updateMongoProduct(req, res) {
+    static async updateProduct(req, res) {
         const { id } = req.params;
         const updateData = req.body;
 

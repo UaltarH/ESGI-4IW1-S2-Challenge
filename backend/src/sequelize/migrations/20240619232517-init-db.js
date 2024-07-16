@@ -67,9 +67,6 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
       },
-      deletedAt: {
-        type: Sequelize.DATE,
-      },
     });
 
     await queryInterface.createTable("Order", {
@@ -77,6 +74,10 @@ module.exports = {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true,
+        allowNull: false,
+      },
+      totalPrice: {
+        type: DataTypes.FLOAT,
         allowNull: false,
       },
       date: {
@@ -103,8 +104,45 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
       },
-      deletedAt: {
+    });
+
+    await queryInterface.createTable("Order_status", {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+      },
+      OrderId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "Order",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      status: {
+        type: DataTypes.ENUM(
+          "En attente",
+          "Confirmée",
+          "Expédiée",
+          "Livrée",
+          "Annulée",
+          "Remboursée"
+        ),
+        allowNull: false,
+      },
+      createdAt: {
         type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
       },
     });
 
@@ -161,11 +199,6 @@ module.exports = {
         },
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
-      },
-      status: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        defaultValue: "En attente",
       },
       shippingMethod: {
         type: DataTypes.ENUM("standard", "express"),
@@ -299,9 +332,6 @@ module.exports = {
         allowNull: false,
         defaultValue: Sequelize.fn("NOW"),
       },
-      deletedAt: {
-        type: Sequelize.DATE,
-      },
     });
 
     await queryInterface.createTable("Order_item", {
@@ -398,6 +428,7 @@ module.exports = {
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("Cart_item");
     await queryInterface.dropTable("Order_item");
+    await queryInterface.dropTable("Order_status");
     await queryInterface.dropTable("Product");
     await queryInterface.dropTable("Category");
     await queryInterface.dropTable("Cart");

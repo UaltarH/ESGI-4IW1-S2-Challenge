@@ -18,7 +18,7 @@
       </ul>
     </div>
 
-    <div class="flex-1 p-4 overflow-hidden">
+    <div class="flex-1 p-4 overflow-hidden dark:bg-dark-blue">
       <router-view></router-view>
     </div>
   </div>

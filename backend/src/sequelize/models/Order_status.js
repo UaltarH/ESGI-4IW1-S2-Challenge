@@ -1,13 +1,13 @@
 const { Model, DataTypes } = require('sequelize');
-const { afterCreateHook } = require('../hooks/PayementHooks');
+const { afterCreateHook } = require('../hooks/Order_statusHooks');
 
 module.exports = function (sequelize, DataTypes) {
-    class Payment extends Model {
+    class Order_status extends Model {
         static associate(models) {
-            Payment.belongsTo(models.Order);
+            Order_status.belongsTo(models.Order);
         }
     }
-    Payment.init(
+    Order_status.init(
         {
             id: {
                 type: DataTypes.UUID,
@@ -15,22 +15,18 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 allowNull: false,
             },
-            paymentMethod: {
-                type: DataTypes.ENUM('credit_card', 'paypal'),
-                allowNull: false,
-            },
-            amount: {
-                type: DataTypes.FLOAT,
+            status: {
+                type: DataTypes.ENUM('En attente', 'Confirmée', 'Expédiée', 'Livrée', 'Annulée', 'Remboursée'),
                 allowNull: false,
             },
         },
         {
             sequelize: sequelize,
-            modelName: 'Payment',
+            modelName: 'Order_status',
             timestamps: true,
         }
     );
-    Payment.afterCreate(afterCreateHook);
+    Order_status.afterCreate(afterCreateHook);
 
-    return Payment;
+    return Order_status;
 }

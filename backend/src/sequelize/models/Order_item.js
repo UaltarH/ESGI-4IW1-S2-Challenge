@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const { afterCreateHook } = require('../hooks/Order_itemsHooks');
 
 module.exports = (sequelize, DataTypes) => {
     class Order_item extends Model {
@@ -31,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: true,
         }
     );
+    Order_item.afterCreate(afterCreateHook);
 
     return Order_item;
 };

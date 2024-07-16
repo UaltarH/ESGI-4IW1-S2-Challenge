@@ -1,10 +1,12 @@
 const { Model, DataTypes } = require('sequelize');
+const { afterCreateHook } = require('../hooks/OrdersHooks');
 
 module.exports = function (sequelize, DataTypes) {
     class Order extends Model {
         static associate(models) {
             Order.belongsTo(models.User);
             Order.hasMany(models.Order_item);
+            Order.hasMany(models.Order_status);
             Order.hasOne(models.Payment);
             Order.hasOne(models.Shipping);
         }
@@ -17,6 +19,10 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 allowNull: false,
             },
+            totalPrice: {
+                type: DataTypes.FLOAT,
+                allowNull: false,
+            },
             date: {
                 type: DataTypes.DATE,
                 allowNull: false,
@@ -25,9 +31,10 @@ module.exports = function (sequelize, DataTypes) {
         {
             sequelize: sequelize,
             modelName: 'Order',
-            paranoid: true,
             timestamps: true,
         }
     );
+    Order.afterCreate(afterCreateHook);
+
     return Order;
 }

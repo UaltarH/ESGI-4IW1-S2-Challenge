@@ -100,6 +100,24 @@ class orderController {
             res.status(500).json({ message: error.message });
         }
     }
+
+    static async createPdfOrder(req, res, next) {
+        try {
+            const order = await MongoOrder.findById(req.params.id);
+            if (!order) {
+                return res.status(404).json({ message: "Order not found" });
+            }
+            // res.render('invoice', order, (err, html) => {
+            //     if (err) {
+            //         return res.status(500).json({ error: 'Error rendering invoice' });
+            //     }
+            //     res.json({ html });
+            // });
+            res.render('invoice', order);
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
 }
 
 

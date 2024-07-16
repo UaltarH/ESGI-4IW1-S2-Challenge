@@ -12,6 +12,8 @@
         </div>
         <stepperStatusOrder v-if="orderVisualizer" :statuses="orderVisualizer.status" class="my-4"</stepperStatusOrder>
         <visualizer v-if="orderVisualizer != undefined" :title="'Commande'" :data="orderVisualizer" :buttons="['close', 'invoice']" @createFacture="onCreateFacture" @closeVisualizer="onCloseVisualizer"></visualizer>
+        <p v-if="isGenerating">Génération en cours...</p>
+        <p v-if="error">{{ error }}</p>
     </div>
   </template>
   <script lang="ts" setup>
@@ -21,6 +23,8 @@
   import { OrdersService } from '@/composables/api/orders.service.ts';
   import stepperStatusOrder  from '@/components/common/stepperStatusOrder.vue';
   import visualizer from '@/components/common/visualizer.vue';
+  import { usePdfGenerator } from '@/composables/order/generatePdfInvoice';
+
 
   interface orderMappedTable {
     id: string;
@@ -30,6 +34,8 @@
     trackingNumber: string;
     status: string;
   }
+  const { generatePdfFromOrder, isGenerating, error } = usePdfGenerator();
+
   const datasTable: Ref<orderMappedTable[]> = ref<orderMappedTable[]>([]);
   const originDatas: Ref<mongoOrder[]> = ref<mongoOrder[]>([]);
   const orderVisualizer: Ref<mongoOrder | undefined> = ref<mongoOrder>();
@@ -62,8 +68,7 @@
     }
   }
 
-  const mappOrderToTable = (order: mongoOrder): orderMappedTable => {
-    //get the last status of the orderusing the date     
+  const mappOrderToTable = (order: mongoOrder): orderMappedTable => {       
     let lastStatus = getTheLatestStatus(order.status);
     return {
       id: order.postgresId,
@@ -97,9 +102,10 @@
     };
   }
 
-  function onCreateFacture(item: orderMappedTable) {
-    alert("Create facture: " + JSON.stringify(item));
+  async function onCreateFacture(item: mongoOrder) {    
+    generatePdfFromOrder(item);    
   }
+
   function onCloseVisualizer() {
     orderVisualizer.value = undefined;
   }

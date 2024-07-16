@@ -7,5 +7,9 @@ export const OrdersService = () => {
         return await fetch(baseUrl + Api.orders).then(res => res.json());
     }
 
-    return { getAllMongoOrders };
+    const getHtmlPdfOrder = async (id: string): Promise<any> => {
+        return await fetch(baseUrl + Api.orders + `/${id}`).then(res => res.text());
+    }
+
+    return { getAllMongoOrders, getHtmlPdfOrder };
 };

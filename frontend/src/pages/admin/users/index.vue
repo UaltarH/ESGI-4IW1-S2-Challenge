@@ -13,6 +13,8 @@
           @delete-multiple-items="handleMultipleDelete"
       ></CustomizableTable>
 
+      <visualizer class="mt-4" v-if="userVisualizer != undefined" :title="'Produit'" :data="userVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
+
     <Dialog v-model:open="isModalVisible">
         <GenericEditModal
           :model="selectedItem"
@@ -24,16 +26,19 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted } from 'vue';
+import { reactive, ref, onMounted, Ref } from 'vue';
 import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
 import { useUserManagement } from '@/composables/api/useUserManagement';
 import { User } from '@/dto/user.dto';
 import GenericEditModal from '@/components/common/editModale/genericEditModale.vue';
 import { Dialog } from '@/components/ui/dialog'; 
+import visualizer from '@/components/common/visualizer.vue';
+
 
 const { getUsers, updateUser, deleteUser, deleteMultiplesUsers } = useUserManagement();
 
 const datas = ref<User[]>([]);
+const userVisualizer: Ref<User | undefined> = ref<User>();
 
 const refreshUsers = () => {
   getUsers((datas: []) => datas).then(res => datas.value = res.users);
@@ -53,15 +58,14 @@ const data = reactive({
 const isModalVisible = ref(false);
 const selectedItem = ref<Record<string, any> | null>(null);
 
-function handleVisualize(item: any) {
-  window.location.href = `/admin/users/${item.id}`;
+function handleVisualize(item: User) {
+  userVisualizer.value = item;
 }
 
 function handleEdit(item: User) {
   const itemCopy = { ...item } as Partial<typeof item>;
   delete itemCopy.createdAt;
-  delete itemCopy.updatedAt;
-  delete itemCopy.deletedAt;
+  delete itemCopy.updatedAt;  
   selectedItem.value = { ...itemCopy };
   isModalVisible.value = true;
 }
@@ -100,6 +104,10 @@ function handleMultipleDelete(items: User[]) {
     refreshUsers();
   })
 }
+
+function onCloseVisualizer() {
+    userVisualizer.value = undefined;
+  }
 
 onMounted(() => {
   refreshUsers();

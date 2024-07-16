@@ -77,6 +77,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: test_app
+    ports:
+      - 3333:5432
     networks:
       - default_network
     

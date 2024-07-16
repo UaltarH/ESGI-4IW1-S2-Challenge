@@ -32,13 +32,14 @@ jobs:
           export MONGO_INITDB_ROOT_USERNAME=testmongo
           export MONGO_INITDB_ROOT_PASSWORD=testmongo
 
-      - name: Start docker
-        run: docker-compose up -d
+      - name: Start mango test
+        run: docker compose up -d mongo
 
-      - name: Wait for services to be ready
-        run: |
-          docker-compose run --rm -T node sh -c 'until pg_isready --host=postgres_test --username=$POSTGRES_USER --dbname=$POSTGRES_DB; do sleep 1; done'
-          docker-compose run --rm -T node sh -c 'until mongo --eval "print(\\"waited for connection\\")" --username $MONGO_INITDB_ROOT_USERNAME --password $MONGO_INITDB_ROOT_PASSWORD --authenticationDatabase admin; do sleep 1; done'
+      - name: Start postgres test
+        run: docker compose up -d postgres_test
+
+      - name: Start node test
+        run: docker compose up -d node
 
       - name: Clean database schema
         run: docker compose exec node migrate-down-all-test

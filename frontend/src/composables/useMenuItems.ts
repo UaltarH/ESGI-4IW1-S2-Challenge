@@ -39,6 +39,18 @@ export const useMenuItems = () => {
           access: "admin",
         },
         {
+          title: "Produits",
+          icon: "",
+          route: "/admin/products",
+          access: "admin",
+        },
+        {
+          title: "Commandes",
+          icon: "",
+          route: "/admin/orders",
+          access: "admin",
+        },
+        {
           title: "Dashboard",
           icon: "",
           route: "/admin/dashboard",

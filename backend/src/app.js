@@ -1,4 +1,6 @@
 const express = require('express');
+const ejs = require('ejs');
+const path = require('path');
 const cors = require('cors');
 const connectMongoDB = require('./config/mongo_config');
 const cookieParser = require('cookie-parser');
@@ -31,6 +33,9 @@ app.use(productRouter);
 app.use(orderRouter);
 app.use(cartRouter);
 app.use(mockRouter);
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'template', 'pdf'));
 
 connectMongoDB();
 

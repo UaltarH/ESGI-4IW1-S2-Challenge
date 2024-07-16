@@ -55,7 +55,7 @@ const props = defineProps({
     type: Object,
   },
   action: {
-    type: (Function as PropType<(id:number) => Promise<ApiResponse>>),
+    type: (Function as PropType<(data: Object) => Promise<ApiResponse>>),
   }
 });
 const sizes:{[key:string]:string} = {
@@ -70,11 +70,11 @@ const error = ref<string>('');
 const success = ref<string>('');
 
 function handleSubmit() {
-  if(!props.action || !props.data || !props.data.id) {
+  if(!props.action || !props.data) {
     error.value = 'Une erreur est survenue';
     return;
   }
-  props.action(props.data.id).then((data:ApiResponse) => {
+  props.action(props.data).then((data:ApiResponse) => {
     if(data.success) {
       success.value = data.message;
       setTimeout(() => {

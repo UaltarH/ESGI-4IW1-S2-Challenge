@@ -8,7 +8,6 @@ export interface mongoProduct {
     categoryId: string,
     categoryName: string,
     createdAt: Date,
-    updatedAt: Date,
-    deleteAt: Date,
+    updatedAt: Date,    
     __v: number
 }

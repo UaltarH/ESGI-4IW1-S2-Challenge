@@ -1,15 +1,15 @@
 const MongoOrder = require('../mongo/models/MongoOrder');
-const { Order, Order_item, Payment, Shipping, sequelize, } = require('../sequelize/models');
-const { createMongoOrder } = require('../services/mongoOrderService')
+const { Order, Order_item, Payment, Shipping, sequelize, Order_status } = require('../sequelize/models');
+
 
 class orderController {
     static async createOrder(req, res, next) {
-        const { UserId, products, date, payment, shipping } = req.body;
+        const { UserId, products, date, payment, shipping, totalPrice } = req.body;
         const transaction = await sequelize.transaction();
 
         try {
             const order = await Order.create(
-                { UserId, date },
+                { UserId, date, totalPrice },
                 { transaction }
             );
             const orderItems = products.map(product => ({
@@ -18,7 +18,9 @@ class orderController {
                 quantity: product.quantity,
                 price: product.price,
             }));
-            const orderItemsRes = await Order_item.bulkCreate(orderItems, { transaction });
+            for (const orderItem of orderItems) {
+                await Order_item.create(orderItem, { transaction });
+            }
 
             const paymentData = {
                 OrderId: order.id,
@@ -40,7 +42,7 @@ class orderController {
                     country: shipping.country
                 })
             });
-            
+
             const trackingNumber = await response.text();
 
             const shippingData = {
@@ -54,10 +56,14 @@ class orderController {
                 country: shipping.country,
             };
             const shippingRes = await Shipping.create(shippingData, { transaction });
-            await transaction.commit();
 
-            //create order in mongoDB
-            await createMongoOrder(order, UserId, orderItemsRes, paymentRes, shippingRes);
+            const orderStatusData = {
+                OrderId: order.id,
+                status: "En attente",
+            };
+            await Order_status.create(orderStatusData, { transaction });
+
+            await transaction.commit();
 
             res.status(201).json({ success: true, order });
 
@@ -68,43 +74,46 @@ class orderController {
             next(error);
         }
     }
-    
+
     static async updateShippingStatus(req, res, next) {
-        const transaction = await sequelize.transaction();
         try {
             const trackingNumber = req.body.trackingNumber;
             const status = req.body.status;
-    
-            const mongoUpdateResult = await MongoOrder.updateOne(
-                { 'shipping.trackingNumber': trackingNumber },
-                { $set: { 'shipping.status': status } }
-            );
 
-            if (mongoUpdateResult.modifiedCount === 0) {
-                return res.status(404).json({ message: 'No orders found in MongoDB with the given tracking number' });
+            const shipping = await Shipping.findOne({ where: { trackingNumber } });
+            if (!shipping) {
+                return res.status(404).json({ message: "Shipping not found" });
             }
-    
-            const [updated] = await Shipping.update(
-                { status: status },
-                { where: { trackingNumber: trackingNumber }, transaction }
-            );
-    
-            if (updated === 0) {
-                await transaction.rollback();
-                return res.status(404).json({ message: 'Shipping not found in PostgreSQL' });
-            }
-    
-            await transaction.commit();
-            return res.json("ok");
+            await Order_status.create({ status, OrderId: shipping.OrderId });
+
+            return res.status(200).json({ message: "Shipping status updated" });
+        } catch (error) {
+            res.status(500).json({ message: "Erreur interne, veuillez réessayer" });
+        }
+    }
+
+    static async getAllOrders(req, res, next) {
+        try {
+            const order = await MongoOrder.find();
+            res.json({ orders: order });
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
     }
-    
-    static async getAllOrders(req, res, next) {
+
+    static async createPdfOrder(req, res, next) {
         try {
-            const order = await MongoOrder.find(); 
-            res.json(order);
+            const order = await MongoOrder.findById(req.params.id);
+            if (!order) {
+                return res.status(404).json({ message: "Order not found" });
+            }
+            // res.render('invoice', order, (err, html) => {
+            //     if (err) {
+            //         return res.status(500).json({ error: 'Error rendering invoice' });
+            //     }
+            //     res.json({ html });
+            // });
+            res.render('invoice', order);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }

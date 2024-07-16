@@ -11,7 +11,6 @@ const afterCreateHook = async (product, options) => {
         categoryName: category.name,
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
-        deleteAt: null,
     });
 };
 
@@ -37,17 +36,14 @@ const afterUpdateHook = async (product, options) => {
 };
 
 const afterDestroyHook = async (product, options) => {
-    const mongoProduct = await MongoProduct.findOneAndUpdate(
-        { postgresId: product.id },
-        { deleteAt: new Date() }
-    );
+    const mongoProduct = await MongoProduct.findOneAndDelete({ postgresId: product.id });
 
     if (!mongoProduct) {
         console.error(`MongoProduct with postgresId ${product.id} not found`);
         return;
     }
 
-    console.log(`MongoProduct deleted (deleteAt): ${mongoProduct}`);
+    console.log(`MongoProduct deleted: ${mongoProduct}`);
 };
 
 module.exports = {

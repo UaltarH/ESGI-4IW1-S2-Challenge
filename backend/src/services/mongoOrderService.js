@@ -1,7 +1,7 @@
 const MongoOrder = require('../mongo/models/MongoOrder');
 const { User, Product } = require('../sequelize/models');
 
-async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippingRes) {
+async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippingRes, orderStatusRes) {
     try {
         let user = await User.findByPk(userId);
 
@@ -16,8 +16,15 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
             };
         }));
 
+        const orderStatusFinal = orderStatusRes.map(orderStatus => ({
+            statusId: orderStatus.id,
+            status: orderStatus.status,
+            date: orderStatus.createdAt,
+        }));
+
         await MongoOrder.create({
             postgresId: order.id,
+            totalPrice: order.totalPrice,
             date: order.date,
             user: {
                 userId: order.UserId,
@@ -26,6 +33,7 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
                 email: user.email,
                 phone: user.phone,
             },
+            status: orderStatusFinal,
             orderItems: orderItemsFinal,
             payment: {
                 paymentId: paymentRes.id,
@@ -42,7 +50,6 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
                 zipcode: shippingRes.zipcode,
                 country: shippingRes.country,
             },
-            deleteAt: null,
         });
 
         console.log('Order created in MongoDB');

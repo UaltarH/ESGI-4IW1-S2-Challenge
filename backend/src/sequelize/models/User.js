@@ -1,10 +1,10 @@
 const { Model, DataTypes } = require("sequelize");
+const { afterUpdateHook, afterDeleteHook } = require("../hooks/UsersHooks");
 const bcrypt = require("bcryptjs");
-const { afterCreateHook, afterUpdateHook, afterDestroyHook } = require("../hooks/UsersHooks");
 
 module.exports = function (sequelize, DataTypes) {
   class User extends Model {
-    
+
     static associate(models) {
       User.hasMany(models.Order);
       User.hasOne(models.Cart);
@@ -78,15 +78,13 @@ module.exports = function (sequelize, DataTypes) {
     {
       sequelize: sequelize,
       modelName: "User",
-      paranoid: true,
       timestamps: true,
     }
   );
 
-  User.afterCreate(afterCreateHook);
-  User.afterUpdate(afterUpdateHook);
-  User.afterDestroy(afterDestroyHook);
   User.addHooks();
+  User.afterUpdate(afterUpdateHook);
+  User.afterDestroy(afterDeleteHook);
 
   return User;
 };

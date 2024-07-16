@@ -8,11 +8,9 @@ services:
       - 127.0.0.1:27017:27017
     volumes:
       - mongo-data:/data/db
-      - ./SampleCollections:/SampleCollections
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    working_dir: /SampleCollections
     networks:
       - default_network
 
@@ -25,6 +23,8 @@ services:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       JWT_SECRET: ${JWT_SECRET}
       NODE_ENV: ${NODE_ENV}
+      USER_MAIL: ${USER_MAIL}
+      USER_MAIL_PASSWORD: ${USER_MAIL_PASSWORD}
     ports:
       - 8000:3000
     volumes:
@@ -80,7 +80,7 @@ services:
     environment:
       PORT: 7000
     ports:
-      - 7000:7000
+      - 7001:7000
     volumes:
       - ./laposteapi:/home/node/app
     working_dir: /home/node/app

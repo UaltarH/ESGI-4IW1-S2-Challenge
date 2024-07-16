@@ -1,5 +1,6 @@
 const { User } = require('../sequelize/models/');
 const crudService = require('../services/crudGeneric');
+const { sendMail } = require('../services/sendMail');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -9,6 +10,22 @@ class userController {
     if (error) {
       return res.status(400);
     }
+    //test send mail:
+    // const mailOptions = {
+    //   from: {
+    //     name: 'BoxToBe Administration',
+    //     address: process.env.USER_MAIL
+    //   },
+    //   to: ['mathieupannetrat5@gmail.com'],
+    //   subject: 'Test email',
+    //   text: 'This is a test email'
+    // };
+    // try {
+    //   await sendMail(mailOptions);
+    // } catch (err) {
+    //   console.error('Failed to send email controller', err);
+    // }
+
     res.json({ users: data });
   }
 
@@ -43,7 +60,28 @@ class userController {
     if (error) {
       return res.status(404);
     }
-    res.sendStatus(204);
+    res.status(204).json({ user: data });
+  }
+
+  static async deleteMultiplesUsers(req, res) {
+    const { usersId } = req.body;
+    const ids = usersId.split(',');
+
+    try {
+        const deletionPromises = ids.map(async (id) => {
+            const { data, error } = await crudService.destroy(User, id);
+            if (error) {
+                throw new Error(`User with ID ${id} not found: ${error.message}`);
+            }
+        });
+
+        await Promise.all(deletionPromises);
+
+        res.sendStatus(204);
+    } catch (error) {
+        console.error('Deletion error:', error);
+        res.status(500).json({ error: 'An error occurred while deleting the users' });
+    }
   }
 
   static async replaceUser(req, res) {
@@ -65,14 +103,14 @@ class userController {
     }
     res.sendStatus(204);
   }
-  
+
   static async login(req, res) {
     if (Object.keys(req.body).length > 2) {
         return res.sendStatus(400);
     }
 
     try {
-        const user = await User.findOne({ where: { email: req.body.email } });
+      const user = await User.findOne({ where: { email: req.body.email } });
 
         if (!user) {
             return res.sendStatus(401);

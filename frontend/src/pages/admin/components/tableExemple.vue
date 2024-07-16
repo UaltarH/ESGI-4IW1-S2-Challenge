@@ -7,6 +7,7 @@
         :columns="data.columns"
         :actions="data.actions"
         :numberOfItemsPerPage="data.numberOfItemsPerPage"
+        :canDeleteAll="true"
         @visualize-item="handleVisualize"
         @edit-item="handleEdit"
         @delete-item="handleDelete"

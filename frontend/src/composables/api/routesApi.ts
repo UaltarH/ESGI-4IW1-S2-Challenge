@@ -10,4 +10,5 @@ export const Api = {
   mockRegister: "/mock/users",
   products: "/products",
   mongoProducts: "/mongoProducts",
+  orders: "/orders",
 };

@@ -23,7 +23,7 @@ module.exports = {
       let role;
       if (i === 0) {
         role = "admin";
-      } 
+      }
       else if (i === 2) {
         role = "store_manager";
       } else if (i === 3) {
@@ -50,7 +50,6 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         country: country,
-        deletedAt: null,
       });
     }
 

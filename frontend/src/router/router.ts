@@ -25,7 +25,8 @@ const routes = [
     children: [
       { path: 'dashboard', component: () => import('@/pages/admin/dashboard/index.vue') },
       { path: 'users', component: () => import('@/pages/admin/users/index.vue') },
-      { path: 'users/:id', component: () => import('@/pages/admin/users/show/index.vue') },
+      { path: 'products', component: () => import('@/pages/admin/products/index.vue') },
+      { path: 'orders', component: () => import('@/pages/admin/orders/index.vue') },
       { path: 'roles', component: Roles },
       { path: '', redirect: 'dashboard' },
     ]

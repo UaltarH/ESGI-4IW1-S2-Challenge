@@ -48,5 +48,6 @@ const checkRole = () => async (req, res, next) => {
     // création d'un utilisateur par une personne non identifiée
     validate(userRegisterUserSchema);
     req.body.role =  role.USER;
+    next();
 }
 module.exports = checkRole;

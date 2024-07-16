@@ -1,0 +1,16 @@
+@layer components {
+  .notification {
+    @apply fixed bottom-2 right-2
+    p-4 mx-auto text-center
+    rounded-md border border-gray-200 bg-white dark:bg-dark-blue shadow-md;
+    &--success {
+      @apply border-success;
+    }
+    &--error {
+      @apply border-danger-light;
+    }
+    p {
+      @apply flex items-center justify-center gap-4;
+    }
+  }
+}

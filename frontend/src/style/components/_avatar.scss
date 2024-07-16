@@ -1,0 +1,9 @@
+@layer components {
+  .avatar {
+    @apply w-52 h-52 rounded-full border-8 border-white drop-shadow-lg bg-gray-50 dark:bg-dark-blue;
+
+    &--small {
+      @apply w-32 h-32;
+    }
+  }
+}

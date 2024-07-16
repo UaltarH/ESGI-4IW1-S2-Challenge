@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "partials/globals";
+@import "partials/variables";
+@import "components/switch";
+@import "components/button";
+@import "components/menu";
+@import "components/card";
+@import "components/tag";
+@import "components/modal";
+@import "components/form";
+@import "components/componentWrapper";
+@import "components/spinner";
+@import "components/cart";
+@import "components/numberField";
+@import "components/tab";
+@import "components/notification";
+@import "components/tile";
+@import "components/avatar";
+@import "components/profile";

@@ -1,0 +1,17 @@
+@layer components {
+  .number-field{
+    @apply flex justify-between items-center gap-2
+    bg-white dark:bg-dark-blue dark:border-gray-700
+    border rounded-sm px-2
+    focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 dark:focus-within:ring-offset-dark-blue;
+
+    input {
+      @apply text-center h-min w-12
+        bg-white dark:bg-dark-blue
+      focus:outline-0;
+    }
+    button {
+      @apply font-medium text-xl;
+    }
+  }
+}

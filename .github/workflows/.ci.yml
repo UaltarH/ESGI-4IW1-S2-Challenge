@@ -32,6 +32,11 @@ jobs:
           export MONGO_INITDB_ROOT_USERNAME=testmongo
           export MONGO_INITDB_ROOT_PASSWORD=testmongo
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver-opts: network=host
+
       - name: Start node test
         run: docker compose up -d node
 

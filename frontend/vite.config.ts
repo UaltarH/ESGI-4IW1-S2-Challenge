@@ -1,26 +1,33 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 
+
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [
-    vue({
-      template: {
-        compilerOptions: {
-          isCustomElement: (tag) => tag === "ion-icon",
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+
+  return {
+    plugins: [
+      vue({
+        template: {
+          compilerOptions: {
+            isCustomElement: (tag) => tag === 'ion-icon',
+          },
         },
+      }),
+    ],
+    define: {
+      'process.env': env,
+    },
+    server: {
+      watch: {
+        usePolling: true,
       },
-    }),
-  ],
-  server: {
-    watch: {
-      usePolling: true,
-    }
-  },
-  resolve: {
-      // alias qui permet d'appeler le dossier src avec @ dans les imports
+    },
+    resolve: {
       alias: {
-      '@': '/src',
+        '@': '/src',
       },
-  },
-})
+    },
+  };
+});

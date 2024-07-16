@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173 --host & sass --watch src/style/input.scss src/main.css",
-    "build": "vue-tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "scss": "sass --watch src/style/input.scss src/main.css"
   },

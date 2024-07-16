@@ -4,10 +4,10 @@ services:
   mongo:
     container_name: ${MONGO_CONTAINER_NAME:-app_mongo}
     image: mongo
-    ports:
-      - 127.0.0.1:27017:27017
     volumes:
       - mongo-data:/data/db
+    ports:
+      - 27017:27017
     environment:
       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
@@ -25,6 +25,7 @@ services:
       NODE_ENV: ${NODE_ENV}
       USER_MAIL: ${USER_MAIL}
       USER_MAIL_PASSWORD: ${USER_MAIL_PASSWORD}
+      DOMAIN_FRONT: ${DOMAIN_FRONT}
     ports:
       - 8000:3000
     volumes:
@@ -32,6 +33,7 @@ services:
     working_dir: /home/node/app
     entrypoint: sh -c
     command: '"npm install && npm run dev"'
+    # command: '"npm install && npm run start"'
     networks:
       - default_network
     depends_on:
@@ -41,13 +43,13 @@ services:
   vuejs:
    container_name: ${VUEJS_CONTAINER_NAME:-app_vuejs}
    image: node:20.0.0-alpine
-   working_dir: /home/node/app
-   # le --port 5174 --host est pour que le serveur soit accessible depuis l'extérieur et ce sont des paramètres passés à vite parce que npm run dev exécute vite
-   command: '"cd frontend && npm install && npm run dev"'
+   working_dir: /home/node/app   
+   command: '"npm install && npm run dev"'
+  #  command: '"npm install && npm run build"'
    ports:
      - 5173:5173
    volumes:
-      - .:/home/node/app
+      - ./frontend:/home/node/app
    entrypoint: sh -c
    networks:
       - default_network
@@ -78,7 +80,7 @@ services:
     container_name: ${LAPOSTEAPI_CONTAINER_NAME:-app_laposteapi}
     image: node:22.3-alpine3.20
     environment:
-      PORT: 7000
+      PORT: 7001
     ports:
       - 7001:7000
     volumes:
@@ -91,6 +93,22 @@ services:
     depends_on:
       - postgres
       - mongo
+
+  nginx:
+    container_name: nginx
+    image: nginx:1-alpine
+    ports:
+      - 8078:80
+      - 44378:443
+    volumes:
+      - ./frontend/dist:/usr/share/nginx/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - default_network
+    depends_on:
+      - vuejs
+      - node
+      - adminer
 
 volumes:
   mongo-data: {}

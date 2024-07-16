@@ -14,8 +14,16 @@ const cartRouter = require('./routes/cart');
 const mockRouter = require("./routes/mock");
 const app = express();
 
+const allowedOrigins = ["http://localhost:5173", 'https://boxtobe.mapa-server.org', 'http://boxtobe.mapa-server.org'];
+
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   optionsSuccessStatus: 200
 };
 

@@ -33,13 +33,13 @@ jobs:
           export MONGO_INITDB_ROOT_PASSWORD=testmongo
 
       - name: Start mango test
-        run: docker compose run mongo -d
+        run: docker compose run mongo
 
       - name: Start postgres test
-        run: docker compose run postgres_test -d
+        run: docker compose run postgres_test
 
       - name: Start postgres test
-        run: docker compose run node -d
+        run: docker compose run node
 
       - name: Clean database schema
         run: docker compose exec node migrate-down-all-test

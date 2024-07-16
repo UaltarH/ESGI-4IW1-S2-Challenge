@@ -4,6 +4,8 @@ services:
   mongo:
     container_name: ${MONGO_CONTAINER_NAME:-app_mongo}
     image: mongo
+    volumes:
+      - mongo-data:/data/db
     ports:
       - 27017:27017
     environment:
@@ -55,6 +57,8 @@ services:
   postgres:
     container_name: ${POSTGRES_CONTAINER_NAME:-app_postgres}
     image: postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -106,6 +110,8 @@ services:
       - node
       - adminer
 
-
+volumes:
+  mongo-data: {}
+  postgres-data: {}
 networks:
   default_network: {}

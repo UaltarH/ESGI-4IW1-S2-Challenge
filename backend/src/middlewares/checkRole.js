@@ -4,6 +4,7 @@ const { User } = require('../sequelize/models/');
 const bcrypt = require("bcryptjs");
 const crudService = require("../services/crudGeneric");
 const validate = require("./validate");
+const role = require("../dto/role.dto");
 const {
     userRegisterAdminSchema,
     userRegisterUserSchema,
@@ -16,10 +17,10 @@ const checkRole = () => async (req, res, next) => {
     if (token) {
         try {
             const payload = jwt.verify(token, process.env.JWT_SECRET);
-            if (payload.role === 'admin') {
+            if (payload.role === role.ADMIN) {
                 const user = await findByPk(User, payload.id);
                 if(user)
-                    if(user.role === 'admin') {
+                    if(user.role ===  role.ADMIN) {
                         if(req.method === 'POST')
                             validate(userRegisterAdminSchema);
                         if(req.method === 'PATCH')
@@ -46,6 +47,6 @@ const checkRole = () => async (req, res, next) => {
     }
     // création d'un utilisateur par une personne non identifiée
     validate(userRegisterUserSchema);
-    req.body.role = 'user';
+    req.body.role =  role.USER;
 }
 module.exports = checkRole;

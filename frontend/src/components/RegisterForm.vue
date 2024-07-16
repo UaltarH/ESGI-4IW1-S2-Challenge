@@ -168,26 +168,23 @@ const formSchema = ref<FormField<any>[]>([
           .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" })
           .optional(),
     }),
-    col: 0,
+    col: 1,
   },
 ]);
 const formLoading = ref(false);
 const formDisabled = ref(false);
 
 async function handleSubmit(schema: FormField<any>[]) {
-  console.log("Form submitted");
-  console.log(schema);
   // build param
   let param: { [key: string]: string | number | Date } = {};
   schema.forEach((item) => {
     if (item.value !== undefined)
       param[item.name] = item.value;
   });
+  param.role = "user";
   formLoading.value = true;
   formDisabled.value = true;
-  setTimeout(async () => {
-    await fetchRegister(param);
-  }, 1000);
+  await fetchRegister(param);
 }
 
 const fetchRegister = async (param: { [key: string]: string | number | Date }) => {
@@ -207,12 +204,12 @@ function handleRegister(res: Response) {
       router.push({name: 'home'});
     }, 3000);
   } else {
-    console.error(res.statusText);
-    formLoading.value = false;
-    notificationStore.add({message: 'Erreur lors de l\'inscription', timeout: 3000, type: 'error'});
-    if(formRef.value !== null) {
-      formRef.value.handleReset();
-    }
+    setTimeout(() => {
+      console.error(res.statusText);
+      formLoading.value = false;
+      formDisabled.value = false;
+      notificationStore.add({message: 'Erreur lors de l\'inscription', timeout: 3000, type: 'error'});
+    }, 3000);
   }
 }
 </script>

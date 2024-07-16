@@ -21,31 +21,31 @@
               :required="getFieldRequired(item.name)"
               @blur="validateField(item)"
               v-model="item.value"
-              :disabled="props.disabled"
+              :disabled="item.disabled === undefined ? props.disabled : item.disabled"
           >
           <p v-if="item.error" class="text-danger pl-2 text-xs">{{ item.error }}</p>
         </template>
       </form-item>
-      <footer class="w-full flex justify-center gap-4">
-        <button type="submit" class="btn btn--primary" :class="props.disabled ? 'btn--disabled' : ''" @click="handleSubmit" :disabled="props.disabled">{{ submitText }}</button>
-        <button v-if="showReset" type="reset" class="btn btn--danger" :class="props.disabled ? 'btn--disabled' : ''" @click="handleReset" :disabled="props.disabled">Reset</button>
-        <span v-if="props.loading">Veuillez patienter</span>
+      <footer class="w-full mt-4 flex flex-col items-center gap-4">
+        <div class=" flex justify-center gap-4">
+          <button type="submit" class="btn btn--primary" :class="props.disabled ? 'btn--disabled' : ''" @click="handleSubmit" :disabled="props.disabled">{{ submitText }}</button>
+          <button v-if="showReset" type="reset" class="btn btn--danger" :class="props.disabled ? 'btn--disabled' : ''" @click="handleReset" :disabled="props.disabled">Reset</button>
+          <slot name="footer"></slot>
+        </div>
+        <p v-if="props.loading">Veuillez patienter</p>
       </footer>
     </form>
   </component-wrapper>
 </template>
 <script lang="ts" setup generic="FieldSchema extends ZodObject<any>">
 import FormItem from "@/components/FormItem.vue";
-import {onMounted, onUnmounted, ref} from "vue";
-import {FormField} from "@/dto/formField.dto.ts";
-import {useForm} from "@/composables/useForm.ts";
-import {ZodObject} from "zod";
+import { onUnmounted, ref } from "vue";
+import { FormField } from "@/dto/formField.dto.ts";
+import { useForm } from "@/composables/useForm.ts";
+import { ZodObject } from "zod";
 import ComponentWrapper from "@/components/ComponentWrapper.vue";
 
 const formRef = ref(null);
-onMounted(() => {
-  console.log("Form mounted");
-});
 onUnmounted(() => {
   formRef.value = null;
 });
@@ -80,14 +80,12 @@ const props = defineProps({
 })
 const formSchema = ref<FormField<FieldSchema>[]>(props.schema);
 
-const {getFieldRequired, getFieldMin, getFieldMax, validateField, validate} = useForm(formSchema);
+const { getFieldRequired, getFieldMin, getFieldMax, validateField, validate } = useForm(formSchema);
 function handleSubmit() {
-  console.log("Submitting form");
   if(validate())
     emit("submit", formSchema.value);
 }
 function handleReset() {
-  console.log("Resetting form");
   formSchema.value.forEach((item) => {
     item.value = undefined;
     item.error = undefined;

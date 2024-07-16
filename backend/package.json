@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "node --watch src/index.js",
-    "dev:legacy": "nodemon -L src/index.js",
+    "devl": "nodemon -L src/index.js",
     "start": "node src/index.js",
     "test": "jest",
     "migrate-up": " sequelize-cli db:migrate --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",

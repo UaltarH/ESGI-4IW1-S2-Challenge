@@ -12,4 +12,5 @@ export interface FormField<FieldSchema extends ZodObject<any>> {
     schema: FieldSchema;
     col?: number | undefined;
     dependsOn?: {field: string, errorMessage: string} | undefined;
+    disabled?: boolean | undefined;
 }

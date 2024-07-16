@@ -14,6 +14,7 @@ export const useAuth = () => {
   const loginUser = async (data: any) => {
     return await fetch(baseUrl + Api.login, {
       method: "POST",
+      credentials: 'include',
       headers: {
         "Content-Type": "application/json",
       },

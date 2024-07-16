@@ -78,14 +78,14 @@ export const useMenuItems = () => {
     {
       title: "Profil",
       icon: "",
-      route: "/profile",
-      access: "all",
+      route: "/user/account",
+      access: "user",
     },
     {
       title: "Déconnexion",
       icon: "",
       route: "/logout",
-      access: "all",
+      access: "user",
     },
   ]);
   return { menuItems, profileMenuItems, adminItems };

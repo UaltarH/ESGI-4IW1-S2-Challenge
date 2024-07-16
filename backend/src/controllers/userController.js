@@ -21,11 +21,21 @@ class userController {
   }
 
   static async getUser(req, res) {
-    const { data, error } = await crudService.findByPk(User, req.params.id);
-    if (error) {
-      return res.status(404);
+    const attributes = req.query.fields ? req.query.fields.split(',') : [];
+    if(attributes.length === 0) {
+        const {data, error} = await crudService.findByPk(User, req.params.id);
+        if (error) {
+            return res.status(404);
+        }
+        res.status(200).json({user: data});
     }
-    res.status(200).json({ user: data });
+    else {
+        const user = await User.findOne({where: {id: req.params.id}, attributes});
+        if (!user) {
+            return res.status(404);
+        }
+        res.status(200).json({user});
+    }
   }
 
   static async deleteUser(req, res) {
@@ -45,7 +55,7 @@ class userController {
     if (error) {
       return res.status(400);
     }
-    res.status(deletedData ? 200 : 201);
+    res.sendStatus(deletedData ? 200 : 201);
   }
 
   static async modifyUsers(req, res) {
@@ -53,39 +63,40 @@ class userController {
     if (error) {
       return res.status(404);
     }
-    res.json({ user: data });
+    res.sendStatus(204);
   }
   
   static async login(req, res) {
     if (Object.keys(req.body).length > 2) {
-        return res.status(400);
+        return res.sendStatus(400);
     }
 
     try {
         const user = await User.findOne({ where: { email: req.body.email } });
 
         if (!user) {
-            return res.status(401);
+            return res.sendStatus(401);
         }
 
         const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
         if (!isPasswordValid) {
-            return res.status(401);
+            return res.sendStatus(401);
         }
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
         res.cookie('auth_token', token, {
-            httpOnly: true, // Le cookie n'est pas accessible via JavaScript
+            httpOnly: process.env.NODE_ENV === 'production', // Le cookie n'est pas accessible via JavaScript
             secure: process.env.NODE_ENV === 'production', // Utiliser uniquement HTTPS en production
-            maxAge: 3600000 // 1 heure
+            maxAge: 3600000, // 1 heure
+            domain: 'localhost',
         });
 
-        return res.status(200).json();
+        return res.sendStatus(200);
     } catch (error) {
-        return res.status(500).json();
+        return res.sendStatus(500);
     }
-}
+  }
 
 }
 

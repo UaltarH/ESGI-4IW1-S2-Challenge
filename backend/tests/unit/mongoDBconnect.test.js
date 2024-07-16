@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const connectMongoDB = require('../../src/config/mongo_config');
 
+
 jest.mock('mongoose', () => ({
   connect: jest.fn(),
 }));
 
 describe('connectMongoDB', () => {
   it('should connect to MongoDB', async () => {
-    mongoose.connect.mockResolvedValueOnce();
-
+    const mockMangooseConnect = mongoose.connect.mockResolvedValueOnce();
+    const mockLog = jest.spyOn(console, 'log').mockImplementation(() => {});
     await connectMongoDB();
-
-    expect(mongoose.connect).toHaveBeenCalledWith(process.env.MONGO_URL);
-    // Optionally, you can check console.log, but it's usually not necessary
+    expect(mockMangooseConnect).toHaveBeenCalledWith(process.env.MONGO_URL);
+    expect(mockLog).toHaveBeenCalledWith('Connected to MongoDB');
   });
 
   it('should handle connection error', async () => {

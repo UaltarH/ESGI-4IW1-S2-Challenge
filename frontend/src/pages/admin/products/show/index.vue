@@ -34,7 +34,7 @@ getSpecificMongoProduct(route.params.id, (datas: []) => datas).then(res => produ
 getCategories().then(res => categories.value = res.categories);
 
 const formatValue = (value: any, key: string) => {
-  if (key === 'createdAt' || key === 'updatedAt' || key === 'deleteAt') {
+  if (key === 'createdAt' || key === 'updatedAt') {
     return value ? new Date(value).toLocaleDateString() : 'N/A';
   }
   return value || 'N/A';

@@ -85,7 +85,6 @@
     const itemCopy = { ...item } as Partial<typeof item>;
     delete itemCopy.createdAt;
     delete itemCopy.updatedAt;
-    delete itemCopy.deleteAt;
     selectedItem.value = { ...itemCopy };
     isModalVisible.value = true;
   }
@@ -94,7 +93,7 @@
     const itemCopy = { ...item };
     const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
-    updateMongoProduct(item._id, itemCopyWithStringValues)
+    updateMongoProduct(item.postgresId, itemCopyWithStringValues)
     .then(() => refreshProducts())
     .catch(error => {
         console.error('Error in handleSave:', error);

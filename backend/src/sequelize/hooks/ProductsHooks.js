@@ -11,7 +11,6 @@ const afterCreateHook = async (product, options) => {
         categoryName: category.name,
         createdAt: product.createdAt,
         updatedAt: product.updatedAt,
-        deleteAt: null,
     });
 };
 
@@ -44,7 +43,7 @@ const afterDestroyHook = async (product, options) => {
         return;
     }
 
-    console.log(`MongoProduct deleted (deleteAt): ${mongoProduct}`);
+    console.log(`MongoProduct deleted: ${mongoProduct}`);
 };
 
 module.exports = {

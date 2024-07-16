@@ -28,7 +28,7 @@ jobs:
           export POSTGRES_USER=testuser
           export POSTGRES_PASSWORD=testpassword
           export POSTGRES_DB=test_app
-          export TEST_DATABASE_URL= postgres://testuser:testpassword@postgres_test:5432/test_app
+          export TEST_DATABASE_URL=postgres://testuser:testpassword@postgres_test:5432/test_app
           export MONGO_INITDB_ROOT_USERNAME=testmongo
           export MONGO_INITDB_ROOT_PASSWORD=testmongo
 

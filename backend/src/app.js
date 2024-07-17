@@ -16,14 +16,14 @@ const app = express();
 
 
 const corsOptions = {
-  origin: ["http://localhost:5173", 'https://boxtobe.mapa-server.org'],
+  origin: ['https://boxtobe.mapa-server.org'],
   optionsSuccessStatus: 200,
   credentials: true
 };
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(cookieParser());
 
 app.use(indexRouter);

@@ -1,3 +1,68 @@
+# name: CI
+
+# on:
+#   pull_request:
+#     branches:
+#       - dev
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+
+#     services:
+#       docker:
+#         image: docker:19.03.12
+#         options: --privileged
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: "20"
+
+#       - name: Install dependencies
+#         working-directory: ./backend
+#         run: npm install
+
+#       - name: Export variable envrionnement
+#         run: |
+#           export NODE_ENV=test
+#           export POSTGRES_USER=testuser
+#           export POSTGRES_PASSWORD=testpassword
+#           export POSTGRES_DB=app
+#           export TEST_DATABASE_URL=postgres://testuser:testpassword@localhost:3333/test_app
+#           export MONGO_INITDB_ROOT_USERNAME=testmongo
+#           export MONGO_INITDB_ROOT_PASSWORD=testmongo
+
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
+#         with:
+#           driver-opts: network=host
+
+#       - name: Start node test
+#         run: |
+#           docker compose up -d node
+#           sleep 5
+#           docker compose exec node npm run migrate-down-all-test
+#           docker compose exec node npm run migrate-up-test
+#           docker compose exec node npm test
+#           docker compose exec node npm run migrate-down-all-test
+
+#       - name: Clean database schema
+#         run: docker compose exec node npm run migrate-down-all-test
+
+#       - name: Set up database schema
+#         run: docker compose exec node npm run migrate-up-test
+
+#       - name: Run tests
+#         run: docker compose exec node npm test
+
+#       - name: Clean database schema
+#         run: docker compose exec node npm run migrate-down-all-test
+
 name: CI
 
 on:
@@ -8,6 +73,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    env:
+      NODE_ENV: test
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: app
+      TEST_DATABASE_URL: postgres://testuser:testpassword@postgres_test:5432/test_app
+      MONGO_INITDB_ROOT_USERNAME: testmongo
+      MONGO_INITDB_ROOT_PASSWORD: testmongo
 
     steps:
       - name: Checkout repository
@@ -22,38 +96,22 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Export variable envrionnement
+      - name: Start services
         run: |
-          export NODE_ENV=test
-          export POSTGRES_USER=testuser
-          export POSTGRES_PASSWORD=testpassword
-          export POSTGRES_DB=app
-          export TEST_DATABASE_URL=postgres://testuser:testpassword@localhost:3333/test_app
-          export MONGO_INITDB_ROOT_USERNAME=testmongo
-          export MONGO_INITDB_ROOT_PASSWORD=testmongo
+          docker-compose up -d
+          docker-compose ps
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: network=host
-
-      - name: Start node test
+      - name: Wait for services to be ready
         run: |
-          docker compose up -d node
-          sleep 5
-          docker compose exec node npm run migrate-down-all-test
-          docker compose exec node npm run migrate-up-test
-          docker compose exec node npm test
-          docker compose exec node npm run migrate-down-all-test
+          docker-compose run --rm node /bin/sh -c "until nc -z postgres_test 5432; do echo waiting for postgres_test; sleep 2; done;"
+          docker-compose run --rm node /bin/sh -c "until nc -z mongo 27017; do echo waiting for mongo; sleep 2; done;"
 
-      - name: Clean database schema
-        run: docker compose exec node npm run migrate-down-all-test
+      - name: Run migrations and tests
+        run: |
+          docker-compose exec -T node npm run migrate-down-all-test
+          docker-compose exec -T node npm run migrate-up-test
+          docker-compose exec -T node npm test
+          docker-compose exec -T node npm run migrate-down-all-test
 
-      - name: Set up database schema
-        run: docker compose exec node npm run migrate-up-test
-
-      - name: Run tests
-        run: docker compose exec node npm test
-
-      - name: Clean database schema
-        run: docker compose exec node npm run migrate-down-all-test
+      - name: Clean up
+        run: docker-compose down

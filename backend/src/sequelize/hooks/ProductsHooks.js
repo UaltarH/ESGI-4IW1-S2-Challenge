@@ -1,4 +1,5 @@
 const MongoProduct = require('../../mongo/models/MongoProduct');
+const crudService = require('../../services/crudGeneric');
 
 const afterCreateHook = async (product, options) => {
     const category = await product.getCategory();
@@ -15,6 +16,7 @@ const afterCreateHook = async (product, options) => {
 };
 
 const afterUpdateHook = async (product, options) => {
+    const category = await product.getCategory();
     const mongoProduct = await MongoProduct.findOneAndUpdate(
         { postgresId: product.id },
         {
@@ -23,6 +25,7 @@ const afterUpdateHook = async (product, options) => {
             price: product.price,
             stock: product.stock,
             categoryId: product.CategoryId,
+            categoryName: category.name,
             updatedAt: product.updatedAt,
         }
     );

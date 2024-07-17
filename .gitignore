@@ -22,3 +22,6 @@ Sujet.pdf
 # build files
 **/main.css
 **/main.css.map
+
+
+/nginx/cert

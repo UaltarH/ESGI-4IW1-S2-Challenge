@@ -103,6 +103,7 @@ services:
     volumes:
       - ./frontend/dist:/usr/share/nginx/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/cert:/etc/ssl
     networks:
       - default_network
     depends_on:

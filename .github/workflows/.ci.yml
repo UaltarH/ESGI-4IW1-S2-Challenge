@@ -33,7 +33,7 @@ jobs:
 
       - name: Start services
         run: |
-          docker-compose up -d
+          docker-compose up -d node
           docker-compose ps
 
       - name: Wait for services to be ready

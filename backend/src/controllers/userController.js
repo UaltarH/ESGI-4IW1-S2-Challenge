@@ -124,8 +124,8 @@ class userController {
       const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
       res.cookie('auth_token', token, {
-        httpOnly: process.env.NODE_ENV === 'production', // Le cookie n'est pas accessible via JavaScript
-        secure: process.env.NODE_ENV === 'production', // Utiliser uniquement HTTPS en production
+        httpOnly: process.env.ENV === 'production', // Le cookie n'est pas accessible via JavaScript
+        secure: process.env.ENV === 'production', // Utiliser uniquement HTTPS en production
         maxAge: 3600000, // 1 heure
         domain: process.env.DOMAIN_FRONT,
       });

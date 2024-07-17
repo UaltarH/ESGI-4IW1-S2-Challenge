@@ -74,6 +74,20 @@ module.exports = function (sequelize, DataTypes) {
         defaultValue: "user",
         allowNull: false,
       },
+      verification_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      token_expiration: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      is_verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
+      }
     },
     {
       sequelize: sequelize,

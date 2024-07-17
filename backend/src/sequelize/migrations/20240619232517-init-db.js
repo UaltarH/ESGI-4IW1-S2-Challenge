@@ -57,6 +57,19 @@ module.exports = {
         defaultValue: "user",
         allowNull: false,
       },
+      verification_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      token_expiration: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      is_verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

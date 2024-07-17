@@ -26,6 +26,7 @@ services:
       USER_MAIL: ${USER_MAIL}
       USER_MAIL_PASSWORD: ${USER_MAIL_PASSWORD}
       DOMAIN_FRONT: ${DOMAIN_FRONT}
+      TEST_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_test:5432/test_${POSTGRES_DB}
     ports:
       - 8000:3000
     volumes:
@@ -38,6 +39,7 @@ services:
       - default_network
     depends_on:
       - postgres
+      - postgres_test
       - mongo
   
   vuejs:
@@ -63,6 +65,18 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - default_network
+
+  postgres_test:
+    container_name: ${POSTGRES_CONTAINER_NAME:-test_postgres}
+    image: postgres
+    volumes:
+      - postgres-data-test:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: test_${POSTGRES_DB}
     networks:
       - default_network
     
@@ -113,5 +127,6 @@ services:
 volumes:
   mongo-data: {}
   postgres-data: {}
+  postgres-data-test: {}
 networks:
   default_network: {}

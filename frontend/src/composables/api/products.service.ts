@@ -50,13 +50,29 @@ export const ProductService = () => {
     }
 
     const updateMongoProduct = async (id: string, body: Object):Promise<{product: mongoProduct}> => {
-        return await fetch(baseUrl + Api.mongoProducts + `/${id}`, {
+      try {
+        const response = await fetch(`${baseUrl}${Api.mongoProducts}/${id}`, {
           method: 'PUT',
           headers: {
-              'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify(body)
-      }).then(res => res.json());
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            try {
+                const errorJson = JSON.parse(errorText);
+                throw errorJson;
+            } catch (err) {
+                throw errorText;
+            }
+        }
+    
+        return await response.json();
+      } catch (err) {
+        throw err;
+      }
     }
 
     const deleteProduct = async (id: string) => {

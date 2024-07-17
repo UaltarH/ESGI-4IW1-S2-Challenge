@@ -37,14 +37,17 @@
                                     />
                                 </FormControl>
                             </div>
+                            <div v-if="errors && errors[key]" class="text-red-500 text-sm mt-1">
+                                {{ errors[key] }}
+                            </div>
                         </FormItem>
                     </FormField>
                 </div>
             </div>
             <div class="w-full flex justify-center items-center mt-6">
-                <DialogClose as-child>
+                <DialogFooter as-child>
                     <Button type="submit" class="bg-indigo-500 text-white hover:bg-indigo-600 focus:ring-indigo-500">Sauvegarder</Button>
-                </DialogClose>
+                </DialogFooter>
             </div>
         </form>
     </DialogContent>
@@ -52,7 +55,7 @@
 
 <script lang="ts" setup>
 import { reactive, defineProps, defineEmits, watch, ref } from 'vue';
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
+import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { FormControl, FormItem, FormLabel, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -65,7 +68,8 @@ const categories = ref<Category[]>([]);
 getCategories().then(res => categories.value = res.categories);
 
 const props = defineProps({
-    model: Object
+    model: Object,
+    errors: Object
 });
 
 const emits = defineEmits(['close', 'save']);
@@ -87,6 +91,5 @@ watch(() => item.categoryId, (newCategoryId) => {
 
 const onSubmit = () => {
     emits('save', item);
-    emits('close');
 };
 </script>

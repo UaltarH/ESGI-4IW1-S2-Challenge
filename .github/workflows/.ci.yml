@@ -38,7 +38,13 @@ jobs:
           driver-opts: network=host
 
       - name: Start node test
-        run: docker compose up -d node
+        run: |
+          docker compose up -d node
+          sleep 5
+          docker compose exec node npm run migrate-down-all-test
+          docker compose exec node npm run migrate-up-test
+          docker compose exec node npm test
+          docker compose exec node npm run migrate-down-all-test
 
       - name: Clean database schema
         run: docker compose exec node npm run migrate-down-all-test

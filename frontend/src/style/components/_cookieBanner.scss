@@ -1,0 +1,7 @@
+@layer components {
+  .cookie-banner {
+    @apply fixed bottom-0 left-0 right-0
+    bg-white dark:bg-dark-blue text-dark-blue dark:text-white p-4
+    border-t border-gray-200 dark:border-gray-800;
+  }
+}

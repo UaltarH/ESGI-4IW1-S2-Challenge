@@ -24,8 +24,9 @@
     /* Vue */
     "paths": {
       // alias qui permet d'appeler le dossier src avec @ dans les imports
-      "@/*": ["./src/*"],
-    }
+      "@/*": ["./src/*"]
+    },
+    "allowSyntheticDefaultImports": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]

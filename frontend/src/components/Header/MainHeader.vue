@@ -48,6 +48,11 @@
               </svg>
             </RouterLink>
             <menu-cart @open-cart-modal="handleOpenCartModal" :dark-mode="true"></menu-cart>
+            <RouterLink v-if="isConnected" to="/logout" class="menu-link rounded-md hover:bg-primary-light px-3.5 py-2.5" @click="closeMenu">
+              <svg width="24" height="24" viewBox="0 0 24 24" class="stroke-dark-blue dark:stroke-white" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 4L18 4C19.1046 4 20 4.89543 20 6V18C20 19.1046 19.1046 20 18 20H14M3 12L15 12M3 12L7 8M3 12L7 16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </RouterLink>
             <dark-mode-button></dark-mode-button>
             <button type="button" class="lg:hidden mr-3" id="burger" @click="toggleMenu">
               <burger class="fill-dark-blue dark:fill-white" aria-label="Openu menu"></burger>
@@ -66,12 +71,12 @@ import { computed, ref } from "vue";
 import DarkModeButton from "@/components/DarkModeButton.vue";
 import LogoWithText from "@/components/icons/logoWithText.vue";
 import Burger from "@/components/icons/burger.vue";
-import SearchBar from "@/components/SearchBar.vue";
-import Menu from "@/components/Menu.vue";
-import MenuMobile from "@/components/MenuMobile.vue";
+import SearchBar from "@/components/Header/SearchBar.vue";
+import Menu from "@/components/Header/Menu.vue";
+import MenuMobile from "@/components/Header/MenuMobile.vue";
 import MenuCart from "@/components/MenuCart.vue";
 import CartModal from "@/components/CartModal.vue";
-import ProfileMenu from "@/components/ProfileMenu.vue";
+import ProfileMenu from "@/components/Header/ProfileMenu.vue";
 import { useUserStore } from "@/stores/user.ts";
 
 const menuOpen = ref(false);

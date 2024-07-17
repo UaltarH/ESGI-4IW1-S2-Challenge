@@ -46,9 +46,9 @@ export const useCartStore = defineStore('cart', () =>{
     rawItems.value = rawItems.value.filter((item) => item.id !== id)
   }
   async function purchase() {
-    const user = useUserStore();
+    const userStore = useUserStore();
 
-    if (!user.id) {
+    if (!userStore.user.id) {
       throw new Error('User not logged in')
     }
 
@@ -58,7 +58,7 @@ export const useCartStore = defineStore('cart', () =>{
       throw new Error('Cart is empty')
     }
 
-    console.log(`User ${user.id} purchased ${items.length} items for a total of ${ cartTotal}`)
+    console.log(`User ${userStore.user.id} purchased ${items.length} items for a total of ${ cartTotal}`)
     $reset();
   }
   function $reset() {

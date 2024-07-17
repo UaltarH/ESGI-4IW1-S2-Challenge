@@ -16,7 +16,7 @@ const app = express();
 
 
 const corsOptions = {
-  origin: ["http://localhost:5173", 'https://boxtobe.mapa-server.org', 'http://boxtobe.mapa-server.org'],
+  origin: ["http://localhost:5173", 'https://boxtobe.mapa-server.org'],
   optionsSuccessStatus: 200,
   credentials: true
 };

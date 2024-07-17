@@ -23,6 +23,7 @@ export const useUserManagement = () => {
     const deleteUser = async (id: string) => {
         return await fetch(baseUrl + Api.user + id, {
             method: 'DELETE',
+            credentials: 'include'
         }).then(res => res);
     }
 

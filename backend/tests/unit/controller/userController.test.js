@@ -1,6 +1,6 @@
 const userController = require("../../../src/controllers/userController");
 const crudService = require("../../../src/services/crudGeneric");
-const { User } = require("../../../src/sequelize/models/");
+const { User } = require("../../../src/sequelize/models");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 

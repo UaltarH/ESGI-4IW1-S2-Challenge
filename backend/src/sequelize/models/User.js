@@ -1,10 +1,10 @@
 const { Model, DataTypes } = require("sequelize");
 const { afterUpdateHook, afterDeleteHook } = require("../hooks/UsersHooks");
 const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = function (sequelize, DataTypes) {
   class User extends Model {
-
     static associate(models) {
       User.hasMany(models.Order);
       User.hasOne(models.Cart);
@@ -13,6 +13,8 @@ module.exports = function (sequelize, DataTypes) {
     static addHooks(models) {
       User.addHook("beforeCreate", async (user) => {
         user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
+        user.verification_token = uuidv4();
+        user.is_verified = false;
       });
       User.addHook("beforeUpdate", async (user, { fields }) => {
         if (fields.includes("password")) user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
@@ -78,16 +80,11 @@ module.exports = function (sequelize, DataTypes) {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      token_expiration: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
       is_verified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
         allowNull: false,
       },
-      }
     },
     {
       sequelize: sequelize,

@@ -59,7 +59,6 @@ module.exports = {
         updatedAt: new Date(),
         country: "France",
         verification_token: token,
-        token_expiration: new Date(Date.now() + 3600000),
         is_verified: boolean[getRandomIntInclusive(0, 1)]
       });
     }

@@ -1,8 +1,8 @@
-const { User } = require('../sequelize/models/');
-const crudService = require('../services/crudGeneric');
-const { sendMail } = require('../services/sendMail');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const { User } = require("../sequelize/models/");
+const crudService = require("../services/crudGeneric");
+const { sendMail } = require("../services/sendMail");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 class userController {
   static async getUsers(req, res) {
@@ -34,19 +34,35 @@ class userController {
     if (error) {
       return next(error);
     }
+
+    const mailOptions = {
+      from: {
+        name: "BoxToBe Administration",
+        address: process.env.USER_MAIL,
+      },
+      to: [req.body.email],
+      subject: "Veuillez vérifier votre compte",
+      text:
+        "Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : http://localhost:5173/verify/" +
+        data.verification_token,
+    };
+    try {
+      await sendMail(mailOptions);
+    } catch (error) {
+      console.error("Failed to send email controller", error);
+    }
     res.sendStatus(201);
   }
 
   static async getUser(req, res) {
-    const attributes = req.query.fields ? req.query.fields.split(',') : [];
+    const attributes = req.query.fields ? req.query.fields.split(",") : [];
     if (attributes.length === 0) {
       const { data, error } = await crudService.findByPk(User, req.params.id);
       if (error) {
         return res.status(404);
       }
       res.status(200).json({ user: data });
-    }
-    else {
+    } else {
       const user = await User.findOne({ where: { id: req.params.id }, attributes });
       if (!user) {
         return res.status(404);
@@ -65,7 +81,7 @@ class userController {
 
   static async deleteMultiplesUsers(req, res) {
     const { usersId } = req.body;
-    const ids = usersId.split(',');
+    const ids = usersId.split(",");
 
     try {
       const deletionPromises = ids.map(async (id) => {
@@ -79,8 +95,8 @@ class userController {
 
       res.sendStatus(204);
     } catch (error) {
-      console.error('Deletion error:', error);
-      res.status(500).json({ error: 'An error occurred while deleting the users' });
+      console.error("Deletion error:", error);
+      res.status(500).json({ error: "An error occurred while deleting the users" });
     }
   }
 
@@ -121,11 +137,11 @@ class userController {
         return res.sendStatus(401);
       }
 
-      const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+      const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-      res.cookie('auth_token', token, {
-        httpOnly: process.env.NODE_ENV === 'production', // Le cookie n'est pas accessible via JavaScript
-        secure: process.env.NODE_ENV === 'production', // Utiliser uniquement HTTPS en production
+      res.cookie("auth_token", token, {
+        httpOnly: process.env.NODE_ENV === "production", // Le cookie n'est pas accessible via JavaScript
+        secure: process.env.NODE_ENV === "production", // Utiliser uniquement HTTPS en production
         maxAge: 3600000, // 1 heure
         domain: process.env.DOMAIN_FRONT,
       });
@@ -135,7 +151,33 @@ class userController {
       return res.sendStatus(500);
     }
   }
+  static async verify(req, res) {
+    const { token } = req.params;
 
+    if (!token) {
+      return res.sendStatus(400);
+    }
+
+    try {
+      const user = await User.findOne({ where: { verification_token: token } });
+
+      if (!user) {
+        return res.sendStatus(404);
+      }
+
+      if (user.is_verified) {
+        return res.sendStatus(400);
+      }
+
+      user.is_verified = true;
+      user.verification_token = null;
+      await user.save();
+      return res.sendStatus(200);
+      
+    } catch (error) {
+      return res.sendStatus(500);
+    }
+  }
 }
 
 module.exports = userController;

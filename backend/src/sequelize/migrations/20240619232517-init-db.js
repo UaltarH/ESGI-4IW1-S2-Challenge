@@ -61,10 +61,6 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: true,
       },
-      token_expiration: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
       is_verified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,

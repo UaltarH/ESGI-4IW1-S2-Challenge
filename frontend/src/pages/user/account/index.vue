@@ -46,24 +46,18 @@
 <script lang="ts" setup>
 import { useUserStore } from "@/stores/user.ts";
 import {onBeforeMount, ref} from "vue";
-import { useRouter } from "vue-router";
 import { UserService } from "@/composables/api/user.service";
 
 const { getUserById } = UserService();
-const router = useRouter();
 const userStore = useUserStore();
 const user = ref();
 
 onBeforeMount(async () => {
-  if (!userStore.user.id) {
-    router.push("/auth");
-  } else {
-    await getUserById(
-        userStore.user.id,
-        handleUserInfo,
-        {fields: ["firstname", "lastname"]},
-    );
-  }
+  await getUserById(
+      userStore.user.id,
+      handleUserInfo,
+      {fields: ["firstname", "lastname"]},
+  );
 });
 
 function handleUserInfo(res: Response) {

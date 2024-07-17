@@ -6,23 +6,13 @@
 </template>
 
 <script lang="ts" setup>
-import {onBeforeMount, ref, shallowRef} from "vue";
+import {ref, shallowRef} from "vue";
 import Tab from "@/components/ui/tab/Tab.vue";
 import RegisterForm from "@/components/RegisterForm.vue";
 import LoginForm from "@/components/LoginForm.vue";
-import { useUserStore } from "@/stores/user.ts";
-import { useRouter } from "vue-router";
 
-const router = useRouter();
-const userStore = useUserStore();
 const activeComp = shallowRef(LoginForm);
 const activeTab = ref("tab1");
-
-onBeforeMount(() => {
-  if(userStore.user.id) {
-    router.push('/');
-  }
-});
 
 function changeTab(tab: string) {
   activeTab.value = tab;

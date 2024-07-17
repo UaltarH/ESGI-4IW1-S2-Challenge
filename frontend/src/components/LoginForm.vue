@@ -75,7 +75,11 @@ function handleLoginResponse(code: number) {
   if(code === 200) {
     notificationStore.add({type: 'success', message: 'Connexion réussie', timeout: 3000})
     setTimeout(() => {
-      router.push({name: 'home'});
+      // redirection si y a un param redirect dans la query
+      if(router.currentRoute.value.query.redirect) {
+        router.push({ path: router.currentRoute.value.query.redirect.toString() });
+      }
+      else { router.push({name: 'home'}); }
     }, 1000);
   } else if(code === 401) {
     setTimeout(() => {

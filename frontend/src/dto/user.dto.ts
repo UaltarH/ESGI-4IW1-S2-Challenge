@@ -10,7 +10,7 @@ export interface User {
     lastname: string,
     password?: string,
     phone: string,
-    role?: string,
+    role?: "admin" | "user" | "store_manager" | "accountant",
     updatedAt?: Date,
     zipcode: number,
 }

@@ -6,76 +6,78 @@
       </svg>
       <span v-else class="w-6 h-6 block font-medium text-center !px-0 text-2xl leading-6">&times;</span>
     </button>
-
-    <Transition name="slide-fade">
-      <div v-if="isToggled" class="search relative" ref="searchContainer">
-        <div class="flex relative">
-          <div class="relative" >
-            <input v-if="isToggled"
-                   v-model="searchTerm" @click="open = true" @keyup.enter="performSearch"
-                   placeholder="Rechercher un produit..."
-                   class="border border-gray-300 rounded-l px-4 py-2 ring-1 ring-gray-300 pr-10"
-            />
-            <button v-if="searchTerm" @click="clearSearch"
-                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
-                    aria-label="Clear search">
-              &times;
-            </button>
-          </div>
-          <button @click="performSearch"
-                  class="bg-primary text-white rounded-r px-4 py-2 hover:bg-primary-light ring-1 ring-gray-300">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke="#1f2345" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+  </div>
+  <Transition name="slide-fade">
+    <div v-if="isToggled" class="search" ref="searchContainer">
+      <button type="button" class="search-close" @click="toggleSearchBar">&times;</button>
+      <div class="search-bar">
+        <div class="relative w-full">
+          <input v-if="isToggled"
+                 v-model="searchTerm" @focus="open=true" @keyup.enter="performSearch"
+                 placeholder="Rechercher un produit..."
+                 class="search-input"
+                 aria-label="Chercher un produit"
+          />
+          <button v-if="searchTerm" @click="clearSearch"
+                  class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                  aria-label="Clear search">
+            &times;
           </button>
         </div>
-
-        <div
-            v-if="open"
-            class="mt-4 absolute top-full left-0 right-0 bg-white shadow-lg border border-gray-300 rounded-lg z-10 p-4 max-h-96 overflow-y-auto"
-        >
-          <div class="flex flex-wrap justify-around">
-            <div>
-              <button
-                  @click="handleStock()"
-                  :class="stock ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
-                  class="px-2 py-1 mt-1 text-white text-sm font-medium rounded"
-              >
-                En stock
-              </button>
-            </div>
-            <div v-for="category in categories" :key="category.id">
-              <button
-                  @click="selectCategory(category.name)"
-                  :class="categoryName === category.name ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
-                  class="px-2 py-1 mt-1 text-white text-sm font-medium rounded"
-              >
-                {{ category.name }}
-              </button>
-            </div>
+        <button @click="performSearch" class="search-button" aria-label="Chercher">
+          <svg width="24" height="24" viewBox="0 0 24 24" class="stroke-dark-blue dark:stroke-white" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      <!-- Search content -->
+      <div v-if="open" class="search-content">
+        <div class="search-filters">
+          <div>
+            <button
+                @click="handleStock()"
+                :class="stock ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
+                class="px-2 py-1 mt-1 text-white text-sm font-medium rounded"
+                aria-label="Filtre les produits en stock"
+            >
+              En stock
+            </button>
           </div>
-          <h3 class="text-lg font-semibold mb-2">Résultats:</h3>
-          <ul class="space-y-4">
-            <li
-                v-if="products.length > 0"
-                v-for="product in products"
-                :key="product._id"
-                :class="product.stock <= 0 ? 'bg-gray-200 text-gray-500' : 'bg-white'"
-                class="p-4 border border-gray-300 rounded-lg cursor-pointer"
+          <div v-for="category in categories" :key="category.id">
+            <button
+                @click="selectCategory(category.name)"
+                :class="categoryName === category.name ? 'bg-primary hover:bg-primary-light' : 'bg-gray-500 hover:bg-gray-400'"
+                class="px-2 py-1 mt-1 text-white text-sm font-medium rounded"
+                :aria-label="`Filtrer par la catégorie ${category.name}`"
+            >
+              {{ category.name }}
+            </button>
+          </div>
+        </div>
+        <h2 class="text-2xl font-semibold mb-2 mt-8 text-left">Résultats:</h2>
+        <ul class="search-results">
+          <li
+              v-if="products.length > 0"
+              v-for="product in products"
+              :key="product._id"
+          >
+            <div
+                :class="product.stock <= 0 ? 'bg-gray-200 text-gray-500 dark:bg-gray-600 dark:text-gray-900 hover:bg-gray-200 dark:hover:bg-gray-600' : 'bg-white dark:bg-dark-blue'"
+                class="p-4 border border-gray-300 dark:border-gray-700 rounded-lg cursor-pointer hover:bg-gray-100 hover:dark:bg-gray-950"
                 @click="navigateToProduct(product._id)"
             >
               <h4 class="text-xl font-bold">{{ product.name }}</h4>
               <p>{{ formatPrice(product.price) }} €</p>
               <p v-if="product.stock <= 0">Plus de stock</p>
-            </li>
-            <li v-else class="p-4 border border-gray-300 rounded-lg">
-              <h4 class="text-xl font-bold">Pas de résultats trouvés</h4>
-            </li>
-          </ul>
-        </div>
+            </div>
+          </li>
+          <li v-else class="p-4 border border-gray-300 rounded-lg">
+            <h4 class="text-xl font-bold">Pas de résultats trouvés</h4>
+          </li>
+        </ul>
       </div>
-    </Transition>
-  </div>
+    </div>
+  </Transition>
 </template>
 
 
@@ -117,7 +119,10 @@
   const isToggled = ref(false);
   
   const navigateToProduct = (id: string) => {
-    window.location.href = `/product/${id}`;
+    router.push(`/product/${id}`).then(() => {
+      isToggled.value = false;
+      open.value = false;
+    });
   };
 
   const formatPrice = (price: any) => {
@@ -128,7 +133,9 @@
     getSearch(searchTerm.value, categoryName.value, stock.value)
       .then(response => {
         products.value = response.products as mongoProduct[];
-        router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });        
+        if(searchTerm.value || categoryName.value || stock.value) {
+          router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+        }
       })
       .catch(error => {
         console.error('Error fetching search results:', error);
@@ -184,10 +191,12 @@ const selectCategory = (name: string) => {
       categoryName.value = category;
       stock.value = stockValue;
 
-    router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
-    performSearch();
-  }, 100);
-});
+      if(searchTerm.value || categoryName.value || stock.value) {
+        router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+      }
+      performSearch();
+    }, 100);
+  });
 
 watchEffect(() => {
   const handleClickOutside = (event: MouseEvent) => {

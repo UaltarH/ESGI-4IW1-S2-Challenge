@@ -19,7 +19,7 @@ export const useUserStore = defineStore(('user'), () => {
         return {id: data.id, role: data.role};
     });
     function logout() {
-        Cookies.remove('auth_token');
+        Cookies.remove('auth_token', { path: '/', domain: import.meta.env.VITE_APP_DOMAIN});
         token.value = undefined;
         // we could do other stuff like redirecting the user
         const router = useRouter();

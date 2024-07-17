@@ -1,0 +1,37 @@
+
+@layer components {
+  .search {
+    @apply fixed top-0 left-0 right-0 bottom-0
+    bg-white dark:bg-dark-blue z-50 px-4 lg:px-12
+    flex items-center justify-start flex-col;
+  }
+  .search-close {
+    @apply btn rounded-tl-none rounded-tr-none;
+  }
+  .search-bar {
+    @apply w-full flex relative justify-center mt-8;
+  }
+
+  .search-input {
+    @apply border-b border-gray-300 focus:outline-0 focus:border-primary w-full
+    px-4 py-2 pr-10 bg-transparent;
+  }
+  .search-button {
+    @apply border-b border-gray-300 hover:border-primary
+    px-4 py-2;
+    &:hover svg {
+      @apply stroke-primary;
+    }
+  }
+  .search-content {
+    @apply mt-4 bg-gray-100 dark:bg-dark-blue-dark shadow-lg z-10 p-4 overflow-y-auto w-full
+    border border-gray-300 dark:border-gray-700 rounded-lg ;
+    max-height: calc(100vh - 150px);
+  }
+  .search-filters {
+    @apply flex flex-wrap justify-start gap-4;
+  }
+  .search-results {
+    @apply grid lg:grid-cols-3 md:grid-cols-2 gap-4;
+  }
+}

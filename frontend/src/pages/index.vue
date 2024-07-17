@@ -24,7 +24,7 @@
   </div>
   <div class="flex flex-col items-center">
     <img src="../../public/reassurance-livraison.svg" class="w-16 h-16" />
-    <p class="text-center mt-4">Livraison 24/48H à domicile<br />France et Bénélux</p>
+    <p class="text-center mt-4">Livraison 24/48H à domicile<br />France</p>
   </div>
   <div class="flex flex-col items-center">
     <img src="../../public/reassurance-notification.svg" class="w-16 h-16" />

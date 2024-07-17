@@ -18,6 +18,7 @@ const routes = [
   { path: "/components/table", component: CustomTableExemple },
   { path: "/product/:id", component: () => import('@/pages/product/index.vue') },
   { path: "/products", component: ProductsPage },
+  { path: "/order", component: () => import('@/pages/order/index.vue') },
 
   {
     path: '/admin',

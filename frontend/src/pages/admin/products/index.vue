@@ -10,7 +10,7 @@
             @visualize-item="handleVisualize"
             @edit-item="handleEdit"
             @delete-item="handleDelete"
-            @delete-multiple-items="handleDeleMultiple"
+            @delete-multiple-items="handleDeleteMultiple"
         ></CustomizableTable>
 
         <visualizer class="mt-4" v-if="productVisualizer != undefined" :title="'Produit'" :data="productVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
@@ -35,7 +35,7 @@
       <confirm-modal
           v-if="openModalMultiple"
           :data="selectedItems"
-          :title="'Confirmer la suppression de ' + selectedItems?.length + ' utilisateurs ?'"
+          :title="'Confirmer la suppression de ' + selectedItems?.length + ' produits ?'"
           size="sm"
           @confirm="openModalMultiple = false"
           @close="openModalMultiple = false"
@@ -120,7 +120,7 @@
     openModal.value = true
   }
   
-  function handleDeleMultiple(items: mongoProduct[]) {
+  function handleDeleteMultiple(items: mongoProduct[]) {
     selectedItems.value = items
     openModalMultiple.value = true
   }

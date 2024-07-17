@@ -10,18 +10,38 @@
           @visualize-item="handleVisualize"
           @edit-item="handleEdit"
           @delete-item="handleDelete"
-          @delete-multiple-items="handleMultipleDelete"
+          @delete-multiple-items="handleDeleteMultiple"
       ></CustomizableTable>
 
       <visualizer class="mt-4" v-if="userVisualizer != undefined" :title="'Produit'" :data="userVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
 
-    <Dialog v-model:open="isModalVisible">
-        <GenericEditModal
-          :model="selectedItem"
-          @close="isModalVisible = false"
-          @save="handleSave"
-        />
-    </Dialog>
+      <Dialog v-model:open="isModalVisible">
+          <GenericEditModal
+            :model="selectedItem"
+            @close="isModalVisible = false"
+            @save="handleSave"
+          />
+      </Dialog>
+      <confirm-modal
+          v-if="openModal"
+          :data="selectedItem"
+          :title="'Confirmer la suppression de ' + selectedItem?.email + ' ?'"
+          size="sm"
+          @confirm="openModal = false"
+          @close="openModal = false"
+          :action="deleteItem"
+      >
+      </confirm-modal>
+      <confirm-modal
+          v-if="openModalMultiple"
+          :data="selectedItems"
+          :title="'Confirmer la suppression de ' + selectedItems?.length + ' utilisateurs ?'"
+          size="sm"
+          @confirm="openModalMultiple = false"
+          @close="openModalMultiple = false"
+          :action="deleteItems"
+      >
+      </confirm-modal>
   </div>
 </template>
 
@@ -32,10 +52,13 @@ import { useUserManagement } from '@/composables/api/useUserManagement';
 import { User } from '@/dto/user.dto';
 import GenericEditModal from '@/components/common/editModale/genericEditModale.vue';
 import { Dialog } from '@/components/ui/dialog'; 
+import ConfirmModal from '@/components/ConfirmModal.vue';
 import visualizer from '@/components/common/visualizer.vue';
 
-
 const { getUsers, updateUser, deleteUser, deleteMultiplesUsers } = useUserManagement();
+
+const openModal = ref<boolean>(false);
+const openModalMultiple = ref<boolean>(false);
 
 const datas = ref<User[]>([]);
 const userVisualizer: Ref<User | undefined> = ref<User>();
@@ -56,7 +79,8 @@ const data = reactive({
 });
 
 const isModalVisible = ref(false);
-const selectedItem = ref<Record<string, any> | null>(null);
+const selectedItem = ref<User | null>(null);
+const selectedItems = ref<User[] | null>(null);
 
 function handleVisualize(item: User) {
   userVisualizer.value = item;
@@ -91,18 +115,28 @@ function handleSave(item: User) {
       }
       return result;
   };
-
-
+  
 function handleDelete(item: User) {
-  deleteUser(item.id);
-  refreshUsers();
+  selectedItem.value = item
+  openModal.value = true
 }
 
-function handleMultipleDelete(items: User[]) {
+function handleDeleteMultiple(items: User[]) {
+  selectedItems.value = items
+  openModalMultiple.value = true
+}
+
+function deleteItem(item: User) {
+  deleteUser(item.id).then(() => refreshUsers())
+  openModal.value = false
+}
+
+function deleteItems(items: User[]) {
   deleteMultiplesUsers(items.map(item => item.id).join(','))
   .then(() => {
     refreshUsers();
   })
+  openModalMultiple.value = false
 }
 
 function onCloseVisualizer() {

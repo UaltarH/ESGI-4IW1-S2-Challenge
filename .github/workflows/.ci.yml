@@ -9,12 +9,21 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    env:
+      NODE_ENV: test
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: app
+      TEST_DATABASE_URL: postgres://testuser:testpassword@postgres_test:5432/test_app
+      MONGO_INITDB_ROOT_USERNAME: testmongo
+      MONGO_INITDB_ROOT_PASSWORD: testmongo
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: "20"
 
@@ -22,6 +31,22 @@ jobs:
         working-directory: ./backend
         run: npm install
 
-      - name: Run tests
-        working-directory: ./backend
-        run: npm test
+      - name: Start services
+        run: |
+          docker-compose up -d node
+          docker-compose ps
+
+      - name: Wait for services to be ready
+        run: |
+          docker-compose run --rm node /bin/sh -c "until nc -z postgres_test 5432; do echo waiting for postgres_test; sleep 2; done;"
+          docker-compose run --rm node /bin/sh -c "until nc -z mongo 27017; do echo waiting for mongo; sleep 2; done;"
+
+      - name: Run migrations and tests
+        run: |
+          docker-compose exec -T node npm run migrate-down-all-test
+          docker-compose exec -T node npm run migrate-up-test
+          docker-compose exec -T node npm test
+          docker-compose exec -T node npm run migrate-down-all-test
+
+      - name: Clean up
+        run: docker-compose down

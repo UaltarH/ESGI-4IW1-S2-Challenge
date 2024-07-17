@@ -22,7 +22,7 @@ services:
       MONGO_URL: mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/app?authSource=admin
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       JWT_SECRET: ${JWT_SECRET}
-      NODE_ENV: ${NODE_ENV}
+      ENV: ${ENV}
       USER_MAIL: ${USER_MAIL}
       USER_MAIL_PASSWORD: ${USER_MAIL_PASSWORD}
       DOMAIN_FRONT: ${DOMAIN_FRONT}
@@ -32,8 +32,8 @@ services:
       - ./backend:/home/node/app
     working_dir: /home/node/app
     entrypoint: sh -c
-    command: '"npm install && npm run dev"'
-    # command: '"npm install && npm run start"'
+    #command: '"npm install && npm run dev"'
+    command: '"npm install && npm run start"'
     networks:
       - default_network
     depends_on:
@@ -44,8 +44,8 @@ services:
    container_name: ${VUEJS_CONTAINER_NAME:-app_vuejs}
    image: node:20.0.0-alpine
    working_dir: /home/node/app   
-   command: '"npm install && npm run dev"'
-  #  command: '"npm install && npm run build"'
+   #command: '"npm install && npm run dev"'
+   command: '"npm install && npm run build"'
    ports:
      - 5173:5173
    volumes:

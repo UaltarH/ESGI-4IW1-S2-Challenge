@@ -65,13 +65,13 @@ class productController {
         }
     }
 
-    static async updateProduct(req, res) {
-        const { data, error } = await crudService.update(Product, req.params.id, req.body);
-        if (error) {
-            return res.status(400).json({ error: error.message });
-        }
-        res.json({ product: data });
-    }
+    // static async updateProduct(req, res) {
+    //     const { data, error } = await crudService.update(Product, req.params.id, req.body);
+    //     if (error) {
+    //         return res.status(400).json({ error: error.message });
+    //     }
+    //     res.json({ product: data });
+    // }
 
     static async getMongoProducts(req, res) {
         const limit = parseInt(req.query.limit) || 9;
@@ -133,10 +133,11 @@ class productController {
             delete postgresUpdateData.categoryId;
             const { data, error } = await crudService.update(Product, id, postgresUpdateData);
             if (error) {
+                console.log(error);
                 return res.status(404).json({ error: 'Product not found in postgres' });
             }
 
-            return res.json({ product: updatedProduct });
+            return res.json({ product: data });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ error: 'An error occurred while updating the product' });

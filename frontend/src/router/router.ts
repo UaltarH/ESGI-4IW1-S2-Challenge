@@ -28,7 +28,6 @@ const routes = [
     },
   },
   { path: "/logout", component: Logout, meta: { requiresAuth: true } },
-  { path: "/components/table", component: CustomTableExemple },
   { path: "/product/:id", component: () => import("@/pages/product/index.vue") },
   { path: "/products", component: ProductsPage },
   { path: "/verify/:token", component: Verify },

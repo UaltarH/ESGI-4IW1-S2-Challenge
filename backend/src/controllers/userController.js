@@ -16,7 +16,7 @@ class userController {
   static async register(req, res, next) {
     const { data, error } = await crudService.create(User, req.body);
     if (error) {
-      return next(error);
+      return error;
     }
 
     const mailOptions = {
@@ -27,7 +27,7 @@ class userController {
       to: [req.body.email],
       subject: "Veuillez vérifier votre compte",
       text:
-        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${procees.env.NODE_ENV === "development" ? "http://localhost:5173": "https://boxtobe.mapa-server.org"}/verify/` +
+        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173": "https://boxtobe.mapa-server.org"}/verify/` +
         data.verification_token,
     };
     try {

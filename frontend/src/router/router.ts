@@ -30,7 +30,7 @@ const routes = [
   { path: "/product/:id", component: () => import('@/pages/product/index.vue') },
   { path: "/products", component: ProductsPage },
 
-  { path: "/order", component: () => import('@/pages/order/index.vue'), meta: { requiresAuth: true } },
+  { path: "/order", component: () => import('@/pages/order/index.vue'), meta: { requiresAuth: true }, name: "order" },
   {
     path: '/admin',
     component: AdminLayout,

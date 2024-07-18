@@ -21,6 +21,9 @@
 import { useCartStore } from "@/stores/cart.ts";
 import { onUnmounted } from "vue";
 import cartContent from "@/components/cart/CartContent.vue";
+import {useRouter} from "vue-router";
+
+const router = useRouter();
 
 onUnmounted(() => {
   emits("close");
@@ -35,6 +38,6 @@ function handleClose() {
   emits("close")
 }
 function handlePurchase() {
-
+  router.push({name: 'order'});
 }
 </script>

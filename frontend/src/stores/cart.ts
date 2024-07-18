@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useUserStore } from './user'
 import { CartItem} from "@/dto/cart.dto.ts";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { uuid } from 'vue-uuid'
 // import { useCart } from "@/composables/api/useCart.ts";
 
@@ -29,6 +29,12 @@ export const useCartStore = defineStore('cart', () =>{
   const vatAmount = computed(() => {
     return (parseFloat(cartTotal.value) * 0.2 / 1.2).toFixed(2);
   });
+
+  watch(rawItems, (newItems) => {
+    console.log('Cart updated');
+    localStorage.setItem("cart", JSON.stringify(newItems));
+  }, { deep: true });
+
   function itemTotalAmount(item: CartItem) {
     return (item.price * item.quantity).toFixed(2);
   }

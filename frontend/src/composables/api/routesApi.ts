@@ -4,6 +4,7 @@ export const Api = {
   getRoles: "/users/roles",
   register: "/users",
   login: "/login",
+  verify: "/verify/",
   search: "/search",
   category: "/categories",
   getMockRoles: "/mock/roles",

@@ -76,8 +76,8 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      totalPrice: {
-        type: DataTypes.FLOAT,
+      orderNumber: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       date: {
@@ -163,8 +163,8 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      paymentMethod: {
-        type: DataTypes.ENUM("credit_card", "paypal"),
+      stripeSessionId: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       amount: {

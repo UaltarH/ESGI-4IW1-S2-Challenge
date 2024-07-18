@@ -7,7 +7,7 @@ const afterCreateHook = async (payment, options) => {
             $set: {
                 payment: {
                     paymentId: payment.id,
-                    paymentMethod: payment.paymentMethod,
+                    stripeSessionId: payment.stripeSessionId,
                     amount: payment.amount,
                 },
             },

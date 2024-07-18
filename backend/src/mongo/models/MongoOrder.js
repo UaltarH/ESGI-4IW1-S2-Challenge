@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
     postgresId: String,
-    totalPrice: Number,
+    orderNumber: String,
     date: Date,
     user: {
         userId: String,
@@ -32,10 +32,7 @@ const orderSchema = new mongoose.Schema({
     ],
     payment: {
         paymentId: String,
-        paymentMethod: {
-            type: String,
-            enum: ["credit_card", "paypal"],
-        },
+        stripeSessionId: String,
         amount: Number,
     },
     shipping: {

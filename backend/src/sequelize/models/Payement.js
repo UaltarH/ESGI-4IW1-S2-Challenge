@@ -15,8 +15,8 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 allowNull: false,
             },
-            paymentMethod: {
-                type: DataTypes.ENUM('credit_card', 'paypal'),
+            stripeSessionId: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             amount: {

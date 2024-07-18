@@ -8,21 +8,29 @@ let categoryIds = [];
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const categories = [];
-    const numOfCategories = 3;
+    const uniqueCategories = () => {
+      const categoryNames = ['déménagement', 'bouteilles', 'meubles', 'vêtements'];
+      const categories = [];
+      const numOfCategories = 3;
 
-    for (let i = 0; i < numOfCategories; i++) {
-      const categoryId = uuidv4();
-      categoryIds.push(categoryId);
+      for (let i = 0; i < numOfCategories; i++) {
+        const categoryId = uuidv4();
+        categoryIds.push(categoryId);
+        const randomIndex = Math.floor(Math.random() * categoryNames.length);
+        const categoryName = categoryNames.splice(randomIndex, 1)[0]; // Extraire et supprimer l'élément
 
-      categories.push({
-        id: categoryId,
-        name: faker.helpers.arrayElement(['démenagement', 'bouteilles', 'meubles', 'vêtements']),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
+        categories.push({
+          id: categoryId,
+          name: categoryName,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
 
+      return categories;
+    };
+
+    const categories = uniqueCategories();
     return queryInterface.bulkInsert('Category', categories, {});
   },
 

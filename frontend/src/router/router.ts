@@ -29,8 +29,8 @@ const routes = [
   { path: "/logout", component: Logout, meta: { requiresAuth: true }, },
   { path: "/product/:id", component: () => import('@/pages/product/index.vue') },
   { path: "/products", component: ProductsPage },
-  { path: "/order", component: () => import('@/pages/order/index.vue') },
 
+  { path: "/order", component: () => import('@/pages/order/index.vue'), meta: { requiresAuth: true } },
   {
     path: '/admin',
     component: AdminLayout,

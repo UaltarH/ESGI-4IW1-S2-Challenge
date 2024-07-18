@@ -31,10 +31,6 @@ const props = defineProps({
 const emits = defineEmits(["close"]);
 const cart = useCartStore();
 
-cart.$subscribe((mutation, state) => {
-  localStorage.setItem("cart", JSON.stringify(state.rawItems));
-}, { detached: true });
-
 function handleClose() {
   emits("close")
 }

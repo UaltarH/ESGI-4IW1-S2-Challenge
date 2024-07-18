@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="cart.cartItems.length > 0">
         <Card class="m-5">
             <CardHeader>
                 <CardTitle>Etapes de la commande</CardTitle>
@@ -27,6 +27,16 @@
             </CardContent>      
         </Card>
     </div>
+    <div v-else>
+        <Card class="m-5">
+            <CardHeader>
+                <CardTitle>Votre panier est vide</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <p>Vous n'avez pas d'article dans votre panier</p>
+            </CardContent>
+        </Card>
+    </div>
   </template>
   
   <script lang="ts" setup>
@@ -45,6 +55,9 @@
   import {shipping} from '@/dto/shipping.dto';
   import {invoice} from '@/dto/invoice.dto';
   import cartContent from "@/components/cart/CartContent.vue";
+  import { useCartStore } from "@/stores/cart.ts";
+
+  const cart = useCartStore();
   
   const step = ref<number>(1);
   const loading = ref<boolean>(false);

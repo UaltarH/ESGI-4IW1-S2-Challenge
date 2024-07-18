@@ -1,7 +1,7 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useUserStore } from './user'
 import { CartItem} from "@/dto/cart.dto.ts";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 export const useCartStore = defineStore('cart', () =>{
   const rawItems = ref([] as CartItem[]);
@@ -19,6 +19,12 @@ export const useCartStore = defineStore('cart', () =>{
   const vatAmount = computed(() => {
     return (parseFloat(cartTotal.value) * 0.2 / 1.2).toFixed(2);
   });
+  
+  watch(rawItems, (newItems) => {
+    console.log('Cart updated');
+    localStorage.setItem("cart", JSON.stringify(newItems));
+  }, { deep: true });
+
   function itemTotalAmount(item: CartItem) {
     return (item.price * item.quantity).toFixed(2);
   }
@@ -42,7 +48,7 @@ export const useCartStore = defineStore('cart', () =>{
       console.error('Item not found in cart');
     }
   }
-  async function removeFromCart(id: string) {
+  async function removeFromCart(id: string) {    
     rawItems.value = rawItems.value.filter((item) => item.id !== id)
   }
   async function purchase() {

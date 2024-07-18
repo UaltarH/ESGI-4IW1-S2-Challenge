@@ -41,12 +41,12 @@ import {CartItem} from "@/dto/cart.dto.ts";
 
 const cart = useCartStore();
 
-function handleDeleteItem(item: CartItem) {
-  cart.removeFromCart(item.id);
-}
-
 function handleQuantityChange(id: string, quantity: number) {
   cart.updateQuantity(id, quantity);
+}
+
+function handleDeleteItem(item: CartItem) {
+  cart.removeFromCart(item.id);
 }
 
 function descriptionShortener(description: string) {

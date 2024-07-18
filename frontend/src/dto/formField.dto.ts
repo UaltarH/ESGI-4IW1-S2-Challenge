@@ -6,6 +6,7 @@ export interface FormField<FieldSchema extends ZodObject<any>> {
     type: string;
     name: string;
     placeholder: string;
+    optionsSelect?: {value: string, label:string}[] | undefined;
     value?: string | undefined;
     error?: string | undefined;
     options?: string[] | undefined;

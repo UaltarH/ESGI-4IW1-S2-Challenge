@@ -29,7 +29,7 @@ maxDate.setFullYear(maxDate.getFullYear() - 18);
 const minDate = new Date();
 minDate.setFullYear(minDate.getFullYear() - 120);
 
-const formRef = ref<{formRef:Ref<any>, SetFieldsValue:Function, getFieldsValue:Function, handleReset:Function} | null>(null);
+const formRef = ref<{formRef:Ref<any>, SetFieldValue:Function, getFieldsValue:Function, handleReset:Function} | null>(null);
 const formSchema = ref<FormField<any>[]>([
   {
     label: "Nom",

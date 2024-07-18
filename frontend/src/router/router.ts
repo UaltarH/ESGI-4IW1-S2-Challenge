@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import index from "@/pages/index.vue";
 import Roles from '@/pages/admin/roles/index.vue';
 import Auth from '@/pages/auth/login/index.vue';
-import CustomTableExemple from "@/pages/admin/components/tableExemple.vue";
 import ProductsPage from "@/pages/products/index.vue";
 import AdminLayout from '@/pages/admin/index.vue';
 import Logout from '@/pages/auth/logout/index.vue';
@@ -28,10 +27,10 @@ const routes = [
     }
   },
   { path: "/logout", component: Logout, meta: { requiresAuth: true }, },
-  { path: "/components/table", component: CustomTableExemple },
   { path: "/product/:id", component: () => import('@/pages/product/index.vue') },
   { path: "/products", component: ProductsPage },
 
+  { path: "/order", component: () => import('@/pages/order/index.vue'), meta: { requiresAuth: true }, name: "order" },
   {
     path: '/admin',
     component: AdminLayout,
@@ -54,11 +53,6 @@ const routes = [
       {
         path: 'orders',
         component: () => import('@/pages/admin/orders/index.vue'),
-        meta: { requiresAuth: true, isAdmin: true }
-      },
-      {
-        path: 'roles',
-        component: Roles,
         meta: { requiresAuth: true, isAdmin: true }
       },
       {

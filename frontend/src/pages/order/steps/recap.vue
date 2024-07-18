@@ -1,7 +1,7 @@
 <template>
     
     <div>
-        <div class="bg-white p-6">
+        <div class="bg-white dark:bg-dark-blue-dark px-6 py-8 rounded-lg dark:text-white">
             <div class="flex justify-between items-center mb-4">
               <span class="font-semibold">Panier ({{ cart.cartItems.length }})</span>
               <span class="font-semibold">{{ cart.cartTotal }} €</span>

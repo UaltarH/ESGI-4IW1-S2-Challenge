@@ -46,6 +46,15 @@ class orderController {
         }
     }
 
+    static async getAllOrdersForUser(req, res, next) {
+        try {
+            const orders = await MongoOrder.find({ 'user.userId': req.params.id });
+            res.json({ orders: orders });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
     static async createPdfOrder(req, res, next) {
         try {
             const order = await MongoOrder.findById(req.params.id);

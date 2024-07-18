@@ -9,5 +9,6 @@ orderRouter.get('/orders', orderController.getAllOrders);
 orderRouter.get('/orders/:id', orderController.createPdfOrder);
 orderRouter.post('/orders/payment', orderController.createOrder);
 orderRouter.get('/orders/payment/:stripeId', orderController.handleAfterRequestOrder);
+orderRouter.get('/orders-for-user/:id', orderController.getAllOrdersForUser);
 
 module.exports = orderRouter;

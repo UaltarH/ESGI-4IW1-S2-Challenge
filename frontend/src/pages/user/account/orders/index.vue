@@ -8,9 +8,50 @@
       <h1>Mes commandes</h1>
       <AccountSideMenu></AccountSideMenu>
     </div>
+    <div class="flex-1 overflow-auto max-h-screen">
+      <div class="flex flex-col justify-start items-start">
+        <div v-for="order in orders" :key="order._id" class="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+          <div class="w-full flex flex-col justify-start items-start space-y-8">
+            <h3 class="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">Commande {{ order._id }}</h3>
+            <div class="flex justify-start items-start flex-col space-y-2">
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Date: </span>{{ new Date(order.date).toLocaleDateString() }}</p>
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Total: </span>{{ order.totalPrice }}€</p>
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Statut: </span>{{ order.status.sort((a, b) => new Date(b.date) - new Date(a.date))[0].status }}</p>
+            </div>
+            <div class="w-full">
+              <h4 class="text-lg dark:text-white xl:text-xl font-semibold leading-6 text-gray-800">Articles</h4>
+              <div v-for="item in order.orderItems" :key="item.orderItemId" class="flex justify-between items-start w-full py-2 border-b border-gray-200">
+                <p class="text-base dark:text-white xl:text-lg leading-6">{{ item.productName }}</p>
+                <p class="text-base dark:text-white xl:text-lg leading-6">{{ item.quantity }} x {{ item.price }}€</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-<script lang="ts" setup>
 
+<script lang="ts" setup>
+import { ref, onMounted } from "vue";
 import AccountSideMenu from "@/components/AccountSideMenu.vue";
+import { OrdersService } from "@/composables/api/orders.service";
+import { mongoOrder } from '@/dto/MongoOrder.dto';
+import { useUserStore } from "@/stores/user.ts";
+
+const orders = ref<mongoOrder[]>([]);
+const userStore = useUserStore();
+
+const fetchOrders = async () => {
+  try {
+    const response = await OrdersService().getSpecificMongoOrder(userStore.user.id)
+    orders.value = response.orders;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+onMounted(() => {
+  fetchOrders();
+});
 </script>

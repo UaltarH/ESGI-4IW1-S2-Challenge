@@ -1,12 +1,5 @@
 <template>
-  <div v-if="props.show" class="overflow-hidden w-full h-full">
-    <div class="cart-modal--mask" @click="handleClose"></div>
-    <div class="cart-modal">
-      <header class="flex justify-between items-center">
-        <h2 class="text-2xl font-bold">Panier</h2>
-        <button type="button" @click="handleClose" class="text-2xl">&times;</button>
-      </header>
-      <div class="cart-modal--content" :class="cart.cartItems.length === 0 ? 'items-center justify-center' : ''">
+    <div class="cart-modal--content" :class="cart.cartItems.length === 0 ? 'items-center justify-center' : ''">
         <p v-if="cart.cartItems.length === 0" class="text-gray-400">Le panier est vide :'(</p>
         <ul v-else>
           <li v-for="item in cart.cartItems" :key="item.id" class="cart-modal--item">
@@ -39,48 +32,23 @@
             </div>
           </li>
         </ul>
-      </div>
-      <div class="cart-modal--total">
-        <div class="cart-modal--total-sub"><h2>Sous-total:</h2><p>{{ cart.cartTotal }} €</p> </div>
-        <div class="cart-modal--total-vat"><h2>TVA incluse:</h2><p>{{ cart.vatAmount }} €</p></div>
-        <div class="cart-modal--total-total"><h2>Total:</h2><p>{{ cart.cartTotal }} €</p></div>
-      </div>
-      <button class="btn btn--primary justify-center" type="submit" @click="handlePurchase" aria-label="commander">Commander</button>
-      <button class="btn btn--ghost justify-center" type="button" @click="handlePurchase" aria-label="voir le panier">Voir le panier</button>
     </div>
-  </div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import { useCartStore } from "@/stores/cart.ts";
-import { onUnmounted } from "vue";
-import {CartItem} from "@/dto/cart.dto.ts";
 import InputNumber from "@/components/ui/number-field/InputNumber.vue";
+import {CartItem} from "@/dto/cart.dto.ts";
 
-onUnmounted(() => {
-  emits("close");
-});
-const props = defineProps({
-  show: Boolean,
-});
-const emits = defineEmits(["close"]);
 const cart = useCartStore();
 
-cart.$subscribe((mutation, state) => {
-  localStorage.setItem("cart", JSON.stringify(state.rawItems));
-}, { detached: true });
-
-function handleClose() {
-  emits("close")
-}
-function handleQuantityChange(id: string, quantity: number) {
-  cart.updateQuantity(id, quantity);
-}
 function handleDeleteItem(item: CartItem) {
   cart.removeFromCart(item.id);
 }
-function handlePurchase() {
 
+function handleQuantityChange(id: string, quantity: number) {
+  cart.updateQuantity(id, quantity);
 }
+
 function descriptionShortener(description: string) {
   return description.length > 50 ? description.slice(0, 50) + "..." : description;
 }

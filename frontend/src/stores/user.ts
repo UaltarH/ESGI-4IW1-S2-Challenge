@@ -6,28 +6,17 @@ import Cookies from 'js-cookie';
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useRouter } from "vue-router";
 import { useNotificationStore} from "@/stores/notification.ts";
-import { UserService } from "@/composables/api/user.service.ts";
-import { User } from '@/dto/user.dto';
 
 const { loginUser } = useAuth();
-const { getUserById } = UserService();
 
 export const useUserStore = defineStore(('user'), () => {
     const token = ref(Cookies.get('auth_token'));
-    const user = computed(async () => {
+    const user = computed(() => {
         if(token.value === undefined) {
             return {id: '', role: ''};
         }
         const data:JwtPayload & {id:string, role:string} = jwtDecode(token.value);
-        let userInfo: User = {} as User;
-
-        await getUserById(
-            data.id,
-            (res:Response) => res.json().then((data:any) => userInfo = data.user),            
-            {fields: ["firstname", "lastname", "email", "phone", "birthdate", "address", "zipcode", "city", "country"]}
-        );
-
-        return {id: data.id, role: data.role, firstname: userInfo.firstname, lastname: userInfo.lastname, email: userInfo.email, phone: userInfo.phone, birthdate: userInfo.birthdate, address: userInfo.address, zipcode: userInfo.zipcode, city: userInfo.city, country: userInfo.country};
+        return {id: data.id, role: data.role};
     });
     function logout() {
         Cookies.remove('auth_token', { path: '/', domain: import.meta.env.VITE_APP_DOMAIN});

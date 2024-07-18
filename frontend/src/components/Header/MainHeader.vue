@@ -75,7 +75,7 @@ import SearchBar from "@/components/Header/SearchBar.vue";
 import Menu from "@/components/Header/Menu.vue";
 import MenuMobile from "@/components/Header/MenuMobile.vue";
 import MenuCart from "@/components/MenuCart.vue";
-import CartModal from "@/components/CartModal.vue";
+import CartModal from "@/components/cart/CartModal.vue";
 import ProfileMenu from "@/components/Header/ProfileMenu.vue";
 import { useUserStore } from "@/stores/user.ts";
 

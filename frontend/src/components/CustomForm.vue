@@ -12,6 +12,7 @@
         </template>
         <template #component>
           <input
+          v-if="item.component === 'input'"
               :type="item.type"
               :id="item.name"
               :name="item.name"
@@ -23,6 +24,17 @@
               v-model="item.value"
               :disabled="item.disabled === undefined ? props.disabled : item.disabled"
           >
+          <select v-else-if="item.component === 'select'"
+              :id="item.name"
+              :name="item.name"
+              :required="getFieldRequired(item.name)"
+              @blur="validateField(item)"
+              v-model="item.value"
+              :disabled="item.disabled === undefined ? props.disabled : item.disabled"
+          >            
+            <option value="placeholder" disabled selected>{{ item.placeholder }}</option>
+            <option v-for="option in item.optionsSelect" :key="option.value" :value="option.value">{{ option.label }}</option>
+          </select>
           <p v-if="item.error" class="text-danger pl-2 text-xs">{{ item.error }}</p>
         </template>
       </form-item>

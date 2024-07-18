@@ -19,7 +19,6 @@ module.exports = {
       const zipcode = Number(faker.location.zipCode("#####"));
       const phone = faker.phone.number();
       const birthdate = faker.date.birthdate();
-      const country = faker.location.country();
       let role;
       if (i === 0) {
         role = "admin";
@@ -49,7 +48,7 @@ module.exports = {
         role: role,
         createdAt: new Date(),
         updatedAt: new Date(),
-        country: country,
+        country: "France",
       });
     }
 

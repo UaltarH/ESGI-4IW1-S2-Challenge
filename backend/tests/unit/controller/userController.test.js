@@ -57,6 +57,7 @@ describe("userController", () => {
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
     });
+  });
 
   describe("getUser", () => {
     it("should return user data", async () => {

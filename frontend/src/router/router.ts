@@ -14,6 +14,7 @@ import Error403 from '@/pages/errors/403.vue';
 import Error404 from '@/pages/errors/404.vue';
 import { useUserStore } from "@/stores/user.ts";
 import { role } from "@/dto/role.dto.ts";
+import { UserService } from "@/composables/api/user.service.ts";
 
 const routes = [
   { path: "/", component: index, name: "home"},
@@ -97,18 +98,58 @@ export const router = createRouter({
   routes,
 });
 
-router.beforeResolve((to) => {
+router.beforeResolve(async (to) => {
   const userStore = useUserStore();
+  const { getUserById } = UserService();
 
-  if (to.meta.requiresAuth && !userStore.user.id) {
-    return {
-      path: '/auth',
-      query: { redirect: to.fullPath },
+  if (to.meta.requiresAuth){
+    if (!userStore.user.id) {
+      return {
+        path: '/auth',
+        query: { redirect: to.fullPath },
+      }
+    } else {
+      await getUserById(
+          userStore.user.id,
+          (res: Response) => {
+            if(res.status !== 200) {
+              localStorage.removeItem('auth_token');
+              return {
+                path: '/auth',
+              }
+            }
+          },
+          { fields: ["firstname"] }
+      );
     }
   }
-  if (to.meta.isAdmin && !(userStore.user.role === role.ADMIN)) {
-    return {
-      path: '/403',
+  if (to.meta.isAdmin) {
+    if(userStore.user.role !== role.ADMIN) {
+      return {
+        path: '/403',
+      }
+    }
+    else {
+      await getUserById(
+          userStore.user.id,
+          (res: Response) => {
+            if(res.status !== 200) {
+              localStorage.removeItem('auth_token');
+              return {
+                path: '/auth',
+              }
+            }
+            res.json().then((data) => {
+              if(data.role !== role.ADMIN) {
+                localStorage.removeItem('auth_token');
+                return {
+                  path: '/403',
+                }
+              }
+            });
+          },
+          { fields: ["role"] }
+      );
     }
   }
 });

@@ -130,7 +130,7 @@ class userController {
         domain: process.env.DOMAIN_FRONT,
       });
 
-      return res.sendStatus(200);
+      return res.status(200).json({ token });
     } catch (error) {
       return res.sendStatus(500);
     }

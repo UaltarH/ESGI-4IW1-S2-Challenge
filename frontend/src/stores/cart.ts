@@ -2,11 +2,21 @@ import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useUserStore } from './user'
 import { CartItem} from "@/dto/cart.dto.ts";
 import { ref, computed } from "vue";
+import { uuid } from 'vue-uuid'
+// import { useCart } from "@/composables/api/useCart.ts";
+
+// const { getCart } = useCart();
 
 export const useCartStore = defineStore('cart', () =>{
   const rawItems = ref([] as CartItem[]);
+  const id = ref(uuid.v4());
   const cartItems = computed(() => {
-    if(localStorage.getItem('cart')) {
+    // const userStore = useUserStore();
+    // if (userStore.user.id) {
+    //   const res = await getCart(userStore.user.id).then((res) => res.json());
+    // TODO : fetch cart from postgres
+    // }
+    if (localStorage.getItem('cart')) {
       rawItems.value = JSON.parse(localStorage.getItem('cart') || '[]');
     }
     return rawItems.value;
@@ -65,6 +75,7 @@ export const useCartStore = defineStore('cart', () =>{
     rawItems.value = [] as CartItem[];
   }
   return {
+    id,
     rawItems,
     cartItems,
     vatAmount,

@@ -18,6 +18,7 @@
       <Dialog v-model:open="isModalVisible">
           <ProductEditModale
             :model="selectedItem"
+            :errors="errors"
             @close="isModalVisible = false"
             @save="handleSave"
           />
@@ -46,7 +47,7 @@
   </template>
   
   <script lang="ts" setup>
-  import { reactive, ref, onMounted, Ref } from 'vue';
+  import { reactive, ref, onMounted, Ref, watch } from 'vue';
   import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
   import { ProductService } from '@/composables/api/products.service.ts';
   import { mongoProduct } from '@/dto/MongoProduct.dto';
@@ -81,6 +82,8 @@
   const isModalVisible = ref(false);
   const selectedItem = ref<mongoProduct | null>(null);
   const selectedItems = ref<mongoProduct[] | null>(null);
+
+  const errors: Ref<{ [key: string]: string }> = ref({});
   
   function handleVisualize(item: mongoProduct) {
     productVisualizer.value = item;
@@ -95,13 +98,27 @@
   }
   
   function handleSave(item: mongoProduct) {
+    errors.value = {};
     const itemCopy = { ...item };
     const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
     updateMongoProduct(item.postgresId, itemCopyWithStringValues)
-    .then(() => refreshProducts())
+    .then(() => {
+      refreshProducts();
+      isModalVisible.value = false;
+    })
     .catch(error => {
-        console.error('Error in handleSave:', error);
+      const parsedErrors = JSON.parse(error);
+      if (parsedErrors.errors && Array.isArray(parsedErrors.errors)) {
+        parsedErrors.errors.forEach((errItem: { path: string[], message: string }) => {
+          if (errItem.path && errItem.path.length > 0) {
+            const key = errItem.path[0];
+            errors.value[key] = errItem.message;
+          }
+        });
+      } else {
+        console.error('Unexpected error format:', parsedErrors);
+      }
     });
   }
   

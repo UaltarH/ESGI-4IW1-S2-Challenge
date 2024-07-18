@@ -93,6 +93,7 @@ const addToCart = () => {
   // TODO : manage size but need to be added in the product mongo model first
   cart.addToCart({
     id: product.value._id,
+    postgresId: product.value.postgresId,
     name: product.value.name,
     price: product.value.price,
     quantity: qty.value,

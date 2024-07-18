@@ -1,5 +1,6 @@
 import { mongoOrder } from '@/dto/MongoOrder.dto';
-import {Api} from './routesApi';
+import {Api} from '../routesApi';
+import { createOrder } from './dto/inputRequest/createOrder.dto';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 export const OrdersService = () => {
@@ -11,15 +12,15 @@ export const OrdersService = () => {
         return await fetch(baseUrl + Api.orders + `/${id}`).then(res => res.text());
     }
 
-    const postPaymentIntent = async (): Promise<{sessionId: string}> => {
+    const createOrder = async (bodyRequest: createOrder): Promise<{sessionId: string}> => {
         return await fetch(baseUrl + Api.order + '/payment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            // body: JSON.stringify(order)
+            body: JSON.stringify(bodyRequest)
         }).then(res => res.json());
     }
 
-    return { getAllMongoOrders, getHtmlPdfOrder, postPaymentIntent };
+    return { getAllMongoOrders, getHtmlPdfOrder, createOrder };
 };

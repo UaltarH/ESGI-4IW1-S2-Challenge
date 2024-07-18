@@ -1,5 +1,6 @@
 export interface CartItem {
     id: string;
+    postgresId: string;
     name: string;
     description: string;
     size: string;

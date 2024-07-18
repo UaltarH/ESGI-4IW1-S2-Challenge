@@ -57,10 +57,13 @@
   import {invoice} from '@/dto/invoice.dto';
   import cartContent from "@/components/cart/CartContent.vue";
   import { useCartStore } from "@/stores/cart.ts";
-  import { OrdersService } from '@/composables/api/orders.service.ts';
+  import { OrdersService } from '@/composables/api/orders/orders.service.ts';
   import { loadStripe } from '@stripe/stripe-js';
+  import { createOrder } from '@/composables/api/orders/dto/inputRequest/createOrder.dto';
+  import { useUserStore } from "@/stores/user.ts";
 
   const cart = useCartStore();
+  const userStore = useUserStore();
   
   const step = ref<number>(1);
   const loading = ref<boolean>(false);
@@ -93,8 +96,7 @@
   };
   
   const finalize = (): void => {
-    loading.value = true;
-    // Ajoutez votre logique de finalisation ici, puis définissez loading à false quand terminé
+    loading.value = true;    
     setTimeout(() => {
       loading.value = false;
       checkout();
@@ -103,7 +105,21 @@
 
   const checkout = async () => {
   try {
-    const response = await OrdersService().postPaymentIntent(); // Assurez-vous que le nom de la méthode correspond à votre backend
+    const bodyRequest: createOrder = {
+      userId: userStore.user.id,
+      date: new Date(),
+      total: Number(cart.cartTotal),
+      orderItems: cart.cartItems.map((item) => {
+        return {
+          productId: item.postgresId,
+          productName: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        };
+      }),
+      shipping: shippingInfo.value as shipping,
+    };
+    const response = await OrdersService().createOrder(bodyRequest);
     const stripe = await stripePromise;
     
     if (!stripe) {

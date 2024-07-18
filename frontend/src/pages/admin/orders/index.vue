@@ -7,6 +7,7 @@
             :columns="data.columns"
             :actions="data.actions"
             :numberOfItemsPerPage="data.numberOfItemsPerPage"
+            :canDeleteAll="false"
             @visualize-item="handleVisualize"
             ></CustomizableTable>
         </div>
@@ -20,7 +21,7 @@
   import { onMounted, reactive, ref, Ref } from "vue";
   import CustomizableTable from "@/components/common/custom-table/customizable-table.vue";
   import { mongoOrder } from '@/dto/MongoOrder.dto';
-  import { OrdersService } from '@/composables/api/orders.service.ts';
+  import { OrdersService } from '@/composables/api/orders/orders.service';
   import stepperStatusOrder  from '@/components/common/stepperStatusOrder.vue';
   import visualizer from '@/components/common/visualizer.vue';
   import { usePdfGenerator } from '@/composables/order/generatePdfInvoice';

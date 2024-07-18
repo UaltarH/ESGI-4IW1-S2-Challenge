@@ -8,15 +8,30 @@ export const UserService = () => {
         if(options) {
             params = `?fields=${options.fields.toString()}`;
         }
-        return await fetch(baseUrl + Api.user + `${id}` + params)
-            .then(res => handler(res));
+        const token  = localStorage.getItem('auth_token');
+        if( token === null) {
+            return handler(401);
+        }
+        return await fetch(baseUrl + Api.user + `${id}` + params, {
+            method: "GET",
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            }
+        }).then(res => handler(res));
     }
     const updateUser = async (id :string, data: any, handler: Function) => {
+        const token  = localStorage.getItem('auth_token');
+        if( token === null) {
+            return handler(401);
+        }
         return await fetch(baseUrl + Api.user + `${id}`, {
             method: "PATCH",
             credentials: 'include',
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(data),
         }).then(res => handler(res));

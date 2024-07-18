@@ -1,6 +1,6 @@
 <template>
   <component-wrapper :loading="props.loading">
-    <form ref="formRef" class="form" @submit.prevent>
+    <form ref="formRef" class="form" :class="props.bordered ? '' : 'border-none shadow-none rounded-none' " @submit.prevent>
       <form-item
           v-for="item in formSchema"
           :class="item.col == 2 ? 'col-2' : item.col == 0 ? 'col-0' : ''"
@@ -88,6 +88,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  bordered: {
+    type: Boolean,
+    default: true,
   }
 })
 const formSchema = ref<FormField<FieldSchema>[]>(props.schema);

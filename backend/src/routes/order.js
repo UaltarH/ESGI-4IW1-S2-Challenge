@@ -7,5 +7,6 @@ orderRouter.post('/orders', orderController.createOrder);
 orderRouter.post('/orders/updateShippingStatus', orderController.updateShippingStatus);
 orderRouter.get('/orders', orderController.getAllOrders);
 orderRouter.get('/orders/:id', orderController.createPdfOrder);
+orderRouter.post('/order/payment', orderController.creatPaymentIntent);
 
 module.exports = orderRouter;

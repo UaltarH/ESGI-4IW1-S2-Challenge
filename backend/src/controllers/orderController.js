@@ -1,5 +1,6 @@
 const MongoOrder = require('../mongo/models/MongoOrder');
 const { Order, Order_item, Payment, Shipping, sequelize, Order_status } = require('../sequelize/models');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
 class orderController {
@@ -107,15 +108,34 @@ class orderController {
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            // res.render('invoice', order, (err, html) => {
-            //     if (err) {
-            //         return res.status(500).json({ error: 'Error rendering invoice' });
-            //     }
-            //     res.json({ html });
-            // });
             res.render('invoice', order);
         } catch (error) {
             res.status(500).json({ message: error.message });
+        }
+    }
+
+    static async creatPaymentIntent(req, res, next) {
+        try {
+            const session = await stripe.checkout.sessions.create({
+                payment_method_types: ['card'],
+                line_items: [{
+                    price_data: {
+                        currency: 'eur',
+                        product_data: {
+                            name: 'Your Product Name',
+                        },
+                        unit_amount: 10000, // 100 EUR in cents
+                    },
+                    quantity: 1,
+                }],
+                mode: 'payment',
+                success_url: 'http://localhost:5173/',
+                cancel_url: 'http://localhost:5173/products',
+            });
+
+            res.status(200).send({ sessionId: session.id });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
         }
     }
 }

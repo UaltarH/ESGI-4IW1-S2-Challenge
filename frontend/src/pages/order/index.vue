@@ -16,7 +16,7 @@
                     <recapStep />
                     </template>            
                 </Steppy>
-                <Accordion type="single" collapsible>
+                <Accordion type="single" collapsible :default-value="'item-1'">
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Récapitulatif de la commande</AccordionTrigger>
                         <AccordionContent>
@@ -25,7 +25,7 @@
                     </AccordionItem>
                 </Accordion>
             </CardContent>      
-        </Card>
+        </Card>        
     </div>
     <div v-else>
         <Card class="m-5">
@@ -49,6 +49,7 @@
   } from '@/components/ui/card';
   import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
   import { Steppy } from 'vue3-steppy';
+
   import shippingStep from './steps/shipping.vue';
   import invoiceStep from './steps/invoice.vue';
   import recapStep from './steps/recap.vue';
@@ -56,6 +57,8 @@
   import {invoice} from '@/dto/invoice.dto';
   import cartContent from "@/components/cart/CartContent.vue";
   import { useCartStore } from "@/stores/cart.ts";
+  import { OrdersService } from '@/composables/api/orders.service.ts';
+  import { loadStripe } from '@stripe/stripe-js';
 
   const cart = useCartStore();
   
@@ -68,6 +71,8 @@
   ]);
   const shippingInfo = ref<shipping | null>(null);
   const invoiceInfo = ref<invoice | null>(null);
+
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
   const handleShippingSave = (shippingInfoInput: shipping): void => {
     shippingInfo.value = shippingInfoInput;
@@ -92,7 +97,29 @@
     // Ajoutez votre logique de finalisation ici, puis définissez loading à false quand terminé
     setTimeout(() => {
       loading.value = false;
-      console.log("Finalization logic executed");
+      checkout();
     }, 2000);
   };
+
+  const checkout = async () => {
+  try {
+    const response = await OrdersService().postPaymentIntent(); // Assurez-vous que le nom de la méthode correspond à votre backend
+    const stripe = await stripePromise;
+    
+    if (!stripe) {
+      throw new Error('Stripe failed to load');
+    }
+
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: response.sessionId,
+    });
+
+    if (error) {
+      console.error('Error:', error);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+    
   </script>

@@ -10,6 +10,7 @@
     "scss": "sass --watch src/style/input.scss src/main.css"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^4.1.0",
     "@unovis/ts": "^1.4.1",
     "@unovis/vue": "^1.4.1",
     "@vee-validate/zod": "^4.13.1",

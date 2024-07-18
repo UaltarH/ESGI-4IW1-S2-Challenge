@@ -10,22 +10,6 @@ class userController {
     if (error) {
       return res.status(400);
     }
-    //test send mail:
-    // const mailOptions = {
-    //   from: {
-    //     name: 'BoxToBe Administration',
-    //     address: process.env.USER_MAIL
-    //   },
-    //   to: ['mathieupannetrat5@gmail.com'],
-    //   subject: 'Test email',
-    //   text: 'This is a test email'
-    // };
-    // try {
-    //   await sendMail(mailOptions);
-    // } catch (err) {
-    //   console.error('Failed to send email controller', err);
-    // }
-
     res.json({ users: data });
   }
 
@@ -43,7 +27,7 @@ class userController {
       to: [req.body.email],
       subject: "Veuillez vérifier votre compte",
       text:
-        "Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : http://localhost:5173/verify/" +
+        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${procees.env.NODE_ENV === "development" ? "http://localhost:5173": "https://boxtobe.mapa-server.org"}/verify/` +
         data.verification_token,
     };
     try {

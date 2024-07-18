@@ -1,31 +1,31 @@
 <template>
     <div>
-      <Card class="m-5">
-        <CardHeader>
-          <CardTitle>Etapes de la commande</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Steppy v-model:step="step" @update:step="pageChange" :loading="loading" :finalize="finalize" :backText="'retour'" :nextText="'suivant'" :doneText="'Payer'" :primaryColor1="'#C4997C'" :tabs="stepsInfos" >
-            <template #1>
-              <shippingStep :infoShipping="shippingInfo" @saveInfoShipping="handleShippingSave" />
-            </template>
-            <template #2>
-              <invoiceStep :infoShipping="shippingInfo" :infoInvoice="invoiceInfo" @saveInfoInvoice="handleInvoiceSave"/>
-            </template>
-            <template #3>
-              <recapStep />
-            </template>            
-          </Steppy>
-        </CardContent>        
-      </Card>
-      <Card class="m-5">
-        <CardHeader>
-          <CardTitle>Récapitulatif de la commande</CardTitle>
-        </CardHeader>
-        <CardContent>
-            <cartContent></cartContent>
-        </CardContent>        
-      </Card>     
+        <Card class="m-5">
+            <CardHeader>
+                <CardTitle>Etapes de la commande</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Steppy v-model:step="step" @update:step="pageChange" :loading="loading" :finalize="finalize" :backText="'retour'" :nextText="'suivant'" :doneText="'Payer'" :primaryColor1="'#C4997C'" :tabs="stepsInfos" >
+                    <template #1>
+                    <shippingStep :infoShipping="shippingInfo" @saveInfoShipping="handleShippingSave" />
+                    </template>
+                    <template #2>
+                    <invoiceStep :infoShipping="shippingInfo" :infoInvoice="invoiceInfo" @saveInfoInvoice="handleInvoiceSave"/>
+                    </template>
+                    <template #3>
+                    <recapStep />
+                    </template>            
+                </Steppy>
+                <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger>Récapitulatif de la commande</AccordionTrigger>
+                        <AccordionContent>
+                            <cartContent></cartContent>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+            </CardContent>      
+        </Card>
     </div>
   </template>
   
@@ -37,6 +37,7 @@
     CardHeader,
     CardTitle,
   } from '@/components/ui/card';
+  import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
   import { Steppy } from 'vue3-steppy';
   import shippingStep from './steps/shipping.vue';
   import invoiceStep from './steps/invoice.vue';
@@ -50,7 +51,7 @@
   const stepsInfos: Ref<{title: string, iconSuccess: string | null, isValid: boolean}[]> = ref([
     {title: 'Livraison', iconSuccess: null, isValid: false},
     {title: 'Facturation', iconSuccess: null, isValid: false},
-    {title: 'Payement', iconSuccess: null, isValid: false},
+    {title: 'Payement', iconSuccess: null, isValid: true},
   ]);
   const shippingInfo = ref<shipping | null>(null);
   const invoiceInfo = ref<invoice | null>(null);
@@ -67,7 +68,10 @@
   };
 
   const pageChange = (): void => {
-    stepsInfos.value[step.value-1].isValid = false;
+    let index = step.value-1;
+    if(index != 2){
+        stepsInfos.value[step.value-1].isValid = false;
+    }
   };
   
   const finalize = (): void => {

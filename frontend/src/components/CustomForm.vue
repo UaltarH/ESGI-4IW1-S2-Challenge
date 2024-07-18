@@ -99,8 +99,10 @@ function handleSubmit() {
 }
 function handleReset() {
   formSchema.value.forEach((item) => {
-    item.value = undefined;
-    item.error = undefined;
+    if(item.disabled != true){
+      item.value = undefined;
+      item.error = undefined;
+    }
   });
   emit("reset");
 }

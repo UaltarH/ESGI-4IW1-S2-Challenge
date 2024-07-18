@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <CustomForm class="lg:w-2/3 rounded-none self-center" ref="formRef" :schema="formSchema" @submit="handleVerif" :submitText="'Sauvegarder'" :show-reset="false"/>
+        <CustomForm class="lg:w-2/3 rounded-none self-center" ref="formRef" :schema="formSchema" @submit="handleVerif" :submitText="'Sauvegarder'" :show-reset="true"/>
     </div>
 </template>
 <script lang="ts" setup>
@@ -118,9 +118,8 @@ const formSchema = ref<FormField<any>[]>([
         value: "France",
         disabled: true,
         schema: z.object({
-            country: z.literal("France", {
-            invalid_type_error: "Le pays doit être la France"
-            })
+            country: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+                .min(2, { message: "Le pays doit contenir au moins 2 caractères" }).max(50, { message: "Le pays doit contenir au maximum 50 caractères" }),
         }),
         col: 2,
     },  

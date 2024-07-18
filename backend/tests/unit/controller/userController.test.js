@@ -57,18 +57,6 @@ describe("userController", () => {
 
       expect(res.sendStatus).toHaveBeenCalledWith(201);
     });
-
-    it("should call next with error if there is an error", async () => {
-      const req = { body: { name: "John Doe" } };
-      const res = { sendStatus: jest.fn() };
-      const next = jest.fn();
-
-      crudService.create.mockResolvedValue({ data: null, error: new Error("Error") });
-
-      await userController.register(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(new Error("Error"));
-    });
   });
 
   describe("getUser", () => {

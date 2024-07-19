@@ -25,6 +25,7 @@ const appHistorySchema = new mongoose.Schema({
     ordersDeleted: [
         {
             orderId: String,
+            orderNumber: String,
             date: Date,
             status: [
                 {
@@ -47,10 +48,7 @@ const appHistorySchema = new mongoose.Schema({
             ],
             payment: {
                 paymentId: String,
-                paymentMethod: {
-                    type: String,
-                    enum: ["credit_card", "paypal"],
-                },
+                stripeSessionId: String,
                 amount: Number,
             },
             shipping: {

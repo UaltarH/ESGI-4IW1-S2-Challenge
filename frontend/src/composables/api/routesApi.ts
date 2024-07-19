@@ -12,5 +12,6 @@ export const Api = {
   products: "/products",
   mongoProducts: "/mongoProducts",
   orders: "/orders",
+  order: "/order",
   cart: "/carts",
 };

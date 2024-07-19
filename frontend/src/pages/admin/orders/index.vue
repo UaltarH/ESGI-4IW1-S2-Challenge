@@ -7,6 +7,7 @@
             :columns="data.columns"
             :actions="data.actions"
             :numberOfItemsPerPage="data.numberOfItemsPerPage"
+            :canDeleteAll="false"
             @visualize-item="handleVisualize"
             ></CustomizableTable>
         </div>
@@ -20,7 +21,7 @@
   import { onMounted, reactive, ref, Ref } from "vue";
   import CustomizableTable from "@/components/common/custom-table/customizable-table.vue";
   import { mongoOrder } from '@/dto/MongoOrder.dto';
-  import { OrdersService } from '@/composables/api/orders.service.ts';
+  import { OrdersService } from '@/composables/api/orders/orders.service';
   import stepperStatusOrder  from '@/components/common/stepperStatusOrder.vue';
   import visualizer from '@/components/common/visualizer.vue';
   import { usePdfGenerator } from '@/composables/order/generatePdfInvoice';
@@ -28,6 +29,7 @@
 
   interface orderMappedTable {
     id: string;
+    orderNumber: string;
     amount: number;
     date: Date;
     email: string;
@@ -44,6 +46,7 @@
     datas: datasTable,
     columns: [
       { name: "Id", key: "id", sort: true, typeData: "string" },
+      { name: "Commande n°", key: "orderNumber", sort: true, typeData: "string" },
       { name: "Montant", key: "amount", sort: true, typeData: "string" },
       { name: "Date", key: "date", sort: true, typeData: "date" },
       { name: "Email", key: "email", sort: true, typeData: "string" },
@@ -72,6 +75,7 @@
     let lastStatus = getTheLatestStatus(order.status);
     return {
       id: order.postgresId,
+      orderNumber: order.orderNumber,
       amount: order.payment.amount,
       date: order.date,
       email: order.user.email,

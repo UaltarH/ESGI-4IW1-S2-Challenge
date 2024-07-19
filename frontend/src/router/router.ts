@@ -29,10 +29,40 @@ const routes = [
   },
   { path: "/logout", component: Logout, meta: { requiresAuth: true } },
   { path: "/product/:id", component: () => import("@/pages/product/index.vue") },
-  { path: "/products", component: ProductsPage },
+  { path: "/products", component: ProductsPage, name: "products" },
   { path: "/verify/:token", component: Verify },
 
-  { path: "/order", component: () => import("@/pages/order/index.vue"), meta: { requiresAuth: true }, name: "order" },
+  {
+    path: "/order",    
+    meta: { requiresAuth: true },    
+    children: [
+      {
+        path: "",
+        component: () => import('@/pages/order/index.vue'),
+        meta: { requiresAuth: true },
+        name: "order",
+      },
+      {
+        path: "success",
+        component: () => import('@/pages/order/success/index.vue'),
+        meta: { 
+          requiresAuth: true,
+          expectedQuery: ['session_id']
+        },
+        name: "order-success"
+      },
+      {
+        path: "cancel",
+        component: () => import('@/pages/order/cancel/index.vue'),
+        meta: { 
+          requiresAuth: true,
+          expectedQuery: ['session_id']
+        },
+        name: "order-cancel"
+      }
+    ]
+  },
+
   {
     path: "/admin",
     component: AdminLayout,

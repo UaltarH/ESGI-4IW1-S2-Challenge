@@ -27,6 +27,7 @@ services:
       USER_MAIL_PASSWORD: ${USER_MAIL_PASSWORD}
       DOMAIN_FRONT: ${DOMAIN_FRONT}
       TEST_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres_test:5432/test_${POSTGRES_DB}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
     ports:
       - 8000:3000
     volumes:

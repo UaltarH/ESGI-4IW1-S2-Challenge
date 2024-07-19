@@ -36,6 +36,7 @@ const afterDeleteHook = async (user, options) => {
         mongoOrdersMapped = mongoOrders.map((mongoOrder) => {
             return {
                 orderId: mongoOrder.postgresId,
+                orderNumber: mongoOrder.orderNumber,
                 date: mongoOrder.date,
                 status: mongoOrder.status,
                 orderItems: mongoOrder.orderItems,

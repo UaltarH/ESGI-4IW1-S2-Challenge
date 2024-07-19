@@ -21,7 +21,7 @@ module.exports = function (sequelize, DataTypes) {
             },
             trackingNumber: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
             },
             address: {
                 type: DataTypes.STRING,

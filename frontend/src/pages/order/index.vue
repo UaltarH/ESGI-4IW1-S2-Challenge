@@ -16,7 +16,7 @@
                     <recapStep />
                     </template>            
                 </Steppy>
-                <Accordion type="single" collapsible>
+                <Accordion type="single" collapsible :default-value="'item-1'" class="lg:px-[60px]">
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Récapitulatif de la commande</AccordionTrigger>
                         <AccordionContent>
@@ -25,7 +25,7 @@
                     </AccordionItem>
                 </Accordion>
             </CardContent>      
-        </Card>
+        </Card>        
     </div>
     <div v-else>
         <Card class="m-5">
@@ -36,7 +36,7 @@
                 <p>Vous n'avez pas d'article dans votre panier</p>
             </CardContent>
         </Card>
-    </div>
+    </div>    
   </template>
   
   <script lang="ts" setup>
@@ -49,6 +49,7 @@
   } from '@/components/ui/card';
   import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
   import { Steppy } from 'vue3-steppy';
+
   import shippingStep from './steps/shipping.vue';
   import invoiceStep from './steps/invoice.vue';
   import recapStep from './steps/recap.vue';
@@ -56,8 +57,13 @@
   import {invoice} from '@/dto/invoice.dto';
   import cartContent from "@/components/cart/CartContent.vue";
   import { useCartStore } from "@/stores/cart.ts";
+  import { OrdersService } from '@/composables/api/orders/orders.service.ts';
+  import { loadStripe } from '@stripe/stripe-js';
+  import { createOrder } from '@/composables/api/orders/dto/inputRequest/createOrder.dto';
+  import { useUserStore } from "@/stores/user.ts";
 
   const cart = useCartStore();
+  const userStore = useUserStore();
   
   const step = ref<number>(1);
   const loading = ref<boolean>(false);
@@ -68,6 +74,8 @@
   ]);
   const shippingInfo = ref<shipping | null>(null);
   const invoiceInfo = ref<invoice | null>(null);
+
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
   const handleShippingSave = (shippingInfoInput: shipping): void => {
     shippingInfo.value = shippingInfoInput;
@@ -88,13 +96,48 @@
   };
   
   const finalize = (): void => {
-    loading.value = true;
-    // Ajoutez votre logique de finalisation ici, puis définissez loading à false quand terminé
+    loading.value = true;    
     setTimeout(() => {
       loading.value = false;
-      console.log("Finalization logic executed");
+      checkout();
     }, 2000);
   };
+
+  const checkout = async () => {
+  try {
+    const bodyRequest: createOrder = {
+      userId: userStore.user.id,
+      date: new Date(),
+      total: Number(cart.cartTotal),
+      orderItems: cart.cartItems.map((item) => {
+        return {
+          productId: item.postgresId,
+          productName: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        };
+      }),
+      shipping: shippingInfo.value as shipping,
+    };
+    const response = await OrdersService().createOrder(bodyRequest);
+    const stripe = await stripePromise;
+    
+    if (!stripe) {
+      throw new Error('Stripe failed to load');
+    }
+
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: response.sessionId,
+    });
+
+    if (error) {
+      console.error('Error:', error);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+    
   </script>
 <style>
 .order-recap .steppy-pane {

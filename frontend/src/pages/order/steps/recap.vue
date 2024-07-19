@@ -21,16 +21,7 @@
                   Frais de livraison
                 </span>
                 <span class="text-green-600">{{4.99}} €</span>
-              </div>
-              <div class="flex justify-between items-center">
-                <span class="flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-                    </svg>
-                  TVA
-                </span>
-                <span class="text-green-600">{{ cart.vatAmount }} €</span>
-              </div>
+              </div>              
             </div>
             
             <div class="border-t border-gray-200 pt-4 mb-4">
@@ -50,7 +41,7 @@ const cart = useCartStore();
 
 const calculateTotal = () => {
 
-    return Number(cart.cartTotal) + 4.99;
+    return (Number(cart.cartTotal) + 4.99).toFixed(2) ;
 }
 
 </script>

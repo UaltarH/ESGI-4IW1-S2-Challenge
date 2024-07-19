@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-center gap-5">
+    <div class="flex flex-col justify-center gap-5 dark:bg-dark-blue-dark px-4 pt-8 rounded-lg dark:text-white">
         <div class="flex flex-col justify-between mx-8 items-center lg:flex-row lg:items-start">
             <h2 class="text-2xl font-bold">Informations de livraison</h2>
             <div class="flex items-center">
@@ -8,7 +8,7 @@
             </div>
         </div>
 
-        <CustomForm class="lg:w-2/3 rounded-none self-center" ref="formRef" :schema="formSchema" @submit="handleVerif" :submitText="'Sauvegarder'" :show-reset="true"/>
+        <CustomForm class="lg:w-2/3 rounded-none self-center" ref="formRef" :schema="formSchema" @submit="handleVerif" :submitText="'Sauvegarder'" :show-reset="true" :bordered="false"/>
     </div>
 </template>
 <script lang="ts" setup>

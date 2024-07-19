@@ -34,26 +34,20 @@ import { z } from "zod";
 import { formMessages } from "@/composables/formMessages.ts";
 import { onBeforeMount, Ref, ref } from "vue";
 import { UserService } from "@/composables/api/user.service.ts";
-import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { useNotificationStore } from "@/stores/notification";
 import { User } from "@/dto/user.dto.ts";
 
 const { getUserById, updateUser } = UserService();
-const router = useRouter();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
 
 onBeforeMount(async () => {
-  if (!userStore.user.id) {
-    router.push("/auth");
-  } else {
-    await getUserById(
-        userStore.user.id,
-        handleUserInfo,
-        {fields: ["firstname", "lastname", "email", "phone", "birthdate", "address", "zipcode", "city", "country"]}
-    );
-  }
+  await getUserById(
+      userStore.user.id,
+      handleUserInfo,
+      {fields: ["firstname", "lastname", "email", "phone", "birthdate", "address", "zipcode", "city", "country"]}
+  );
 });
 
 const user = ref<User>();

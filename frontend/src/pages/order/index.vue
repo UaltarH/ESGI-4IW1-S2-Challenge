@@ -1,8 +1,8 @@
 <template>
-    <div v-if="cart.cartItems.length > 0">
-        <Card class="m-5">
-            <CardHeader>
-                <CardTitle>Etapes de la commande</CardTitle>
+    <div v-if="cart.cartItems.length > 0" class="order-recap">
+        <Card class="m-5 dark:bg-dark-blue dark:border-gray-700 dark:text-white">
+            <CardHeader class="dark:bg-dark-blue-dark rounded-tl-lg rounded-tr-lg">
+                <CardTitle>Étapes de la commande</CardTitle>
             </CardHeader>
             <CardContent>
                 <Steppy v-model:step="step" @update:step="pageChange" :loading="loading" :finalize="finalize" :backText="'retour'" :nextText="'suivant'" :doneText="'Payer'" :primaryColor1="'#C4997C'" :tabs="stepsInfos" >
@@ -139,3 +139,12 @@
 };
     
   </script>
+<style>
+.order-recap .steppy-pane {
+  padding: 0;
+  background-color: transparent;
+}
+.order-recap .steppy-item-counter {
+  @apply dark:bg-dark-blue-dark;
+}
+</style>

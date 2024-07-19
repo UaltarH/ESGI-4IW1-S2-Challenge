@@ -4,6 +4,14 @@ const { faker, de } = require("@faker-js/faker");
 
 let userIds = [];
 
+function getRandomIntInclusive(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled); // The maximum is inclusive and the minimum is inclusive
+}
+
+let boolean = [true, false];
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const users = [];
@@ -32,6 +40,7 @@ module.exports = {
       }
 
       const userId = uuidv4();
+      const token = uuidv4();
       userIds.push(userId);
 
       users.push({
@@ -49,6 +58,8 @@ module.exports = {
         createdAt: new Date(),
         updatedAt: new Date(),
         country: "France",
+        verification_token: token,
+        is_verified: boolean[getRandomIntInclusive(0, 1)]
       });
     }
 

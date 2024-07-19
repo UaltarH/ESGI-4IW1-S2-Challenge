@@ -4,6 +4,7 @@ export const Api = {
   getRoles: "/users/roles",
   register: "/users",
   login: "/login",
+  verify: "/verify/",
   search: "/search",
   category: "/categories",
   getMockRoles: "/mock/roles",
@@ -12,4 +13,5 @@ export const Api = {
   mongoProducts: "/mongoProducts",
   orders: "/orders",
   order: "/order",
+  basket: "/basket/",
 };

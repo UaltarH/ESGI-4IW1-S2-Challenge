@@ -282,10 +282,10 @@ function onDeleteAllItems() {
 
 <template>
   <div class="w-full overflow-x-auto">
-    <table class="border-collapse w-full min-w-full">
+    <table class="custom-table">
       <thead>
         <tr>
-          <th class="border border-solid border-black p-2">
+          <th class="">
             <select v-model="itemsPerPage" @change="changeItemsPerPage">
               <option v-for="number in numberOfItemsPerPage" :key="number" :value="number">
                 {{ number }}
@@ -295,7 +295,7 @@ function onDeleteAllItems() {
           <th
             v-for="col in columns"
             :key="col.key"
-            class="min-w-fit w-[6%] p-2 border border-solid border-black"
+            class="min-w-fit w-[6%] p-2"
           >
             <div class="flex flex-col">
               <div class="flex flex-row justify-between">
@@ -338,20 +338,20 @@ function onDeleteAllItems() {
               />
             </div>
           </th>
-          <th v-if="actions.edit || actions.delete || actions.visualize" class="min-w-fit p-2 text-center border border-solid border-black">
+          <th v-if="actions.edit || actions.delete || actions.visualize" class="min-w-fit text-centerk">
             Actions
           </th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="item in paginatedData" :key="item.name">
-          <td class="w-[6%] p-2 text-center border border-solid border-black">
+          <td class="w-[6%] text-center">
             <input type="checkbox" v-model="item.isSelected" @change="toggleSelection(item)" />
           </td>
-          <td v-for="col in columns" :key="col.key" class="p-2 text-left border border-solid border-black">
+          <td v-for="col in columns" :key="col.key" class="text-left">
             {{ formatValue(item[col.key], col.typeData) }}
           </td>
-          <td v-if="actions.edit || actions.delete || actions.visualize" class="p-2 border border-solid border-black">
+          <td v-if="actions.edit || actions.delete || actions.visualize">
             <div class="flex flex-col lg:flex-row lg:justify-around">
               <button
                 v-if="actions.visualize"
@@ -381,7 +381,7 @@ function onDeleteAllItems() {
       <tfoot>
         <tr>
           <td :colspan="columns.length + 2">
-            <div class="w-full flex flex-col lg:flex-row lg:justify-between items-center">
+            <div class="w-full flex flex-col lg:flex-row lg:justify-between items-center p-4">
               <div class="flex flex-col items-start">
                 <button
                   @click="onDeleteMultipleItems"

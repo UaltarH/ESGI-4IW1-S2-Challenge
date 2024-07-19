@@ -1,7 +1,7 @@
 @layer components {
   .custom-table {
     @apply  w-full min-w-full overflow-hidden
-    border-separate border-spacing-0 border border-gray-300 dark:border-gray-950 rounded-lg;
+    border-separate border-spacing-0 border border-gray-300 dark:border-gray-950;
     thead th, tbody tr td {
       @apply p-2;
     }

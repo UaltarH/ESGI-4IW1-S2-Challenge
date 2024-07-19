@@ -356,23 +356,49 @@ function onDeleteAllItems() {
               <button
                 v-if="actions.visualize"
                 @click="onVisualize(item)"
-                class="bg-primary text-white rounded-sm p-1.5 m-1"
+                class="btn btn--small btn--primary"
+                aria-label="Visualiser"
               >
-                <p>Visualiser</p>
+                Visualiser
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="stroke-white dark:stroke-dark-blue">
+                  <title>Visualiser</title>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M2 12C2 12 5.63636 5 12 5C18.3636 5 22 12 22 12C22 12 18.3636 19 12 19C5.63636 19 2 12 2 12Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                    <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </g>
+                </svg>
               </button>
               <button
                 v-if="actions.edit"
                 @click="onEdit(item)"
-                class="bg-primary text-white rounded-sm p-1.5 m-1"
+                class="btn btn--small btn--primary"
               >
-                <p>Modifier</p>
+                Modifier
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="fill-white dark:fill-dark-blue">
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M8 12L7.46967 11.4697C7.32902 11.6103 7.25 11.8011 7.25 12H8ZM17 3L17.5303 2.46967C17.2374 2.17678 16.7626 2.17678 16.4697 2.46967L17 3ZM21 7L21.5303 7.53033C21.8232 7.23744 21.8232 6.76256 21.5303 6.46967L21 7ZM12 16V16.75C12.1989 16.75 12.3897 16.671 12.5303 16.5303L12 16ZM8 16H7.25C7.25 16.4142 7.58579 16.75 8 16.75V16ZM20 20L20 20.75C20.1989 20.75 20.3897 20.671 20.5303 20.5303C20.671 20.3897 20.75 20.1989 20.75 20H20ZM4 20L3.25 20C3.25 20.4142 3.58579 20.75 4 20.75L4 20ZM4 4L4 3.25C3.58579 3.25 3.25 3.58579 3.25 4L4 4ZM12 4.75C12.4142 4.75 12.75 4.41421 12.75 4C12.75 3.58579 12.4142 3.25 12 3.25L12 4.75ZM20.75 12C20.75 11.5858 20.4142 11.25 20 11.25C19.5858 11.25 19.25 11.5858 19.25 12H20.75ZM8.53033 12.5303L17.5303 3.53033L16.4697 2.46967L7.46967 11.4697L8.53033 12.5303ZM16.4697 3.53033L20.4697 7.53033L21.5303 6.46967L17.5303 2.46967L16.4697 3.53033ZM20.4697 6.46967L11.4697 15.4697L12.5303 16.5303L21.5303 7.53033L20.4697 6.46967ZM12 15.25H8V16.75H12V15.25ZM8.75 16V12H7.25V16H8.75ZM13.4697 6.53033L17.4697 10.5303L18.5303 9.46967L14.5303 5.46967L13.4697 6.53033ZM20 19.25L4 19.25L4 20.75L20 20.75L20 19.25ZM4.75 20L4.75 4L3.25 4L3.25 20L4.75 20ZM4 4.75L12 4.75L12 3.25L4 3.25L4 4.75ZM19.25 12V20H20.75V12H19.25Z"></path>
+                  </g>
+                </svg>
               </button>
               <button
                 v-if="actions.delete"
                 @click="onDelete(item)"
-                class="bg-primary text-white rounded-sm p-1.5 m-1"
+                class="btn btn--small btn--danger"
+                aria-label="supprimer"
               >
-                <p>Supprimer</p>
+                Supprimer
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="stroke-white dark:stroke-dark-blue">
+                  <title>Supprimer</title>
+                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                  <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M18 6V18C18 19.1046 17.1046 20 16 20H8C6.89543 20 6 19.1046 6 18V6M15 6V5C15 3.89543 14.1046 3 13 3H11C9.89543 3 9 3.89543 9 5V6M4 6H20M10 10V16M14 10V16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                  </g>
+                </svg>
               </button>
             </div>
           </td>

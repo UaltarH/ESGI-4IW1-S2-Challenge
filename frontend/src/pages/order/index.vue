@@ -16,7 +16,7 @@
                     <recapStep />
                     </template>            
                 </Steppy>
-                <Accordion type="single" collapsible :default-value="'item-1'">
+                <Accordion type="single" collapsible :default-value="'item-1'" class="lg:px-[60px]">
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Récapitulatif de la commande</AccordionTrigger>
                         <AccordionContent>

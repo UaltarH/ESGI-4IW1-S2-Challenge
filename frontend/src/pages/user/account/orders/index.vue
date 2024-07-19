@@ -28,7 +28,7 @@
           </div>
         </div>
       </div>
-      <div class="flex justify-center items-center py-4">
+      <div v-if="totalPages !== 0" class="flex justify-center items-center py-4">
         <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700">Précédent</button>
         <span class="px-4">{{ currentPage }} / {{ totalPages }}</span>
         <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700">Suivant</button>

@@ -8,7 +8,15 @@ export const OrdersService = () => {
     }
 
     const getSpecificMongoOrder = async (id: string): Promise<{orders: mongoOrder[]}> => {
-        return await fetch(baseUrl + Api.ordersForUser+ `/${id}`).then(res => res.json());
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while getting orders');
+        return await fetch(baseUrl + Api.orders + `/user/${id}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            }
+        }).then(res => res.json());
     }
 
     const getHtmlPdfOrder = async (id: string): Promise<any> => {

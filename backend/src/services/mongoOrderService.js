@@ -2,6 +2,7 @@ const MongoOrder = require('../mongo/models/MongoOrder');
 const { User, Product } = require('../sequelize/models');
 
 async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippingRes, orderStatusRes) {
+    console.log({order, userId, orderItemsRes, paymentRes, shippingRes, orderStatusRes});
     try {
         let user = await User.findByPk(userId);
 
@@ -55,7 +56,6 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
         console.log('Order created in MongoDB');
     } catch (error) {
         console.error('Error creating order in MongoDB:', error);
-        throw error;
     }
 }
 

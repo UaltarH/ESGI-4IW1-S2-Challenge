@@ -28,6 +28,11 @@
           </div>
         </div>
       </div>
+      <div class="flex justify-center items-center py-4">
+        <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700">Précédent</button>
+        <span class="px-4">{{ currentPage }} / {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700">Suivant</button>
+      </div>
     </div>
   </div>
 </template>
@@ -40,14 +45,30 @@ import { mongoOrder } from '@/dto/MongoOrder.dto';
 import { useUserStore } from "@/stores/user.ts";
 
 const orders = ref<mongoOrder[]>([]);
+const currentPage = ref(1);
+const totalPages = ref(0);
 const userStore = useUserStore();
 
-const fetchOrders = async () => {
+const fetchOrders = async (page: number = 1) => {
   try {
-    const response = await OrdersService().getSpecificMongoOrder(userStore.user.id)
+    const response = await OrdersService().getSpecificMongoOrder(userStore.user.id, page);
     orders.value = response.orders;
+    currentPage.value = response.currentPage;
+    totalPages.value = response.totalPages;
   } catch (error) {
     console.error(error);
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    fetchOrders(currentPage.value + 1);
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    fetchOrders(currentPage.value - 1);
   }
 };
 

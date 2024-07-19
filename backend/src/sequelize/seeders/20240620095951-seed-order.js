@@ -9,10 +9,10 @@ let orderIds = [];
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const orders = [];
-    const numOfOrders = 15;
+    const numOfOrders = 30;
 
     for (let i = 0; i < numOfOrders; i++) {
-      const userId = userIds[i];
+      const userId = userIds[Math.floor(Math.random() * 2)];
 
       const orderId = uuidv4();
       orderIds.push(orderId);

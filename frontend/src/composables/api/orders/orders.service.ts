@@ -13,7 +13,7 @@ export const OrdersService = () => {
     }
 
     const createOrder = async (bodyRequest: createOrder): Promise<{sessionId: string}> => {
-        return await fetch(baseUrl + Api.order + '/payment', {
+        return await fetch(baseUrl + Api.orders + '/payment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -22,5 +22,14 @@ export const OrdersService = () => {
         }).then(res => res.json());
     }
 
-    return { getAllMongoOrders, getHtmlPdfOrder, createOrder };
+    const handleAfterRequestOrder = async (sessionId: string, status: string): Promise<{message: string}> => {
+        const url = new URL(baseUrl + Api.orders + '/payment/' + sessionId);
+        url.searchParams.append('status', status);
+
+        return await fetch(url.toString(), {
+            method: 'GET',
+        }).then(res => res.json());
+    }
+
+    return { getAllMongoOrders, getHtmlPdfOrder, createOrder, handleAfterRequestOrder };
 };

@@ -36,7 +36,7 @@
                 <p>Vous n'avez pas d'article dans votre panier</p>
             </CardContent>
         </Card>
-    </div>
+    </div>    
   </template>
   
   <script lang="ts" setup>

@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import AccountSideMenu from "@/components/AccountSideMenu.vue";
-import { OrdersService } from "@/composables/api/orders.service";
+import { OrdersService } from "@/composables/api/orders/orders.service";
 import { mongoOrder } from '@/dto/MongoOrder.dto';
 import { useUserStore } from "@/stores/user.ts";
 

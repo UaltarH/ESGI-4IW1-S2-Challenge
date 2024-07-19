@@ -31,5 +31,17 @@ export const OrdersService = () => {
         }).then(res => res.json());
     }
 
-    return { getAllMongoOrders, getHtmlPdfOrder, createOrder, handleAfterRequestOrder };
+    const getSpecificMongoOrder = async (id: string, page: number = 1, limit: number = 10): Promise<{orders: mongoOrder[], totalOrders: number, currentPage: number, totalPages: number}> => {
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while getting orders');
+        return await fetch(`${baseUrl}${Api.orders}/user/${id}?page=${page}&limit=${limit}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            }
+        }).then(res => res.json());
+    }
+
+    return { getAllMongoOrders, getHtmlPdfOrder, createOrder, handleAfterRequestOrder, getSpecificMongoOrder };
 };

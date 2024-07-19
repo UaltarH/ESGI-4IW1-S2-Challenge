@@ -55,7 +55,7 @@ const checkRole = () => async (req, res, next) => {
                     const id = req.params.id;
                     // pas d'id → il essaie de voir tous les commandes
                     if (!id) return res.sendStatus(403);
-                    // if (data.id !== id) return res.sendStatus(403);
+                    if (data.id !== id) return res.sendStatus(403);
                     return next();
                 }
             } catch (e) {

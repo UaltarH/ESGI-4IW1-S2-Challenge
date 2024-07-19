@@ -48,14 +48,19 @@
 <script lang="ts" setup>
 import { reactive, ref, onMounted, Ref } from 'vue';
 import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
-import { useUserManagement } from '@/composables/api/useUserManagement';
+import { UserService } from '@/composables/api/user.service.ts';
 import { User } from '@/dto/user.dto';
 import GenericEditModal from '@/components/common/editModale/genericEditModale.vue';
 import { Dialog } from '@/components/ui/dialog'; 
 import ConfirmModal from '@/components/ConfirmModal.vue';
 import visualizer from '@/components/common/visualizer.vue';
+import {useRouter} from "vue-router";
+import {useNotificationStore} from "@/stores/notification.ts";
 
-const { getUsers, updateUser, deleteUser, deleteMultiplesUsers } = useUserManagement();
+const { getUsers, updateUser, deleteUser, deleteBatchUsers } = UserService();
+
+const router = useRouter();
+const notificationStore = useNotificationStore();
 
 const openModal = ref<boolean>(false);
 const openModalMultiple = ref<boolean>(false);
@@ -63,8 +68,16 @@ const openModalMultiple = ref<boolean>(false);
 const datas = ref<User[]>([]);
 const userVisualizer: Ref<User | undefined> = ref<User>();
 
-const refreshUsers = () => {
-  getUsers((datas: []) => datas).then(res => datas.value = res.users);
+const refreshUsers = async () => {
+  await getUsers((datas: []) => datas).then((res:Response) => {
+    if(res.status === 200) {
+      res.json().then(data => {
+        datas.value = data.users
+      });
+    } else {
+      router.push({ path: '/403'});
+    }
+  });
 }
 
 const data = reactive({
@@ -94,14 +107,34 @@ function handleEdit(item: User) {
   isModalVisible.value = true;
 }
 
-function handleSave(item: User) {
-  const itemCopy = { ...item } as Partial<typeof item>;
+async function handleSave(item: User) {
+  const itemCopy = {...item} as Partial<typeof item>;
   delete itemCopy.id;
   const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
-  updateUser(item.id, data => {
-    refreshUsers();
-  }, itemCopyWithStringValues).catch(error => {
+  await updateUser(item.id, itemCopyWithStringValues, (res:Response) => {
+    if(res.status === 204) {
+      refreshUsers();
+      notificationStore.add({
+        message: "Les données de l'utilisateur ont été sauvegardées.",
+        type: "success",
+        timeout: 3000
+      });
+    } else if(res.status === 401) {
+      notificationStore.add({
+        message: "Not authorized",
+        type: "error",
+        timeout: 3000
+      });
+    }
+    else {
+      notificationStore.add({
+        message: "Impossible de sauvegarder les données de l'utilisateur.",
+        type: "error",
+        timeout: 3000
+      });
+    }
+  }).catch(error => {
     console.error('Error in handleSave:', error);
   });
 }
@@ -132,7 +165,7 @@ function deleteItem(item: User) {
 }
 
 function deleteItems(items: User[]) {
-  deleteMultiplesUsers(items.map(item => item.id).join(','))
+  deleteBatchUsers(items.map(item => item.id).join(','))
   .then(() => {
     refreshUsers();
   })

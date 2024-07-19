@@ -147,12 +147,12 @@ router.beforeResolve(async (to) => {
               }
             }
             res.json().then((data) => {
-              if(data.role !== role.ADMIN) {
+              if(data.user.role !== role.ADMIN) {
                 localStorage.removeItem("auth_token");
                 return {
                   path: "/403",
                 }
-              }
+              } else return true;
             });
           },
           { fields: ["role"] }

@@ -36,5 +36,38 @@ export const UserService = () => {
             body: JSON.stringify(data),
         }).then(res => handler(res));
     }
-    return { getUserById, updateUser }
+    const getUsers = async (handler:Function) => {
+        const token = localStorage.getItem('auth_token');
+        if( token === null) {
+            return handler(401);
+        }
+        return await fetch(baseUrl + Api.user, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        }).then(res => handler(res));
+    }
+
+    const deleteUser = async (id: string) => {
+        return await fetch(baseUrl + Api.user + id, {
+            method: 'DELETE',
+        }).then(res => res);
+    }
+
+    const deleteBatchUsers = async (usersId: string) => {
+        return await fetch(baseUrl + Api.user, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({usersId})
+        }).then(res => res);
+    }
+
+    const getRoles = async (handler:Function) => {
+        return await fetch(baseUrl + Api.getRoles).then(res => handler(res.json()));
+    }
+    return { getUserById, getUsers, updateUser, deleteUser, getRoles, deleteBatchUsers }
 }

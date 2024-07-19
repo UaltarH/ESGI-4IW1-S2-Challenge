@@ -3,19 +3,21 @@ import { useUserStore } from './user'
 import { CartItem} from "@/dto/cart.dto.ts";
 import { ref, computed, watch } from "vue";
 import { uuid } from 'vue-uuid'
-// import { useCart } from "@/composables/api/useCart.ts";
+import { useCart } from "@/composables/api/useCart.ts";
+import {CartItemResponse} from "@/dto/api/cartItem.dto.ts";
 
-// const { getCart } = useCart();
+const { getCartByUserId, createCart } = useCart();
 
-export const useCartStore = defineStore('cart', () =>{
+export const useCartStore = defineStore('cart', () => {
   const rawItems = ref([] as CartItem[]);
-  const id = ref(uuid.v4());
+  const id = computed(() => {
+    if( localStorage.getItem('cartId') === null) {
+      const id = uuid.v4();
+      localStorage.setItem('cartId', id);
+      return id;
+    } else return localStorage.getItem('cartId');
+  });
   const cartItems = computed(() => {
-    // const userStore = useUserStore();
-    // if (userStore.user.id) {
-    //   const res = await getCart(userStore.user.id).then((res) => res.json());
-    // TODO : fetch cart from postgres
-    // }
     if (localStorage.getItem('cart')) {
       rawItems.value = JSON.parse(localStorage.getItem('cart') || '[]');
     }
@@ -37,6 +39,53 @@ export const useCartStore = defineStore('cart', () =>{
 
   function itemTotalAmount(item: CartItem) {
     return (item.price * item.quantity).toFixed(2);
+  }
+  async function init() {
+    const userStore = useUserStore();
+    localStorage.removeItem('cartId');
+    console.log('User connected');
+    // get cart from db, if no cart check local storage
+    await getCartByUserId(userStore.user.id).then((res) => {
+      if(res.status === 200) {
+        res.json().then((data) => {
+          console.log('Cart from db');
+          console.log(data);
+          const cartItemsFromDb: CartItem[] = data.cart.Cart_items.map((item: CartItemResponse) => {
+            return {
+              id: item.id,
+              postgresId: item.ProductId,
+              name: item.Product.name,
+              description: item.Product.description,
+              size: item.Product["size"] ? item.Product["size"] : 'N/A',
+              price: item.Product.price.toFixed(2),
+              quantity: item.quantity,
+            } as unknown as CartItem;
+          });
+          console.log(cartItemsFromDb);
+          rawItems.value = cartItemsFromDb;
+          localStorage.setItem('cartId', data.cart.id);
+        });
+      } else {
+        console.log('No cart in db getting cart from local storage');
+        if(localStorage.getItem('cart')) {
+          rawItems.value = JSON.parse(localStorage.getItem('cart') || '[]');
+          createCart(id.value!, userStore.user.id, rawItems.value).then((res) => {
+            if(res.status === 201) {
+              localStorage.setItem('cartId', id.value!);
+            }
+          });
+        }
+        else {
+          console.log('No cart in local storage');
+          createCart(id.value!, userStore.user.id, []).then((res) => {
+            if(res.status === 201) {
+              console.log('Cart created in db');
+              localStorage.setItem('cartId', id.value!);
+            }
+          });
+        }
+      }
+    });
   }
   async function addToCart(item: CartItem) {
     let existingItem = rawItems.value.find((it) => it.id === item.id)
@@ -86,6 +135,7 @@ export const useCartStore = defineStore('cart', () =>{
     cartItems,
     vatAmount,
     cartTotal,
+    init,
     addToCart,
     updateQuantity,
     removeFromCart,

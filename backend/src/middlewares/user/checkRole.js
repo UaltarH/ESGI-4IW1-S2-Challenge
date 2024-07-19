@@ -40,7 +40,7 @@ const checkRole = () => async (req, res, next) => {
                             validate(userRegisterAdminSchema);
                         if (req.method === 'PATCH')
                             validate(userModifyAdminSchema);
-                        next();
+                        return next();
                     } else {
                         return res.sendStatus(403);
                     }
@@ -53,7 +53,7 @@ const checkRole = () => async (req, res, next) => {
                     }
                     // un utilisateur non-admin ne peut modifier que certaines infos, même de son compte
                     validate(userModifyUserSchema);
-                    next();
+                    return next();
                 } else if (req.method === 'POST') {
                     // un utilisateur non-admin ne peut créer d'utilisateur
                     return res.sendStatus(403);
@@ -63,7 +63,7 @@ const checkRole = () => async (req, res, next) => {
                     // pas d'id → il essaie de voir tous les utilisateurs
                     if (!id) return res.sendStatus(403);
                     if (data.id !== id) return res.sendStatus(403);
-                    next();
+                    return next();
                 }
             } catch (e) {
                 return res.sendStatus(500);

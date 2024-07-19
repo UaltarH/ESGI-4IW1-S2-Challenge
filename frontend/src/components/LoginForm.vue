@@ -20,9 +20,11 @@ import { formMessages } from "@/composables/formMessages";
 import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useNotificationStore } from "@/stores/notification.ts";
+import { useCartStore } from "@/stores/cart.ts";
 
 const router = useRouter();
 const user = useUserStore();
+const cartStore = useCartStore();
 const notificationStore = useNotificationStore();
 const { requiredMessage, invalidStringMessage } = formMessages();
 
@@ -71,27 +73,37 @@ const fetchLogin = async (param: { [key: string]: string }) => {
   await user.login(param, handleLoginResponse);
 }
 
-function handleLoginResponse(code: number) {
-  if(code === 200) {
-    notificationStore.add({type: 'success', message: 'Connexion réussie', timeout: 3000})
+async function handleLoginResponse(code: number) {
+  if (code === 200) {
+    notificationStore.add({type: 'success', message: 'Connexion réussie', timeout: 3000});
+    await cartStore.init();
     setTimeout(() => {
       // redirection si y a un param redirect dans la query
-      if(router.currentRoute.value.query.redirect) {
-        router.push({ path: router.currentRoute.value.query.redirect.toString() });
+      if (router.currentRoute.value.query.redirect) {
+        router.push({path: router.currentRoute.value.query.redirect.toString()});
+      } else {
+        router.push({name: 'home'});
       }
-      else { router.push({name: 'home'}); }
     }, 1000);
-  } else if(code === 401) {
+  } else if (code === 401) {
     setTimeout(() => {
       disabled.value = false;
       loading.value = false;
-      notificationStore.add({type: 'error', message: 'L\'identifiant ou le mot de passe sont incorrects', timeout: 3000})
+      notificationStore.add({
+        type: 'error',
+        message: 'L\'identifiant ou le mot de passe sont incorrects',
+        timeout: 3000
+      })
     }, 3000);
   } else {
     setTimeout(() => {
       disabled.value = false;
       loading.value = false;
-      notificationStore.add({type: 'error', message: 'Une erreur est survenue, veuillez réessayer plus tard.', timeout: 3000});
+      notificationStore.add({
+        type: 'error',
+        message: 'Une erreur est survenue, veuillez réessayer plus tard.',
+        timeout: 3000
+      });
     }, 3000);
   }
 }

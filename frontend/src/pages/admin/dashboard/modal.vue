@@ -98,28 +98,72 @@
                 </FormItem>
             </FormField>
 
-            <FormField v-slot="{ componentField }" name="data" class="m-5">
-                <FormItem>
-                  <FormLabel>Source de la données</FormLabel>
-          
-                  <Select v-bind="componentField">
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selectionner la source" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectItem value="test">
-                            données de test
-                        </SelectItem>                        
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
+            <FormField v-slot="{ componentField }" name="dataSource" class="m-5">
+              <FormItem>
+                <FormLabel>Source de données</FormLabel>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner la source de données" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectItem value="orders">Commandes</SelectItem>
+                      <SelectItem value="products">Produits</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
             </FormField>
-            <!-- ajouter la selection des champs a utiliser dans le chart -->
+
+            <FormField v-slot="{ componentField }" name="indexField" class="m-5">
+              <FormItem>
+                <FormLabel>Champ pour l'index (axe X)</FormLabel>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner le champ index" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup v-if="form.values.dataSource === 'orders'">
+                      <SelectItem value="date">Date</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup v-else-if="form.values.dataSource === 'products'">
+                      <SelectItem value="name">Nom du produit</SelectItem>
+                      <SelectItem value="categoryName">Catégorie</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            </FormField>
+            
+            <FormField v-slot="{ componentField }" name="categoryField1" class="m-5">
+              <FormItem>
+                <FormLabel>Catégorie 1</FormLabel>
+                <Select v-bind="componentField">
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner la première catégorie" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectGroup v-if="form.values.dataSource === 'orders'">
+                      <SelectItem value="totalAmount">Montant total</SelectItem>
+                      <SelectItem value="orderCount">Nombre de commandes</SelectItem>
+                    </SelectGroup>
+                    <SelectGroup v-else-if="form.values.dataSource === 'products'">
+                      <SelectItem value="price">Prix</SelectItem>
+                      <SelectItem value="stock">Stock</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            </FormField>            
              <div class="w-full flex justify-center items-center mt-6">
                  <DialogClose as-child>
                      <Button type="submit">
@@ -193,10 +237,21 @@ const formSchema = toTypedSchema(z.object({
             required_error: 'Veuillez selectionner un type de graphique',
         }
     ),
-    data: z.enum(['test'], 
+    dataSource: z.enum(['orders', 'products'], 
         {
             required_error: 'Veuillez selectionner une source de données',
-        }),
+        }
+    ),
+    indexField: z.enum(['date', 'name', 'categoryName'], 
+        {
+            required_error: 'Veuillez selectionner un champ',
+        }
+    ),
+    categoryField1: z.enum(['totalAmount', 'orderCount', 'price', 'stock'], 
+        {
+            required_error: 'Veuillez selectionner un champ',
+        }
+    ),
 }))
 
 const form = useForm({
@@ -210,8 +265,6 @@ const form = useForm({
 const onSubmit = form.handleSubmit((values) => {
   console.log('Form submitted!', values)
   emit("submitCreation", values);
-
 })
-
 
 </script>

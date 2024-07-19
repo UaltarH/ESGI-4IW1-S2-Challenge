@@ -12,62 +12,7 @@
     import { ModalResponse } from "./models/modalResponse.interface";
     
     const grid = ref();
-    const widgets: Ref<Widget[]> = ref([
-        // {
-        //     id: 1,
-        //     title: "Widget 1",
-        //     grid: {
-        //         x: 0,
-        //         y: 0,
-        //         w: 6,
-        //         h: 2,
-        //         },
-        // },
-        // {
-        //     id: 2,
-        //     title: "Widget 2",
-        //     grid: {
-        //         x: 2,
-        //         y: 0,
-        //         w: 6,
-        //         h: 1,
-        //     },
-        // },
-        // {
-        //     id: 3,
-        //     title: "Widget 3",
-        //     grid: {
-        //         x: 0,
-        //         y: 2,
-        //         w: 6,
-        //         h: 1,
-        //     },
-        // },
-        // {
-        //     id: 4,
-        //     title: "Widget 4",
-        //     grid: {
-        //         x: 2,
-        //         y: 2,
-        //         w: 3,
-        //         h: 6,
-        //     },
-        // },
-        // {
-        //     id: 5,
-        //     title: "Widget 5",
-        //     grid: {
-        //         x: 3,
-        //         y: 2,
-        //         w: 3,
-        //         h: 5,
-        //         // minWidth: 0,
-        //         // minHeight: 0,
-        //         // maxWidth: 0,
-        //         // maxHeight: 0,
-        //     },
-        // },
-    ]);
+    const widgets: Ref<Widget[]> = ref([]);
     const isEditing = ref(true); 
     const dialogIsOpen = ref(false);
 
@@ -83,6 +28,9 @@
             disableResize: !isEditing.value,
             disableDrag: !isEditing.value,
         });
+        
+        // get widgets from backend
+        // ...
         if(widgets.value.length > 0) makeWidgets(widgets.value);
     }
     

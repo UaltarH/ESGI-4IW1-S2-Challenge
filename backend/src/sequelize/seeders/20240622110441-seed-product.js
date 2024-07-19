@@ -10,7 +10,7 @@ let productIds = [];
 module.exports = {
   async up(queryInterface, Sequelize) {
     const products = [];
-    const numOfProducts = 15;
+    const numOfProducts = 30;
 
     for (let i = 0; i < numOfProducts; i++) {
       const categoryId = faker.helpers.arrayElement(categoryIds)

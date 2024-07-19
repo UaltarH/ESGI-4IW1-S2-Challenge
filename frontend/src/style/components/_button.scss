@@ -2,6 +2,9 @@
   .btn {
     @apply flex-shrink-0 font-medium rounded-md text-base gap-x-2.5 px-3.5 py-2.5 shadow-sm inline-flex
     ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-gray-300 dark:hover:ring-gray-500;
+    &--small {
+        @apply text-sm gap-x-1.5 px-2.5 py-1.5 leading-6;
+    }
     &--primary {
       @apply bg-primary hover:bg-primary-light text-white dark:text-gray-900;
     }

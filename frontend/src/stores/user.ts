@@ -19,6 +19,7 @@ export const useUserStore = defineStore(('user'), () => {
     });
     function logout() {
         localStorage.removeItem('auth_token');
+        localStorage.removeItem('cartId');
         token.value = null;
         // we could do other stuff like redirecting the user
         const router = useRouter();

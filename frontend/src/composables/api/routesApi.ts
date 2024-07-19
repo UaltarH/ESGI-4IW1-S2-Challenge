@@ -13,5 +13,5 @@ export const Api = {
   mongoProducts: "/mongoProducts",
   orders: "/orders",
   order: "/order",
-  basket: "/basket/",
+  cart: "/carts",
 };

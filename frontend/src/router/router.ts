@@ -9,17 +9,20 @@ import Data from "@/pages/user/account/data/index.vue";
 import Orders from "@/pages/user/account/orders/index.vue";
 import Settings from "@/pages/user/account/settings/index.vue";
 import Verify from "@/pages/auth/verify/index.vue";
+import Error from "@/pages/errors/500.vue";
 import Error403 from "@/pages/errors/403.vue";
 import Error404 from "@/pages/errors/404.vue";
 import { useUserStore } from "@/stores/user.ts";
 import { role } from "@/dto/role.dto.ts";
 import { UserService } from "@/composables/api/user.service.ts";
+import {useNotificationStore} from "@/stores/notification.ts";
 
 const routes = [
   { path: "/", component: index, name: "home" },
   {
     path: "/auth",
     component: Auth,
+    name: "login",
     beforeEnter: () => {
       const userStore = useUserStore();
       if (userStore.user.id) {
@@ -27,14 +30,14 @@ const routes = [
       }
     },
   },
-  { path: "/logout", component: Logout, meta: { requiresAuth: true } },
+  { path: "/logout", component: Logout },
   { path: "/product/:id", component: () => import("@/pages/product/index.vue") },
   { path: "/products", component: ProductsPage, name: "products" },
   { path: "/verify/:token", component: Verify },
 
   {
-    path: "/order",    
-    meta: { requiresAuth: true },    
+    path: "/order",
+    meta: { requiresAuth: true },
     children: [
       {
         path: "",
@@ -45,7 +48,7 @@ const routes = [
       {
         path: "success",
         component: () => import('@/pages/order/success/index.vue'),
-        meta: { 
+        meta: {
           requiresAuth: true,
           expectedQuery: ['session_id']
         },
@@ -54,7 +57,7 @@ const routes = [
       {
         path: "cancel",
         component: () => import('@/pages/order/cancel/index.vue'),
-        meta: { 
+        meta: {
           requiresAuth: true,
           expectedQuery: ['session_id']
         },
@@ -124,7 +127,7 @@ const routes = [
       },
     ],
   },
-
+  { path: "/500", component: Error },
   { path: "/403", component: Error403 },
   // Route par défaut (ou erreur 404)
   { path: "/:pathMatch(.*)*", component: Error404 },
@@ -135,36 +138,49 @@ export const router = createRouter({
   routes,
 });
 
-router.beforeResolve(async (to) => {
+router.beforeResolve(async (to, from, next) => {
   const userStore = useUserStore();
   const { getUserById } = UserService();
+  const notificationStore = useNotificationStore();
 
   if (to.meta.requiresAuth){
     if (!userStore.user.id) {
-      return {
+      next({
         path: "/auth",
         query: { redirect: to.fullPath },
-      }
+      })
     } else {
-      await getUserById(
+      const status: number = await getUserById(
           userStore.user.id,
           (res: Response) => {
-            if(res.status !== 200) {
-              localStorage.removeItem("auth_token");
-              return {
-                path: "/auth",
-              }
-            }
+            return res.status;
           },
-          { fields: ["firstname"] }
+          {fields: ["firstname"]}
       );
+      if(status === 401) {
+        localStorage.removeItem("auth_token");
+        userStore.token = null;
+        notificationStore.add({
+          message: 'Votre session a expirée, veuillez vous reconnecter',
+          type: 'error',
+          timeout: 3000
+        });
+        next("/auth");
+      } else if(status === 200) {
+        next();
+      } else {
+        notificationStore.add({
+            message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
+            type: 'error',
+            timeout: 3000
+        });
+        next("/500");
+      }
     }
   }
-  if (to.meta.isAdmin) {
+  else if (to.meta.isAdmin) {
     if(userStore.user.role !== role.ADMIN) {
-      return {
-        path: "/403",
-      }
+      next("/403");
     }
     else {
       await getUserById(
@@ -172,21 +188,20 @@ router.beforeResolve(async (to) => {
           (res: Response) => {
             if(res.status !== 200) {
               localStorage.removeItem("auth_token");
-              return {
-                path: "/auth",
-              }
+              userStore.token = null;
+              next("/auth");
             }
             res.json().then((data) => {
               if(data.user.role !== role.ADMIN) {
                 localStorage.removeItem("auth_token");
-                return {
-                  path: "/403",
-                }
-              } else return true;
+                userStore.token = null;
+                next("/403");
+              } else next();
             });
           },
           { fields: ["role"] }
       );
     }
   }
+  else next();
 });

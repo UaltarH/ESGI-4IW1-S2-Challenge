@@ -19,7 +19,9 @@ export const UserService = () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,
             }
-        }).then(res => handler(res));
+        }).then(res => handler(res)).catch(() => {
+            handler(500);
+        });
     }
     const updateUser = async (id: string, data: any, handler: Function) => {
         const token = localStorage.getItem('auth_token');

@@ -178,7 +178,10 @@ const toggleSwitch = () => {
     }
 }
 
-function handleUserInfo(res: Response) {
+function handleUserInfo(res: Response | number) {
+  if(typeof res === "number") {
+    return;
+  }
   res.json().then((data) => {
     if(!data.user) {      
       return;

@@ -1,13 +1,13 @@
 const { z } = require("zod");
-const { requiredMessage, invalidStringMessage } = require("./formMessages");
+const { requiredMessage, invalidStringMessage } = require("../formMessages");
 
-const userModifyUserSchema = z.object({
+const updateByUserSchema = z.object({
   address: z.string({ invalid_type_error: invalidStringMessage })
     .min(5, { message: "L'adresse doit contenir au moins 5 caractères" })
     .max(100, { message: "L'adresse doit contenir au maximum 100 caractères" })
     .optional(),
 
-  zipcode: z.string({ invalid_type_error: invalidStringMessage })
+  zipcode: z.coerce.string({ invalid_type_error: invalidStringMessage })
     .min(5, { message: "Le code postal doit contenir 5 chiffres" })
     .max(5, { message: "Le code postal doit contenir 5 chiffres" })
     .regex(/^\d{5}$/, { message: "Le code postal doit contenir 5 chiffres" })
@@ -33,4 +33,4 @@ const userModifyUserSchema = z.object({
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
 });
 
-module.exports = userModifyUserSchema;
+module.exports = updateByUserSchema;

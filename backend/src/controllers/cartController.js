@@ -3,11 +3,6 @@ const { Cart, Cart_item, sequelize, Product } = require('../sequelize/models');
 class cartController {
     static async createCart(req, res, next) {
         const { id, UserId, products } = req.body;
-        console.group('createCart');
-        console.log('id', id);
-        console.log('UserId', UserId);
-        console.log('products', products);
-        console.groupEnd();
         const transaction = await sequelize.transaction();
 
         try {
@@ -24,7 +19,6 @@ class cartController {
 
             await Cart_item.bulkCreate(cartItems, { transaction });
             await transaction.commit();
-
             res.status(201).json({ cart });
         } catch (error) {
             await transaction.rollback();
@@ -51,10 +45,14 @@ class cartController {
         }
     }
     static async getCartByUserId(req, res, next) {
-        const UserId = req.query.UserId;
+        const UserId = req.params.id;
+
         try {
             const cart = await Cart.findOne({
-                where: { UserId: UserId },
+                where: {
+                    UserId: UserId,
+                },
+                order: [['createdAt', 'DESC']],
                 include:
                 {
                     model: Cart_item,
@@ -63,38 +61,48 @@ class cartController {
                     },
                 },
             });
-            console.log('cart', cart);
 
             if (cart) {
                 res.status(200).json({ cart });
             } else {
-                res.status(404).json({ error: 'Cart not found' });
+                res.sendStatus(404);
             }
         } catch (error) {
             next(error);
         }
     }
 
-    static async deleteCart(req, res, next) {
-        const CartId = req.params.id;
+    static async updateCart(req, res, next) {
+        const { id, UserId, products } = req.body;
         const transaction = await sequelize.transaction();
 
         try {
-            await Cart_item.destroy({
-                where: { CartId },
+            const cart = await Cart.findOne({
+                where: { id, UserId },
+                include: {
+                    model: Cart_item,
+                },
                 transaction,
             });
 
-            const nbDeleted = await Cart.destroy({
-                where: { id: CartId },
-                transaction,
-            });
-            await transaction.commit();
+            if (cart) {
+                await Cart_item.destroy({
+                    where: { CartId: cart.id },
+                    individualHooks: true,
+                    transaction,
+                });
+                const cartItems = products.map(product => ({
+                    CartId: cart.id,
+                    ProductId: product.postgresId,
+                    quantity: product.quantity,
+                }));
 
-            if (nbDeleted === 1) {
+                await Cart_item.bulkCreate(cartItems, { transaction, individualHooks: true });
+                await transaction.commit();
+
                 res.sendStatus(204);
             } else {
-                res.status(404).json({ error: 'Cart not found' });
+                res.sendStatus(404);
             }
         } catch (error) {
             await transaction.rollback();

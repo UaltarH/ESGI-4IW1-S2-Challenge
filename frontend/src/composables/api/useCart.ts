@@ -21,7 +21,7 @@ export const useCart = () => {
         if (token === null) {
             throw new Error('Error while getting cart');
         }
-        return await fetch(baseUrl + Api.cart + `?UserId=${id}`, {
+        return await fetch(baseUrl + Api.cartByUser + id, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -43,5 +43,19 @@ export const useCart = () => {
             body: JSON.stringify({ UserId, id, products }),
         }).then(res => res);
     }
-    return { getCart, getCartByUserId, createCart }
+    const updateCart = async (id: string, UserId:string, products: CartItem[]) => {
+        const token = localStorage.getItem('auth_token');
+        if (token === null) {
+            throw new Error('Error while updating cart');
+        }
+        return await fetch(baseUrl + Api.cart, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ UserId, id, products }),
+        }).then(res => res);
+    }
+    return { getCart, getCartByUserId, createCart, updateCart };
 }

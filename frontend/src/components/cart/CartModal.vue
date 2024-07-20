@@ -36,6 +36,8 @@ function handleClose() {
   emits("close")
 }
 function handlePurchase() {
-  router.push({name: 'order'});
+  router.push({name: 'order'}).then(()=> {
+    handleClose();
+  });
 }
 </script>

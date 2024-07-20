@@ -4,6 +4,7 @@ const validate = (schema) => (req, res, next) => {
     next();
   } catch (err) {
     if (err.errors) {
+      console.error('Validation error:', err.errors);
       res.status(400).json({
         errors: err.errors.map((e) => ({
           path: e.path,
@@ -11,6 +12,7 @@ const validate = (schema) => (req, res, next) => {
         })),
       });
     } else {
+      console.error('Validation error: ', err);
       res.status(400).json({
         errors: [
           {

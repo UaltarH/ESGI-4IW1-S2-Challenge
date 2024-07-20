@@ -21,7 +21,7 @@
   .cart-modal--item {
     @apply grid grid-cols-3 p-4 w-full;
     &-name {
-      @apply text-xl font-bold;
+      @apply text-xl font-bold pr-2;
     }
     &-desc {
     }

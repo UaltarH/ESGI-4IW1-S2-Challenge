@@ -66,13 +66,6 @@
     <p class="text-lg">Page non trouvée</p>
   </div>
 </template>
-<script lang="ts" setup>
-import {onMounted} from "vue";
-
-onMounted(async () => {
-  document.title = "404 - Page non trouvée";
-});
-</script>
 <style scoped>
 .error-container {
   height: calc(100vh - 4rem);

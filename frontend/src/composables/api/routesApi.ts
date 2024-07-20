@@ -14,4 +14,5 @@ export const Api = {
   orders: "/orders",
   order: "/order",
   cart: "/carts",
+  cartByUser: "/carts/user/",
 };

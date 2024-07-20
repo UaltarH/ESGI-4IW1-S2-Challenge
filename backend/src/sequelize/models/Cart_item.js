@@ -1,4 +1,5 @@
 const { Model, DataTypes } = require('sequelize');
+const { afterCreateHook, afterDestroyHook } = require('../hooks/Cart_item.Hooks');
 
 module.exports = (sequelize, DataTypes) => {
     class Cart_item extends Model {
@@ -27,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
             timestamps: true,
         }
     );
-
+    Cart_item.addHook('afterCreate', afterCreateHook);
+    Cart_item.afterDestroy('afterDestroy', afterDestroyHook);
     return Cart_item;
 };

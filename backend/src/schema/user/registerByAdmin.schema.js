@@ -1,14 +1,14 @@
 const { z } = require("zod");
 
-const role = require("../dto/role.dto");
-const { requiredMessage, invalidStringMessage, invalidDateMessage } = require("./formMessages");
+const role = require("../../dto/role.dto");
+const { requiredMessage, invalidStringMessage, invalidDateMessage } = require("../formMessages");
 
 // Dates pour la validation de la date de naissance
 const minDate = new Date(new Date().setFullYear(new Date().getFullYear() - 120));
 const maxDate = new Date(new Date().setFullYear(new Date().getFullYear() - 18));
 
 // Schéma global combiné
-const userRegisterUserSchema = z.object({
+const registerByAdminSchema = z.object({
   lastname: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
     .min(2, { message: "Le nom doit contenir au moins 2 caractères" })
     .max(50, { message: "Le nom doit contenir au maximum 50 caractères" }),
@@ -51,6 +51,8 @@ const userRegisterUserSchema = z.object({
   phone: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
     .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" }),
 
+  role: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+      .refine(value => !Object.values(role).includes(value.role), { message: "Oops, une erreur inattendue s'est produite." })
 });
 
-module.exports = userRegisterUserSchema;
+module.exports = registerByAdminSchema;

@@ -1,11 +1,11 @@
 const { z } = require("zod");
-const { requiredMessage, invalidStringMessage, invalidDateMessage } = require("./formMessages");
+const { requiredMessage, invalidStringMessage, invalidDateMessage } = require("../formMessages");
 // Dates pour la validation de la date de naissance
 const minDate = new Date(new Date().setFullYear(new Date().getFullYear() - 120));
 const maxDate = new Date(new Date().setFullYear(new Date().getFullYear() - 18));
 
 
-const userModifyAdminSchema = z.object({
+const updateByAdminSchema = z.object({
   lastname: z.string({ invalid_type_error: invalidStringMessage })
     .min(2, { message: "Le nom doit contenir au moins 2 caractères" })
     .max(50, { message: "Le nom doit contenir au maximum 50 caractères" })
@@ -25,7 +25,7 @@ const userModifyAdminSchema = z.object({
     .max(100, { message: "L'adresse doit contenir au maximum 100 caractères" })
     .optional(),
 
-  zipcode: z.string({ invalid_type_error: invalidStringMessage })
+  zipcode: z.coerce.string({ invalid_type_error: invalidStringMessage })
     .min(5, { message: "Le code postal doit contenir 5 chiffres" })
     .max(5, { message: "Le code postal doit contenir 5 chiffres" })
     .regex(/^\d{5}$/, { message: "Le code postal doit contenir 5 chiffres" })
@@ -46,4 +46,4 @@ const userModifyAdminSchema = z.object({
     .optional()
 });
 
-module.exports = userModifyAdminSchema;
+module.exports = updateByAdminSchema;

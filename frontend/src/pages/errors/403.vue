@@ -1,7 +1,25 @@
 <template>
   <div class="flex flex-col items-center justify-center error-container relative">
     <h1 class="text-8xl font-bold">403</h1>
-    <p class="text-lg">Accès refusé</p>
+    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+         viewBox="0 0 58 58" xml:space="preserve" fill="#000000" width="200" height="200">
+      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+      <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+      <g id="SVGRepo_iconCarrier"> <rect x="2" y="12" style="fill:#556080;" width="54" height="12"></rect>
+        <polygon style="fill:#F0C419;" points="10,24 3,24 9,12 16,12 "></polygon>
+        <polygon style="fill:#F0C419;" points="30,24 23,24 29,12 36,12 "></polygon>
+        <polygon style="fill:#F0C419;" points="49,24 42,24 48,12 55,12 "></polygon>
+        <circle style="fill:#DF4D60;" cx="14.5" cy="4.5" r="4.5"></circle>
+        <circle style="fill:#DF4D60;" cx="43.5" cy="4.5" r="4.5"></circle>
+        <path style="fill:#CBB292;"
+              d="M14.5,9c-0.926,0-1.785-0.281-2.5-0.76V12h5V8.24C16.285,8.719,15.426,9,14.5,9z"></path>
+        <path style="fill:#CBB292;"
+              d="M43.5,9c-0.926,0-1.785-0.281-2.5-0.76V12h5V8.24C45.285,8.719,44.426,9,43.5,9z"></path>
+        <polygon style="fill:#7F5B53;"
+                 points="46,58 53,58 41,24 34,24 37.857,36 20.143,36 24,24 17,24 5,58 12,58 18,42 40,42 "></polygon>
+      </g>
+    </svg>
+    <p class="text-lg mt-8">Accès refusé</p>
     <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
          viewBox="0 0 57.039 57.039" xml:space="preserve" width="200" height="200" class="absolute right-0 top-0">
       <rect x="5.865" y="38.239" transform="matrix(0.7846 -0.62 0.62 0.7846 -25.6268 14.7152)" style="fill:#556080;" width="5"
@@ -49,7 +67,8 @@
       <path style="fill:#FFFFFF;" d="M31.039,27.011h-9c-0.553,0-1-0.448-1-1s0.447-1,1-1h9c0.553,0,1,0.448,1,1
 	      S31.592,27.011,31.039,27.011z"/>
     </svg>
-    <svg height="200" width="200" class="absolute left-0 bottom-0" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
+    <svg height="200" width="200" class="absolute left-0 bottom-0" version="1.1" id="Capa_1"
+         xmlns="http://www.w3.org/2000/svg"
          xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-5 0 58 58" xml:space="preserve" fill="#000000"
          transform="matrix(-1, 0, 0, 1, 0, 0)">
       <g id="SVGRepo_bgCarrier" stroke-width="0"/>
@@ -76,7 +95,6 @@
 import {onMounted} from "vue";
 
 onMounted(() => {
-  document.title = "403 - Accès refusé";
   console.error("Merci de pas tout casser stp Karl.")
 });
 </script>

@@ -1,31 +1,24 @@
-const MongoProduct = require('../../mongo/models/MongoProduct');
-const crudService = require('../../services/crudGeneric');
-
 const afterCreateHook = async (cartItem, options) => {
-    const mongoProduct = await MongoProduct.findOneAndUpdate(
-        { postgresId: cartItem.ProductId },
-        {
-            $inc: { stock: -cartItem.quantity },
-        }
-    );
-    if (!mongoProduct) {
-        console.error(`MongoProduct with postgresId ${cartItem.ProductId} not found`);
-        return;
+    try {
+        await cartItem.sequelize.models.Product.decrement(
+            { stock: cartItem.quantity },
+            { where: { id: cartItem.ProductId } }
+        );
+    } catch (error) {
+        console.error('Error while decrementing product stock:', error);
+        throw error;
     }
-    console.log(`MongoProduct updated: ${mongoProduct}`);
 }
 const afterDestroyHook = async (cartItem, options) => {
-    const mongoProduct = await MongoProduct.findOneAndUpdate(
-        { postgresId: cartItem.ProductId },
-        {
-            $inc: { stock: cartItem.quantity },
-        }
-    );
-    if (!mongoProduct) {
-        console.error(`MongoProduct with postgresId ${cartItem.ProductId} not found`);
-        return;
+    try {
+        await cartItem.sequelize.models.Product.increment(
+            { stock: cartItem.quantity },
+            { where: { id: cartItem.ProductId } }
+        );
+    } catch (error) {
+        console.error('Error while incrementing product stock:', error);
+        throw error;
     }
-    console.log(`MongoProduct updated: ${mongoProduct}`);
 }
 module.exports = {
     afterCreateHook,

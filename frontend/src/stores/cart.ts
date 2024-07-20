@@ -46,6 +46,7 @@ export const useCartStore = defineStore('cart', () => {
     await getCartByUserId(userStore.user.id).then((res) => {
       if(res.status === 200) {
         res.json().then(async (data) => {
+          localStorage.setItem('cartId', data.cart.id);
           const cartItemsFromDb: CartItem[] = data.cart.Cart_items.map((item: CartItemResponse) => {
             return {
               postgresId: item.ProductId,
@@ -69,7 +70,6 @@ export const useCartStore = defineStore('cart', () => {
           }
           rawItems.value = cartItemsFromDb;
           await updateCartInDb();
-          localStorage.setItem('cartId', data.cart.id);
         });
       } else {
         if(localStorage.getItem('cart')) {

@@ -15,7 +15,7 @@ module.exports = {
         id: uuidv4(),
         OrderId: orderId,
         stripeSessionId: faker.number.int({ min: 10000, max: 999990 }),
-        amount: faker.number.float({ min: 50, max: 150 }),
+        amount: faker.number.float({ min: 50, max: 150, multipleOf: 0.01 }),
         createdAt: new Date(),
         updatedAt: new Date(),
       });

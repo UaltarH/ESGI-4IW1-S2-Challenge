@@ -12,10 +12,10 @@
       <div class="flex flex-col justify-start items-start">
         <div v-for="order in orders" :key="order._id" class="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
           <div class="w-full flex flex-col justify-start items-start space-y-8">
-            <h3 class="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">Commande {{ order._id }}</h3>
+            <h3 class="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">Commande {{ order.orderNumber }}</h3>
             <div class="flex justify-start items-start flex-col space-y-2">
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Date: </span>{{ new Date(order.date).toLocaleDateString() }}</p>
-              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Total: </span>{{ order.totalPrice }}€</p>
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Total: </span>{{ order.payment.amount.toFixed(2) }}€</p>
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Statut: </span>{{ order.status.sort((a, b) => new Date(b.date) - new Date(a.date))[0].status }}</p>
             </div>
             <div class="w-full">

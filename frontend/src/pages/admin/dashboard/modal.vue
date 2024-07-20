@@ -260,7 +260,6 @@ const form = useForm({
 })
 
 const onSubmit = form.handleSubmit((values) => {
-  console.log('Form submitted!', values)
   emit("submitCreation", values);
 })
 

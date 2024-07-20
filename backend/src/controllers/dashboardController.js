@@ -31,7 +31,7 @@ class DashboardController {
 
     static async createWidget(req, res, next) {
         try {
-            const { title, description, chartType, dataSource, indexField, categoryField1, w, h } = req.body;
+            const { title, description, chartType, dataSource, indexField, categoryField1, w, h, x, y } = req.body;
 
             const newWidget = await MongoDashboardConfig.create({
                 title,
@@ -40,7 +40,7 @@ class DashboardController {
                 dataSource,
                 indexData: indexField,
                 categoriesData: [categoryField1],
-                grid: { w, h },
+                grid: { w, h, x, y },
             });
             const chartData = await ChartDataService.getChartData(dataSource, indexField, categoryField1);
 
@@ -70,6 +70,44 @@ class DashboardController {
             res.sendStatus(200);
         } catch (error) {
             res.sendStatus(500);
+        }
+    }
+
+    static async updateWidgets(req, res, next) {
+        try {
+            const { widgets } = req.body;
+
+            if (!Array.isArray(widgets)) {
+                return res.status(400).json({ message: "Invalid input: expected an array of widget updates" });
+            }
+
+            const updatePromises = widgets.map(async (update) => {
+                const { idWidget, grid } = update;
+
+                if (!idWidget || !grid) {
+                    throw new Error(`Invalid update object for widget ID: ${idWidget}`);
+                }
+
+                const updatedWidget = await MongoDashboardConfig.findByIdAndUpdate(
+                    { _id: idWidget },
+                    { $set: { grid: grid } }
+                );
+
+                if (!updatedWidget) {
+                    throw new Error(`Widget not found with ID: ${idWidget}`);
+                }
+
+                return updatedWidget;
+            });
+
+            await Promise.all(updatePromises);
+
+            res.status(200).json({
+                message: "Widgets updated successfully",
+            });
+        } catch (error) {
+            console.error('Error updating widgets:', error);
+            res.status(500).json({ message: "An error occurred while updating widgets", error: error.message });
         }
     }
 }

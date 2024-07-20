@@ -1,6 +1,7 @@
 import { Api } from '../routesApi';
 import { CreateWidgetInput } from './dto/inputRequest/createWidgetInput';
 import { Widget } from '../../../pages/admin/dashboard/models/widget.dto';
+import { UpdateWidgetInput } from './dto/inputRequest/updateWidgetInput';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -80,5 +81,25 @@ export const DashboardService = () => {
         }
     };
 
-    return { createWidget, getWidgets, deleteWidget };
+    const updateWidgets = async (bodyRequest: UpdateWidgetInput[]): Promise<void> => {
+        try {
+            const token = getToken();
+            const response = await fetch(baseUrl + Api.dashboard, {
+                method: "PUT",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({widgets: bodyRequest}),
+            });
+
+            return handleResponse(response);
+        } catch (error) {
+            console.error('Error update widgets:', error);
+            throw error;
+        }
+    };
+
+    return { createWidget, getWidgets, deleteWidget, updateWidgets };
 }

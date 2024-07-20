@@ -10,6 +10,8 @@ const dashboardConfigSchema = new mongoose.Schema({
     grid: {
         w: Number,
         h: Number,
+        x: Number,
+        y: Number,
     },
 });
 

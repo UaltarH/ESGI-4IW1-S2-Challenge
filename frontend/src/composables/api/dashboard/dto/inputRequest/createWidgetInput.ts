@@ -7,4 +7,6 @@ export interface CreateWidgetInput {
     categoryField1: string;
     w: number;
     h: number;
+    x: number;
+    y: number;
 }

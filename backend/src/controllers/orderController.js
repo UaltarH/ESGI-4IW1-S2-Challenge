@@ -29,7 +29,7 @@ class orderController {
             if (!shipping) {
                 return res.status(404).json({ message: "Shipping not found" });
             }
-            await Order_status.create({ status, OrderId: shipping.OrderId });
+            const orderstatus = await Order_status.create({ status, OrderId: shipping.OrderId });
 
             return res.status(200).json({ message: "Shipping status updated" });
         } catch (error) {

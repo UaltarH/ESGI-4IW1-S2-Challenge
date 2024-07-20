@@ -15,5 +15,5 @@ export const Api = {
   order: "/order",
   cart: "/carts",
   dashboard: "/dashboard",
-  basket: "/basket/",
+  cartByUser: "/carts/user/",
 };

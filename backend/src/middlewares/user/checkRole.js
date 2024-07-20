@@ -6,10 +6,10 @@ const crudService = require("../../services/crudGeneric");
 const validate = require("./../validate");
 const role = require("../../dto/role.dto");
 const {
-    userRegisterAdminSchema,
-    userRegisterUserSchema,
-    userModifyAdminSchema,
-    userModifyUserSchema
+    userUpdateByUserSchema,
+    userUpdateByAdminSchema,
+    userRegisterByUserSchema,
+    userRegisterByAdminSchema,
 } = require("../../schema/");
 
 const checkRole = () => async (req, res, next) => {
@@ -19,9 +19,8 @@ const checkRole = () => async (req, res, next) => {
             return res.sendStatus(401);
         else {
             // création d'un utilisateur par une personne non identifiée
-            validate(userRegisterUserSchema);
             req.body.role = role.USER;
-            next();
+            return validate(userRegisterByUserSchema)(req, res, next);
         }
     } else {
         const [type, token] = header.split(/\s+/);
@@ -37,10 +36,9 @@ const checkRole = () => async (req, res, next) => {
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
                         if (req.method === 'POST')
-                            validate(userRegisterAdminSchema);
+                            return validate(userRegisterByAdminSchema)(req, res, next);
                         if (req.method === 'PATCH')
-                            validate(userModifyAdminSchema);
-                        return next();
+                            return validate(userUpdateByAdminSchema)(req, res, next);
                     } else {
                         return res.sendStatus(403);
                     }
@@ -52,8 +50,7 @@ const checkRole = () => async (req, res, next) => {
                         return res.sendStatus(401);
                     }
                     // un utilisateur non-admin ne peut modifier que certaines infos, même de son compte
-                    validate(userModifyUserSchema);
-                    return next();
+                    return validate(userUpdateByUserSchema)(req, res, next);
                 } else if (req.method === 'POST') {
                     // un utilisateur non-admin ne peut créer d'utilisateur
                     return res.sendStatus(403);
@@ -66,7 +63,7 @@ const checkRole = () => async (req, res, next) => {
                     return next();
                 }
             } catch (e) {
-                return res.sendStatus(500);
+                return res.sendStatus(401);
             }
         } else {
             return res.sendStatus(401);

@@ -1,13 +1,9 @@
 const { Cart, Cart_item, sequelize, Product } = require('../sequelize/models');
+const { cartQueue } = require('../config/queueBullConfig');
 
 class cartController {
     static async createCart(req, res, next) {
         const { id, UserId, products } = req.body;
-        console.group('createCart');
-        console.log('id', id);
-        console.log('UserId', UserId);
-        console.log('products', products);
-        console.groupEnd();
         const transaction = await sequelize.transaction();
 
         try {
@@ -24,6 +20,12 @@ class cartController {
 
             await Cart_item.bulkCreate(cartItems, { transaction });
             await transaction.commit();
+
+            // ajout de la tâche de suppression du panier dans 15 minutes
+            await cartQueue.add(
+                { cartId: cart.id },
+                { delay: 15 * 60 * 1000 }
+            );
 
             res.status(201).json({ cart });
         } catch (error) {

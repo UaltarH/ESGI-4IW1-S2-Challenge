@@ -52,14 +52,14 @@ class orderController {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const skip = (page - 1) * limit;
-    
+
             const orders = await MongoOrder.find({ 'user.userId': userId })
-                                           .skip(skip)
-                                           .limit(limit);
-    
+                .skip(skip)
+                .limit(limit);
+
             const totalOrders = await MongoOrder.countDocuments({ 'user.userId': userId });
-    
-            res.json({ 
+
+            res.json({
                 orders: orders,
                 totalOrders: totalOrders,
                 currentPage: page,
@@ -128,7 +128,18 @@ class orderController {
             // check in query params if payment was successful
             if (req.query.status === "true") {
                 await Order_status.create({ status: "Confirmée", OrderId: order.id });
-                await Cart.destroy({ where: { UserId: order.UserId } });
+                const deletedCart = await Cart.destroy({
+                    where: { UserId: order.UserId },
+                    returning: true,
+                    plain: true
+                });
+
+                //remove the worker for this cart
+                const jobs = await cartQueue.getJobs(['delayed']);
+                const cartJob = jobs.find(job => job.data.cartId === deletedCart.id);
+                if (cartJob) {
+                    await cartJob.remove();
+                }
 
                 return res.status(200).json({ message: "Order confirmed" });
             } else if (req.query.status === "false") {

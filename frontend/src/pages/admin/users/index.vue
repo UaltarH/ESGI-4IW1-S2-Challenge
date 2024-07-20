@@ -19,7 +19,7 @@
         :title="'Utilisateur'"
         :data="userVisualizer"
         :buttons="['close']"
-        :fields="['id', 'phone', 'password', 'address', 'birthdate', 'city', 'country', 'email', 'fistname', 'lastname', 'role']"
+        :fields="['id', 'email', 'firstname', 'lastname', 'password', 'phone', 'address','city', 'country', 'birthdate',  'role']"
         :labels="{
           id: 'Identifiant',
           phone: 'Numéro de Téléphone',
@@ -40,6 +40,7 @@
       <Dialog v-model:open="isModalVisible">
           <GenericEditModal
             :model="selectedItem"
+            :errors="errors"
             @close="isModalVisible = false"
             @save="handleSave"
           />
@@ -117,6 +118,8 @@ const isModalVisible = ref(false);
 const selectedItem = ref<User | null>(null);
 const selectedItems = ref<User[] | null>(null);
 
+const errors: Ref<{ [key: string]: string }> = ref({});
+
 function handleVisualize(item: User) {
   userVisualizer.value = item;
 }
@@ -130,6 +133,7 @@ function handleEdit(item: User) {
 }
 
 async function handleSave(item: User) {
+  errors.value = {};
   const itemCopy = {...item} as Partial<typeof item>;
   delete itemCopy.id;
   const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
@@ -156,8 +160,23 @@ async function handleSave(item: User) {
         timeout: 3000
       });
     }
-  }).catch(error => {
-    console.error('Error in handleSave:', error);
+  })
+  .then(() => {
+    refreshUsers();
+    isModalVisible.value = false;
+  })
+  .catch(error => {
+    const parsedErrors = JSON.parse(error);
+    if (parsedErrors.errors && Array.isArray(parsedErrors.errors)) {
+      parsedErrors.errors.forEach((errItem: { path: string[], message: string }) => {
+        if (errItem.path && errItem.path.length > 0) {
+          const key = errItem.path[0];
+          errors.value[key] = errItem.message;
+        }
+      });
+    } else {
+      console.error('Unexpected error format:', parsedErrors);
+    }
   });
 }
 

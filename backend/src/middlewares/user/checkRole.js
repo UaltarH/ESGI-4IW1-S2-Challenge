@@ -38,7 +38,11 @@ const checkRole = () => async (req, res, next) => {
                         if (req.method === 'POST')
                             return validate(userRegisterByAdminSchema)(req, res, next);
                         if (req.method === 'PATCH')
-                            return validate(userUpdateByAdminSchema)(req, res, next);
+                            return validate(userModifyAdminSchema)(req, res, (err) => {
+                                if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
+                                next();
+                            });
+                        return next();
                     } else {
                         return res.sendStatus(403);
                     }

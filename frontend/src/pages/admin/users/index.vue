@@ -13,7 +13,17 @@
           @delete-multiple-items="handleDeleteMultiple"
       ></CustomizableTable>
 
-      <visualizer class="mt-4" v-if="userVisualizer != undefined" :title="'Produit'" :data="userVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
+      <visualizer
+        class="mt-4"
+        v-if="userVisualizer != undefined"
+        :title="'Produit'"
+        :data="userVisualizer"
+        :buttons="['close']"
+        :fields="['id', 'phone', 'password', 'address', 'birthdate', 'city', 'country', 'email', 'fistname', 'lastname', 'role']"
+        :labels="{ email: 'Adresse Email', phone: 'Numéro de Téléphone' }"
+        :valueTransforms="{ password: '******' }"
+        @closeVisualizer="onCloseVisualizer"
+      ></visualizer>
 
       <Dialog v-model:open="isModalVisible">
           <GenericEditModal

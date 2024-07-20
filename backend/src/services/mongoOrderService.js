@@ -54,7 +54,6 @@ async function createMongoOrder(order, userId, orderItemsRes, paymentRes, shippi
 
     } catch (error) {
         console.error('Error creating order in MongoDB:', error);
-        throw error;
     }
 }
 

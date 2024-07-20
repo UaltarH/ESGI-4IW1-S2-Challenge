@@ -46,6 +46,30 @@ class orderController {
         }
     }
 
+    static async getAllOrdersForUser(req, res, next) {
+        try {
+            const userId = req.params.id;
+            const page = parseInt(req.query.page) || 1;
+            const limit = parseInt(req.query.limit) || 10;
+            const skip = (page - 1) * limit;
+    
+            const orders = await MongoOrder.find({ 'user.userId': userId })
+                                           .skip(skip)
+                                           .limit(limit);
+    
+            const totalOrders = await MongoOrder.countDocuments({ 'user.userId': userId });
+    
+            res.json({ 
+                orders: orders,
+                totalOrders: totalOrders,
+                currentPage: page,
+                totalPages: Math.ceil(totalOrders / limit)
+            });
+        } catch (error) {
+            res.status(500).json({ message: error.message });
+        }
+    }
+
     static async createPdfOrder(req, res, next) {
         try {
             const order = await MongoOrder.findById(req.params.id);

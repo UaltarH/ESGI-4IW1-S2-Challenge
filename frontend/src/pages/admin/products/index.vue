@@ -13,8 +13,31 @@
             @delete-multiple-items="handleDeleteMultiple"
         ></CustomizableTable>
 
-        <visualizer class="mt-4" v-if="productVisualizer != undefined" :title="'Produit'" :data="productVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
-  
+        <visualizer
+          class="mt-4"
+          v-if="productVisualizer != undefined"
+          :title="'Produit'"
+          :data="productVisualizer"
+          :buttons="['close']"
+          :fields="[
+            'postgresId', 
+            'name', 
+            'description', 
+            'price', 
+            'stock', 
+            'categoryName', 
+          ]"
+          :labels="{
+            postgresId: 'Identifiant Postgres',
+            name: 'Nom',
+            description: 'Description',
+            price: 'Prix',
+            stock: 'Stock',
+            categoryName: 'Nom de la Catégorie',
+          }"       
+          @closeVisualizer="onCloseVisualizer"
+        ></visualizer>  
+
       <Dialog v-model:open="isModalVisible">
           <ProductEditModale
             :model="selectedItem"

@@ -97,7 +97,7 @@ services:
     environment:
       PORT: 7001
     ports:
-      - 7001:7000
+      - 7001:7001
     volumes:
       - ./laposteapi:/home/node/app
     working_dir: /home/node/app

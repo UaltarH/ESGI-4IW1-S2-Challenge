@@ -8,11 +8,11 @@
         <h2 class="text-3xl font-bold mb-4">{{ product.name }}</h2>
         <p v-if="!isProductAvailable" class="text-red-600 mb-4">Produit indisponible</p>
         <p class="text-xl font-semibold mb-4">{{ product.price }} €</p>
-        <p class="text-gray-700 mb-6">{{ product.description }}</p>
+        <p class="text-gray-700 dark:text-gray-400 mb-6">{{ product.description }}</p>
         <div class="flex items-center gap-4">
-          <label for="quantity">Quantité</label>
+          <label for="quantity" class="font-medium">Quantité</label>
           <select id="quantity" class="border rounded p-2 dark:bg-dark-blue dark:border-gray-700" :class="!isProductAvailable ? 'bg-gray-200 dark:bg-dark-blue-dark cursor-not-allowed' : ''" v-model="qty" :disabled="!isProductAvailable">
-            <option v-for="n in product.stock < 0 ? 0 : product.stock" :key="n" :value="n">{{ n }}</option>
+            <option v-for="n in product.stock < 0 ? 0 : 10" :key="n" :value="n">{{ n }}</option>
           </select>
           <button v-if="isProductAvailable" @click="addToCart" class="btn btn--primary py-2 px-4" :disabled="!isProductAvailable">Ajouter au panier</button>
         </div>
@@ -56,6 +56,7 @@ onMounted(async () => {
 
 watch(() => route.params.id, async () => {
   await fetchProduct();
+  qty.value = 1;
 });
 
 const imageUrls = [
@@ -88,24 +89,40 @@ const fetchLastProducts = async () => {
 };
 
 const addToCart = () => {
-  console.log(`Adding ${product.value.name} to cart`);
-  console.log(`Quantity: ${qty.value}`);
+  const item = cart.rawItems.find((item) => item.postgresId === product.value.postgresId)
+  if(item) getQuantity(qty.value + item.quantity);
+  else getQuantity(qty.value);
   // TODO : manage size but need to be added in the product mongo model first
-  cart.addToCart({
-    id: product.value._id,
-    postgresId: product.value.postgresId,
-    name: product.value.name,
-    price: product.value.price,
-    quantity: qty.value,
-    size: 'M',
-    description: product.value.description
-  }).then(async () => {
-    console.log('Item added to cart');
-    await fetchProduct();
-    notificationStore.add({message: 'Produit ajouté au panier', timeout: 3000, type: 'success'});
-  }).catch((error) => {
-    console.error('Error adding item to cart:', error);
-  });
+  if(qty.value > 0) {
+    cart.addToCart({
+      postgresId: product.value.postgresId,
+      name: product.value.name,
+      price: product.value.price,
+      quantity: qty.value,
+      size: 'M',
+      description: product.value.description
+    }).then(async () => {
+      await fetchProduct();
+      notificationStore.add({message: 'Produit ajouté au panier', timeout: 3000, type: 'success'});
+    }).catch((error) => {
+      console.error('Error adding item to cart:', error);
+    });
+  }
+  qty.value = 1;
+};
+const getQuantity = (quantity: number) => {
+  if(product.value.stock < 0) {
+    notificationStore.add({message: 'Produit indisponible', timeout: 3000, type: 'error'});
+    qty.value = 0;
+  }
+  if(quantity > 10 && qty.value <= product.value.stock) {
+    notificationStore.add({message: 'Quantité maximale atteinte', timeout: 3000, type: 'error'});
+    qty.value = 0;
+  }
+  if(qty.value > product.value.stock) {
+    notificationStore.add({message: 'Quantité maximale atteinte', timeout: 3000, type: 'error'});
+    qty.value = product.value.stock;
+  }
 };
 </script>
 

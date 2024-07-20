@@ -1,13 +1,15 @@
-const userModifyUserSchema = require( "./user.modifyUserSchema");
-const userModifyAdminSchema = require("./user.modifyAdminSchema");
-const userRegisterUserSchema = require("./user.registerUserSchema");
-const userRegisterAdminSchema = require("./user.registerAdminSchema");
+const userUpdateByUserSchema = require( "./user/updateByUser.schema");
+const userUpdateByAdminSchema = require("./user/updateByAdmin.schema");
+const userRegisterByUserSchema = require("./user/registerByUser.schema");
+const userRegisterByAdminSchema = require("./user/updateByAdmin.schema");
 const productModifySchema = require("./product.modifySchema");
+const cartSchema = require("./cart/schema.js");
 
 module.exports = {
-    userModifyUserSchema,
-    userModifyAdminSchema,
-    userRegisterUserSchema,
-    userRegisterAdminSchema,
+    userUpdateByUserSchema,
+    userUpdateByAdminSchema,
+    userRegisterByUserSchema,
+    userRegisterByAdminSchema,
     productModifySchema,
+    cartSchema,
 };

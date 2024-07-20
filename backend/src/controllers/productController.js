@@ -125,6 +125,7 @@ class productController {
     }
 
     static async updateProduct(req, res) {
+        console.log('====================================================');
         const { id } = req.params;
         const updateData = req.body;
 

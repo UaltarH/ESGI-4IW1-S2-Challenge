@@ -2,15 +2,15 @@
     <div class="cart-modal--content" :class="cart.cartItems.length === 0 ? 'items-center justify-center' : ''">
         <p v-if="cart.cartItems.length === 0" class="text-gray-400">Le panier est vide :'(</p>
         <ul v-else>
-          <li v-for="item in cart.cartItems" :key="item.id" class="cart-modal--item">
-            <div>
+          <li v-for="item in cart.cartItems" :key="item.postgresId" class="cart-modal--item">
+            <div class="whitespace-break-spaces">
               <img src="https://placehold.co/100X100" :alt="item.name"/>
-              <label :for="item.id" class="cart-modal--item-name">{{ item.name }}</label>
+              <label :for="item.postgresId" class="cart-modal--item-name">{{ item.name }}</label>
             </div>
             <div class="flex flex-col justify-start items-start gap-2">
               <p class="cart-modal--item-desc">{{ descriptionShortener(item.description) }}</p>
               <p>Taille : <b>{{ item.size }}</b></p>
-              <input-number :id="item.id" :name="item.id" :value="item.quantity" :min=0 @update:model-value="args => handleQuantityChange(item.id, args)" class="cart-modal--item-qty"/>
+              <input-number :id="item.postgresId" :name="item.postgresId" :value="item.quantity" :min=0 :max="10" @update:model-value="args => handleQuantityChange(item.postgresId, args)" class="cart-modal--item-qty"/>
             </div>
             <div class="flex flex-col justify-between">
               <div class="cart-modal--item-prices">
@@ -41,12 +41,12 @@ import {CartItem} from "@/dto/cart.dto.ts";
 
 const cart = useCartStore();
 
-function handleQuantityChange(id: string, quantity: number) {
-  cart.updateQuantity(id, quantity);
+function handleQuantityChange(postgresId: string, quantity: number) {
+  cart.updateQuantity(postgresId, quantity);
 }
 
 function handleDeleteItem(item: CartItem) {
-  cart.removeFromCart(item.id);
+  cart.removeFromCart(item.postgresId);
 }
 
 function descriptionShortener(description: string) {

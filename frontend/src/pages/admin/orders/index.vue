@@ -12,7 +12,52 @@
             ></CustomizableTable>
         </div>
         <stepperStatusOrder v-if="orderVisualizer" :statuses="orderVisualizer.status" class="my-4"</stepperStatusOrder>
-        <visualizer v-if="orderVisualizer != undefined" :title="'Commande'" :data="orderVisualizer" :buttons="['close', 'invoice']" @createFacture="onCreateFacture" @closeVisualizer="onCloseVisualizer"></visualizer>
+
+        <visualizer
+          class="mt-4"
+          v-if="orderVisualizer != undefined"
+          :title="'Commande'"
+          :data="orderVisualizer"
+          :buttons="['close']"
+          :fields="[
+            'orderNumber', 
+            'date', 
+            'user', 
+            'orderItems', 
+            'payment', 
+            'shipping', 
+          ]"
+          :labels="{
+            orderNumber: 'Numéro de Commande',
+            date: 'Date',
+            user: 'Utilisateur',
+            'user.userId': 'Identifiant Utilisateur',
+            'user.firstname': 'Prénom',
+            'user.lastname': 'Nom de Famille',
+            'user.email': 'Adresse Email',
+            'user.phone': 'Numéro de Téléphone',
+            orderItems: 'Articles Commandés',
+            'orderItems.orderItemId': 'Identifiant de l\'Article',
+            'orderItems.productId': 'Identifiant du Produit',
+            'orderItems.productName': 'Nom du Produit',
+            'orderItems.quantity': 'Quantité',
+            'orderItems.price': 'Prix',
+            payment: 'Paiement',
+            'payment.paymentId': 'Identifiant du Paiement',
+            'payment.stripePaymentId': 'Identifiant Stripe',
+            'payment.amount': 'Montant',
+            shipping: 'Expédition',
+            'shipping.shippingId': 'Identifiant de l\'Expédition',
+            'shipping.shippingMethod': 'Méthode d\'Expédition',
+            'shipping.trackingNumber': 'Numéro de Suivi',
+            'shipping.address': 'Adresse',
+            'shipping.city': 'Ville',
+            'shipping.zipcode': 'Code Postal',
+            'shipping.country': 'Pays',
+          }"
+          @closeVisualizer="onCloseVisualizer"
+        />
+
         <p v-if="isGenerating">Génération en cours...</p>
         <p v-if="error">{{ error }}</p>
     </div>

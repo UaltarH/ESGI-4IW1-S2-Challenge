@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const connectMongoDB = require('./config/mongo_config');
 const cookieParser = require('cookie-parser');
+const xssSanitizer = require('./middlewares/domPurify');
 const indexRouter = require('./routes/index');
 const searchRouter = require('./routes/search');
 const categoryRouter = require('./routes/category');
@@ -33,6 +34,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors(corsOptions));
 app.use(cookieParser());
+
+// Middleware for clearing XSS attacks
+app.use(xssSanitizer);
 
 app.use(indexRouter);
 app.use(searchRouter);

@@ -31,6 +31,7 @@ class DashboardController {
 
     static async createWidget(req, res, next) {
         try {
+            console.log(req.body);
             const { title, description, chartType, dataSource, indexField, categoryField1, w, h, x, y } = req.body;
 
             const newWidget = await MongoDashboardConfig.create({

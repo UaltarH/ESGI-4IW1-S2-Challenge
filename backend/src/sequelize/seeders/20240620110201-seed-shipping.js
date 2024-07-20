@@ -7,7 +7,7 @@ const { orderIds } = require('./20240620095951-seed-order');
 module.exports = {
   async up(queryInterface, Sequelize) {
     const shippings = [];
-    const numOfShippings = 30;
+    const numOfShippings = orderIds.length;
 
     for (let i = 0; i < numOfShippings; i++) {
       const orderId = orderIds[i];

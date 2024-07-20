@@ -3,7 +3,7 @@ import btn from '@/components/ui/button/Button.vue';
 import { AreaChart } from '@/components/ui/chart-area';
 import { LineChart } from '@/components/ui/chart-line';
 import { BarChart } from '@/components/ui/chart-bar';
-import { DonutChart } from '@/components/ui/chart-donut';
+
 const props = defineProps({
   data: {
     type: Object,
@@ -37,10 +37,9 @@ function deleteWidget() {
               <p class="text-sm text-gray-400">{{ data.description }}</p>
             </div>
             <div class="w-full grow">
-              <AreaChart v-if="data.chartType == 'area'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" />
-              <LineChart v-else-if="data.chartType == 'line'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" />
-              <BarChart v-else-if="data.chartType == 'bar'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" />
-              <DonutChart v-else-if="data.chartType == 'donut'" :data="data.data" :index="data.indexData" :category="data.categoriesData[0]" />
+              <AreaChart v-if="data.chartType == 'area'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" :colors="['red']"/>
+              <LineChart v-else-if="data.chartType == 'line'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" :colors="['red']"/>
+              <BarChart v-else-if="data.chartType == 'bar'" :data="data.data" :index="data.indexData" :categories="data.categoriesData" :colors="['red']"/>              
             </div>
           </div>
           <btn 

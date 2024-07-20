@@ -10,7 +10,7 @@ let productIds = [];
 module.exports = {
   async up(queryInterface, Sequelize) {
     const products = [];
-    const numOfProducts = 15;
+    const numOfProducts = 30;
 
     for (let i = 0; i < numOfProducts; i++) {
       const categoryId = faker.helpers.arrayElement(categoryIds)
@@ -22,7 +22,7 @@ module.exports = {
         id: productId,
         name: faker.commerce.productName(),
         description: faker.commerce.productDescription(),
-        price: parseFloat(faker.number.float({ min: 10, max: 20, precision: 0.01 }).toFixed(2)),
+        price: parseFloat(faker.number.float({ min: 10, max: 20, multipleOf: 0.01 }).toFixed(2)),
         stock: faker.number.int({ min: -10, max: 100 }),
         CategoryId: categoryId,
         createdAt: new Date(),

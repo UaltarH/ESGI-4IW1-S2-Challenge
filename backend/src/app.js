@@ -12,6 +12,7 @@ const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
 const cartRouter = require('./routes/cart');
 const mockRouter = require("./routes/mock");
+const dashboardRouter = require('./routes/dashboard');
 const app = express();
 
 const allowedOrigins = ["http://localhost:5173", 'https://boxtobe.mapa-server.org', 'http://boxtobe.mapa-server.org'];
@@ -41,6 +42,7 @@ app.use(productRouter);
 app.use(orderRouter);
 app.use(cartRouter);
 app.use(mockRouter);
+app.use(dashboardRouter);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'template', 'pdf'));

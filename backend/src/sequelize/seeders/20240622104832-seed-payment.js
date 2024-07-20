@@ -7,8 +7,7 @@ const { orderIds } = require('./20240620095951-seed-order');
 module.exports = {
   async up(queryInterface, Sequelize) {
     const payments = [];
-    const numOfPayments = 15;
-
+    const numOfPayments = orderIds.length;
     for (let i = 0; i < numOfPayments; i++) {
       const orderId = orderIds[i];
 
@@ -16,7 +15,7 @@ module.exports = {
         id: uuidv4(),
         OrderId: orderId,
         stripeSessionId: faker.number.int({ min: 10000, max: 999990 }),
-        amount: faker.number.float({ min: 50, max: 150 }),
+        amount: faker.number.float({ min: 50, max: 150, multipleOf: 0.01 }),
         createdAt: new Date(),
         updatedAt: new Date(),
       });

@@ -22,10 +22,10 @@ class cartController {
             await transaction.commit();
 
             // ajout de la tâche de suppression du panier dans 15 minutes
-            await cartQueue.add(
-                { cartId: cart.id },
-                { delay: 15 * 60 * 1000 }
-            );
+            // await cartQueue.add(
+            //     { cartId: cart.id },
+            //     { delay: 15 * 60 * 1000 }
+            // );
 
             res.status(201).json({ cart });
         } catch (error) {

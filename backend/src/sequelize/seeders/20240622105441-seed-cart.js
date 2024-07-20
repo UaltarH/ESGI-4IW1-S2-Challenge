@@ -9,28 +9,28 @@ let cartIds = [];
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    const carts = [];
-    const numOfCarts = 15;
+    // const carts = [];
+    // const numOfCarts = 15;
 
-    for (let i = 0; i < numOfCarts; i++) {
-      const userId = userIds[i];
+    // for (let i = 0; i < numOfCarts; i++) {
+    //   const userId = userIds[i];
 
-      const cartId = uuidv4();
-      cartIds.push(cartId);
+    //   const cartId = uuidv4();
+    //   cartIds.push(cartId);
 
-      carts.push({
-        id: cartId,
-        UserId: userId,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-    }
+    //   carts.push({
+    //     id: cartId,
+    //     UserId: userId,
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   });
+    // }
 
-    return queryInterface.bulkInsert('Cart', carts, {});
+    // return queryInterface.bulkInsert('Cart', carts, {});
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.bulkDelete('Cart', null, {});
+    // return queryInterface.bulkDelete('Cart', null, {});
   }
 };
 

@@ -1,5 +1,5 @@
 export interface ModalResponse {
-    type: "area" | "donut" | "bar" | "line";
+    type: "area" | "bar" | "line";
     title: string;
     description: string;
     width: number[];

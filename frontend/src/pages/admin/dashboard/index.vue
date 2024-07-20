@@ -3,35 +3,79 @@
     import WidgetComponent from "./widget.vue";
     import DialogContentCustom from "./modal.vue";
     import btn from '@/components/ui/button/Button.vue'
-    import { Widget } from "./models/widget.interface";
     import { GridStack } from "gridstack";
     import "gridstack/dist/gridstack.min.css";
     import "gridstack/dist/gridstack-extra.min.css";
-    import { v4 as uuidv4 } from 'uuid';
     import { Dialog, DialogTrigger } from '@/components/ui/dialog';
     import { ModalResponse } from "./models/modalResponse.interface";
+    import { DashboardService } from "@/composables/api/dashboard/dashboard.service";
+    import { Widget } from "./models/widget.dto";
     
     const grid = ref();
     const widgets: Ref<Widget[]> = ref([]);
-    const isEditing = ref(true); 
     const dialogIsOpen = ref(false);
 
-    onMounted(() => {
+    const dashboardService = DashboardService();
+    
+
+    onMounted(async () => {
+        await fetchWidgets();
         initGridStack();
     });
+
+    async function fetchWidgets() {
+        try {
+            const response = await dashboardService.getWidgets();
+            widgets.value = response.widgets;
+        } catch (error) {
+            console.error('Error fetching widgets:', error);            
+        }
+    }
 
     function initGridStack() {
         grid.value = GridStack.init({
             column: 12,
             cellHeight: 100,
             margin: 10,
-            disableResize: !isEditing.value,
-            disableDrag: !isEditing.value,
+            disableResize: false,
+            disableDrag: false,
         });
         
-        // get widgets from backend
-        // ...
         if(widgets.value.length > 0) makeWidgets(widgets.value);
+
+        grid.value.on('change', handleGridChange);
+        grid.value.on('resizestop', handleGridResizeStop);
+    }
+    function handleGridChange(event: any, items: any[]) {
+        console.log('handleGridChange', items);
+        // items.forEach(item => {
+        //     const widget = widgets.value.find(w => w.id === item.id);
+        //     if (widget) {
+        //         widget.grid = {
+        //             x: item.x,
+        //             y: item.y,
+        //             w: item.w,
+        //             h: item.h
+        //         };
+        //     }
+        // });
+        // Ici, vous pouvez appeler une fonction pour sauvegarder les changements
+        // saveWidgetChanges();
+    }
+
+    function handleGridResizeStop(event: any, item: any) {
+        console.log('handleGridResizeStop', item);
+        // const widget = widgets.value.find(w => w.id === item.id);
+        // if (widget) {
+        //     widget.grid = {
+        //         x: item.x,
+        //         y: item.y,
+        //         w: item.w,
+        //         h: item.h
+        //     };
+            // Ici, vous pouvez appeler une fonction pour sauvegarder les changements
+            // saveWidgetChanges();
+        // }
     }
     
     function makeWidgets(widgets: Widget[]) {
@@ -45,322 +89,45 @@
     }
     
     async function addWidget(dataWidget: ModalResponse) {
-        closeDialog()
-        let index = "";
-        let categories: string[] = [];
-        let data: any = [];
-        if(dataWidget.type == "area" || dataWidget.type == "donut" || dataWidget.type == "bar"){
-            index = "name";
-            categories = ["total", "predicted"];
-            data = [
-                { name: 'Jan', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-                { name: 'Feb', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-                { name: 'Mar', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-                { name: 'Apr', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-                { name: 'May', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-                { name: 'Jun', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-                { name: 'Jul', total: Math.floor(Math.random() * 2000) + 500, predicted: Math.floor(Math.random() * 2000) + 500 },
-            ];
-        } else if(dataWidget.type == "line"){
-            index = "year";
-            categories = ['Export Growth Rate', 'Import Growth Rate'];
-            data = [
-                    {
-                        'year': 1970,
-                        'Export Growth Rate': 2.04,
-                        'Import Growth Rate': 1.53,
-                    },
-                    {
-                        'year': 1971,
-                        'Export Growth Rate': 1.96,
-                        'Import Growth Rate': 1.58,
-                    },
-                    {
-                        'year': 1972,
-                        'Export Growth Rate': 1.96,
-                        'Import Growth Rate': 1.61,
-                    },
-                    {
-                        'year': 1973,
-                        'Export Growth Rate': 1.93,
-                        'Import Growth Rate': 1.61,
-                    },
-                    {
-                        'year': 1974,
-                        'Export Growth Rate': 1.88,
-                        'Import Growth Rate': 1.67,
-                    },
-                    {
-                        'year': 1975,
-                        'Export Growth Rate': 1.79,
-                        'Import Growth Rate': 1.64,
-                    },
-                    {
-                        'year': 1976,
-                        'Export Growth Rate': 1.77,
-                        'Import Growth Rate': 1.62,
-                    },
-                    {
-                        'year': 1977,
-                        'Export Growth Rate': 1.74,
-                        'Import Growth Rate': 1.69,
-                    },
-                    {
-                        'year': 1978,
-                        'Export Growth Rate': 1.74,
-                        'Import Growth Rate': 1.7,
-                    },
-                    {
-                        'year': 1979,
-                        'Export Growth Rate': 1.77,
-                        'Import Growth Rate': 1.67,
-                    },
-                    {
-                        'year': 1980,
-                        'Export Growth Rate': 1.79,
-                        'Import Growth Rate': 1.7,
-                    },
-                    {
-                        'year': 1981,
-                        'Export Growth Rate': 1.81,
-                        'Import Growth Rate': 1.72,
-                    },
-                    {
-                        'year': 1982,
-                        'Export Growth Rate': 1.84,
-                        'Import Growth Rate': 1.73,
-                    },
-                    {
-                        'year': 1983,
-                        'Export Growth Rate': 1.77,
-                        'Import Growth Rate': 1.73,
-                    },
-                    {
-                        'year': 1984,
-                        'Export Growth Rate': 1.78,
-                        'Import Growth Rate': 1.78,
-                    },
-                    {
-                        'year': 1985,
-                        'Export Growth Rate': 1.78,
-                        'Import Growth Rate': 1.81,
-                    },
-                    {
-                        'year': 1986,
-                        'Export Growth Rate': 1.82,
-                        'Import Growth Rate': 1.89,
-                    },
-                    {
-                        'year': 1987,
-                        'Export Growth Rate': 1.82,
-                        'Import Growth Rate': 1.91,
-                    },
-                    {
-                        'year': 1988,
-                        'Export Growth Rate': 1.77,
-                        'Import Growth Rate': 1.94,
-                    },
-                    {
-                        'year': 1989,
-                        'Export Growth Rate': 1.76,
-                        'Import Growth Rate': 1.94,
-                    },
-                    {
-                        'year': 1990,
-                        'Export Growth Rate': 1.75,
-                        'Import Growth Rate': 1.97,
-                    },
-                    {
-                        'year': 1991,
-                        'Export Growth Rate': 1.62,
-                        'Import Growth Rate': 1.99,
-                    },
-                    {
-                        'year': 1992,
-                        'Export Growth Rate': 1.56,
-                        'Import Growth Rate': 2.12,
-                    },
-                    {
-                        'year': 1993,
-                        'Export Growth Rate': 1.5,
-                        'Import Growth Rate': 2.13,
-                    },
-                    {
-                        'year': 1994,
-                        'Export Growth Rate': 1.46,
-                        'Import Growth Rate': 2.15,
-                    },
-                    {
-                        'year': 1995,
-                        'Export Growth Rate': 1.43,
-                        'Import Growth Rate': 2.17,
-                    },
-                    {
-                        'year': 1996,
-                        'Export Growth Rate': 1.4,
-                        'Import Growth Rate': 2.2,
-                    },
-                    {
-                        'year': 1997,
-                        'Export Growth Rate': 1.37,
-                        'Import Growth Rate': 2.15,
-                    },
-                    {
-                        'year': 1998,
-                        'Export Growth Rate': 1.34,
-                        'Import Growth Rate': 2.07,
-                    },
-                    {
-                        'year': 1999,
-                        'Export Growth Rate': 1.32,
-                        'Import Growth Rate': 2.05,
-                    },
-                    {
-                        'year': 2000,
-                        'Export Growth Rate': 1.33,
-                        'Import Growth Rate': 2.07,
-                    },
-                    {
-                        'year': 2001,
-                        'Export Growth Rate': 1.31,
-                        'Import Growth Rate': 2.08,
-                    },
-                    {
-                        'year': 2002,
-                        'Export Growth Rate': 1.29,
-                        'Import Growth Rate': 2.1,
-                    },
-                    {
-                        'year': 2003,
-                        'Export Growth Rate': 1.27,
-                        'Import Growth Rate': 2.15,
-                    },
-                    {
-                        'year': 2004,
-                        'Export Growth Rate': 1.27,
-                        'Import Growth Rate': 2.21,
-                    },
-                    {
-                        'year': 2005,
-                        'Export Growth Rate': 1.26,
-                        'Import Growth Rate': 2.23,
-                    },
-                    {
-                        'year': 2006,
-                        'Export Growth Rate': 1.26,
-                        'Import Growth Rate': 2.29,
-                    },
-                    {
-                        'year': 2007,
-                        'Export Growth Rate': 1.27,
-                        'Import Growth Rate': 2.34,
-                    },
-                    {
-                        'year': 2008,
-                        'Export Growth Rate': 1.26,
-                        'Import Growth Rate': 2.36,
-                    },
-                    {
-                        'year': 2009,
-                        'Export Growth Rate': 1.26,
-                        'Import Growth Rate': 2.36,
-                    },
-                    {
-                        'year': 2010,
-                        'Export Growth Rate': 1.25,
-                        'Import Growth Rate': 2.35,
-                    },
-                    {
-                        'year': 2011,
-                        'Export Growth Rate': 1.24,
-                        'Import Growth Rate': 2.34,
-                    },
-                    {
-                        'year': 2012,
-                        'Export Growth Rate': 1.25,
-                        'Import Growth Rate': 2.39,
-                    },
-                    {
-                        'year': 2013,
-                        'Export Growth Rate': 1.22,
-                        'Import Growth Rate': 2.3,
-                    },
-                    {
-                        'year': 2014,
-                        'Export Growth Rate': 1.2,
-                        'Import Growth Rate': 2.35,
-                    },
-                    {
-                        'year': 2015,
-                        'Export Growth Rate': 1.17,
-                        'Import Growth Rate': 2.39,
-                    },
-                    {
-                        'year': 2016,
-                        'Export Growth Rate': 1.16,
-                        'Import Growth Rate': 2.41,
-                    },
-                    {
-                        'year': 2017,
-                        'Export Growth Rate': 1.13,
-                        'Import Growth Rate': 2.44,
-                    },
-                    {
-                        'year': 2018,
-                        'Export Growth Rate': 1.07,
-                        'Import Growth Rate': 2.45,
-                    },
-                    {
-                        'year': 2019,
-                        'Export Growth Rate': 1.03,
-                        'Import Growth Rate': 2.47,
-                    },
-                    {
-                        'year': 2020,
-                        'Export Growth Rate': 0.92,
-                        'Import Growth Rate': 2.48,
-                    },
-                    {
-                        'year': 2021,
-                        'Export Growth Rate': 0.82,
-                        'Import Growth Rate': 2.51,
-                    },
-            ];
-        }
+        closeDialog();
 
-        const widget = {
-            id: uuidv4(),
-            title: dataWidget.title,
-            description: dataWidget.description,
-            chartType: dataWidget.type,
-            data: data,
-            indexData: index,
-            categoriesData: categories,
-            grid: {
+        try {
+            const createWidgetInput = {
+                title: dataWidget.title,
+                description: dataWidget.description,
+                chartType: dataWidget.type,
+                dataSource: dataWidget.dataSource,
+                indexField: dataWidget.indexField,
+                categoryField1: dataWidget.categoryField1,
                 w: dataWidget.width[0],
-                h: dataWidget.height[0],
-                maxH: 8,
-                minH: 5,
-                maxW: 12,
-                minW: 3,
-            },
-        } as Widget;
-        console.log(widget);
-        widgets.value.push(widget);
-        await nextTick();
-        makeWidget(widget);
+                h: dataWidget.height[0]
+            };
+
+            const response = await dashboardService.createWidget(createWidgetInput);
+            const newWidget = response.widget;            
+            widgets.value.push(newWidget);
+            await nextTick();
+            makeWidget(newWidget);
+        } catch (error) {
+            console.error('Error creating widget:', error);
         }
+    }
     
-    function deleteWidget(widget: Widget) {
-        const index = widgets.value.findIndex((w) => w.id === widget.id);
-        if (index === -1) {
-            return;
+    async function deleteWidget(widget: Widget) {
+        try {
+            await dashboardService.deleteWidget(widget.id);
+
+            const index = widgets.value.findIndex((w) => w.id === widget.id);
+            if (index !== -1) {
+                const selector = `#${CSS.escape(widget.id.toString())}`;
+                grid.value.removeWidget(selector);
+                grid.value.compact();
+                widgets.value.splice(index, 1);
+            }
+        } catch (error) {
+            console.error('Error deleting widget:', error);            
         }
-        const selector = `#${CSS.escape(widget.id.toString())}`;
-        grid.value.removeWidget(selector);
-        grid.value.compact();
-        widgets.value.splice(index, 1);
-    } 
+    }
 
     function openDialog(){
         dialogIsOpen.value = true;
@@ -394,7 +161,7 @@
           v-for="widget in widgets"
           :key="widget.id"
           :data="widget"
-          :is-editing="isEditing"
+          :is-editing="true"
           @delete="deleteWidget"
         />
       </div>

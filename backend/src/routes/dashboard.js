@@ -1,7 +1,9 @@
 const express = require("express");
-const DashbboardController = require("../controllers/chartController");
+const DashboardController = require("../controllers/dashboardController");
 
 const dashboardRouter = express.Router();
-dashboardRouter.post("/dashboard", DashbboardController.getDataForChart);
+dashboardRouter.get("/dashboard", DashboardController.getWidgets);
+dashboardRouter.post("/dashboard", DashboardController.createWidget);
+dashboardRouter.delete("/dashboard/:widgetId", DashboardController.deleteWidget);
 
 module.exports = dashboardRouter;

@@ -87,10 +87,7 @@
                         </SelectItem>
                         <SelectItem value="bar">
                             graphique en barres
-                        </SelectItem>
-                        <SelectItem value="donut">
-                            graphique en donut
-                          </SelectItem>
+                        </SelectItem>                        
                       </SelectGroup>
                     </SelectContent>
                   </Select>
@@ -232,7 +229,7 @@ const formSchema = toTypedSchema(z.object({
             required_error: 'Veuillez renseigner une hauteur entre 5 et 8',
         }).min(5).max(8)
     ),
-    type: z.enum(['area', 'line', 'bar', 'donut'], 
+    type: z.enum(['area', 'line', 'bar'], 
         {
             required_error: 'Veuillez selectionner un type de graphique',
         }

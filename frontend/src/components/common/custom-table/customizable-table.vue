@@ -22,6 +22,7 @@ const props = defineProps<{
 const emit = defineEmits([
   "visualize-item",
   "edit-item",
+  "create-item",
   "delete-item",
   "delete-multiple-items",
 ]);
@@ -263,6 +264,10 @@ function onEdit(item: any) {
   emit("edit-item", item);
 }
 
+function onCreate(item: any) {
+  emit("create-item", item);
+}
+
 function onDelete(item: any) {
   emit("delete-item", item);
   currentPage.value = 1;
@@ -434,6 +439,15 @@ function onDeleteAllItems() {
                 <PaginationTable :page="pageInfo" @emitNextPage="nextPage" @emitPreviousPage="previousPage" />
               </div>
               <div class="flex flex-col items-end">
+                <button
+                  @click="onCreate"
+                  class="rounded p-2 mt-2"
+                  :class="{
+                    'bg-primary text-white': data.length > 0,
+                  }"
+                >
+                  Créer un élément
+                </button>
                 <button
                   v-if="canDeleteAll"
                   @click="onDeleteAllItems"

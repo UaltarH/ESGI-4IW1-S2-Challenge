@@ -7,7 +7,7 @@
 <script lang="ts" setup>
 import Form from "@/components/CustomForm.vue";
 import { FormField } from "@/dto/formField.dto.ts";
-import { onUnmounted, Ref, ref } from "vue";
+import { onUnmounted, Ref, ref, watch, reactive } from "vue";
 import { z } from "zod";
 import { useAuth } from "@/composables/api/useAuth.ts";
 import { formMessages } from "@/composables/formMessages";
@@ -24,6 +24,20 @@ const { signal } = controller;
 const { registerUser } = useAuth();
 const { requiredMessage, invalidStringMessage, invalidDateMessage } = formMessages();
 const notificationStore = useNotificationStore();
+
+const emits = defineEmits(['close']);
+
+const props = defineProps<{ 
+  isForAdmin?: boolean, 
+}>();
+
+const item = reactive({
+  value: props.isForAdmin ?? false 
+});
+
+watch(() => props.isForAdmin, (newVal) => {
+  item.value = newVal ?? false; 
+}, { immediate: true });
 
 const maxDate = new Date();
 maxDate.setFullYear(maxDate.getFullYear() - 18);
@@ -201,9 +215,13 @@ function handleRegister(res: Response) {
     if (formRef.value !== null) {
       formRef.value.handleReset();
     }
-    setTimeout(() => {
-      router.push({ name: 'home' });
-    }, 3000);
+    if (item.value) {
+      emits('close');
+    } else {
+      setTimeout(() => {
+        router.push({ name: 'home' });
+      }, 3000);
+    }
   } else {
     setTimeout(() => {
       console.error(res.statusText);

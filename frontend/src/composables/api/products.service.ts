@@ -50,15 +50,17 @@ export const ProductService = () => {
     }
 
     const updateMongoProduct = async (id: string, body: Object):Promise<{product: mongoProduct}> => {
-      try {
+      try {       
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while getting orders');
         const response = await fetch(`${baseUrl}${Api.mongoProducts}/${id}`, {
           method: 'PUT',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(body)
         });
-
         if (!response.ok) {
             const errorText = await response.text();
             try {

@@ -74,9 +74,9 @@ const fetchProduct = async () => {
   try {
     let productId = route.params.id as unknown as string;
     const response = await ProductService().getSpecificMongoProduct(productId)
-    .catch(() => {
-      router.push({ path: '/404' })
-  });
+      .catch(() => {
+        router.push({ path: '/404' })
+    });
     product.value = response.product;
     product.value.price = parseFloat(product.value.price.toFixed(2));
     isProductAvailable.value = product.value.stock > 0;

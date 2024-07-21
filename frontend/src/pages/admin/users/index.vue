@@ -118,7 +118,7 @@ const data = reactive({
   columns: [
     { name: 'ID', key: 'id', sort: true, typeData: 'string' },
     { name: 'Email', key: 'email', sort: true, typeData: 'string' },
-    { name: 'Téléphone', key: 'phone', sort: false, typeData: 'string' },
+    { name: 'Rôle', key: 'role', sort: true, typeData: 'string' },
   ],
   actions: { edit: true, delete: true, visualize: true },
   numberOfItemsPerPage: [5, 10, 15, 20],
@@ -216,7 +216,18 @@ function handleDeleteMultiple(items: User[]) {
 }
 
 function deleteItem(item: User) {
-  deleteUser(item.id).then(() => refreshUsers())
+  deleteUser(item.id)
+  .then(() => refreshUsers())
+  .catch((error) => {
+      const errorMessage = error.message === 'Cannot delete admin user' ?
+          'Impossible de supprimer un administrateur' :
+          'Une erreur est survenue lors de la suppression de l\'utilisateur';
+      notificationStore.add({
+          message: errorMessage,
+          timeout: 3000,
+          type: 'error'
+      });
+  });
   openModal.value = false
 }
 
@@ -248,11 +259,19 @@ function createItem(item: User) {
 }
 
 function deleteItems(items: User[]) {
-  deleteBatchUsers(items.map(item => item.id).join(','))
-  .then(() => {
-    refreshUsers();
-  })
-  openModalMultiple.value = false
+  deleteBatchUsers(items)
+    .then(() => {
+      refreshUsers();
+      openModalMultiple.value = false;
+    })
+    .catch((error) => {
+      notificationStore.add({
+        message: error.message || 'AnUne erreur est survenue',
+        timeout: 3000,
+        type: 'error'
+      });
+      openModalMultiple.value = false;
+    });
 }
 
 function onCloseVisualizer() {

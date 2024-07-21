@@ -17,20 +17,31 @@
 </template>
 <script setup lang="ts">
 import { useCartStore } from "@/stores/cart.ts";
-import { onUnmounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 import cartContent from "@/components/cart/CartContent.vue";
-import {useRouter} from "vue-router";
+import { useRouter } from "vue-router";
+import { useUserStore } from "@/stores/user.ts";
 
 const router = useRouter();
+const emits = defineEmits(["close"]);
+const cart = useCartStore();
+const userStore = useUserStore();
 
+onMounted(() => {
+  if(cart.cartItems.length === 0) {
+    if(localStorage.getItem('cartId')) {
+      cart.getGuestCartItems(localStorage.getItem('cartId') as string);
+    } else if (!!userStore.user.id) {
+      cart.mergeOrLinkCart();
+    }
+  }
+})
 onUnmounted(() => {
   emits("close");
 });
 const props = defineProps({
   show: Boolean,
 });
-const emits = defineEmits(["close"]);
-const cart = useCartStore();
 
 function handleClose() {
   emits("close")

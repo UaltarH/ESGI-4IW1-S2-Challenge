@@ -4,6 +4,7 @@ const checkRole = require('../middlewares/cart/checkRole');
 const cartRouter = Router();
 
 cartRouter.post('/carts', checkRole(), cartController.createCart);
+cartRouter.get('/carts/:id', checkRole(), cartController.getCartByUserId);
 cartRouter.get('/carts/user/:id', checkRole(), cartController.getCartByUserId);
 cartRouter.put('/carts/', checkRole(), cartController.updateCart);
 cartRouter.patch('/carts/', checkRole(), cartController.updateCartUser);

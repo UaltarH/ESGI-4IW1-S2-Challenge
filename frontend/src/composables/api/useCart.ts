@@ -3,6 +3,20 @@ import {CartItem} from "@/dto/cart.dto.ts";
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 
 export const useCart = () => {
+    const getCart = async (id: string) => {
+        const token = localStorage.getItem('auth_token');
+        if (token === null) {
+            return await fetch(baseUrl + Api.cart + `/${id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            } ).then(res => res);
+        } else {
+            throw new Error('Error while getting cart');
+        }
+
+    }
     const getCartByUserId = async (id: string) => {
         const token = localStorage.getItem('auth_token');
         if (token === null) {
@@ -86,5 +100,5 @@ export const useCart = () => {
             headers,
         }).then(res => res);
     }
-    return {  getCartByUserId, createCart,createCartNoUser, updateCartUser, updateCartWithProduct, deleteCart };
+    return {  getCart, getCartByUserId, createCart,createCartNoUser, updateCartUser, updateCartWithProduct, deleteCart };
 }

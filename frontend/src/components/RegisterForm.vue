@@ -275,6 +275,12 @@ function handleRegister(res: Response) {
         router.push({ name: 'home' });
       }, 3000);
     }
+  } else if (res.status === 409) {
+    setTimeout(() => {
+      formLoading.value = false;
+      formDisabled.value = false;
+      notificationStore.add({ message: 'L\'adresse mail est déjà utilisée', timeout: 3000, type: 'error' });
+    }, 3000);
   } else {
     setTimeout(() => {
       console.error(res.statusText);

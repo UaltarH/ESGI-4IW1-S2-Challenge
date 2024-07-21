@@ -38,6 +38,9 @@ import LastProductsCarousel  from '@/components/common/products/LastProductsCaro
 import { Separator } from '@/components/ui/separator';
 import { useCartStore } from "@/stores/cart.ts";
 import {useNotificationStore} from "@/stores/notification.ts";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const route = useRoute();
 const cart = useCartStore();
@@ -71,11 +74,16 @@ const fetchProduct = async () => {
   try {
     let productId = route.params.id as unknown as string;
     const response = await ProductService().getSpecificMongoProduct(productId);
+
     product.value = response.product;
     product.value.price = parseFloat(product.value.price.toFixed(2));
     isProductAvailable.value = product.value.stock > 0;
-  } catch (error) {
-    console.error('Error fetching product details:', error);
+  } catch (error: any) {
+    if (error.response && error.response.status === 404) {
+      router.push({ path: '/404' });
+    } else {
+      notificationStore.add({message: 'Une erreur s\'est produite', timeout: 3000, type: 'error'});
+    }
   }
 };
 
@@ -89,7 +97,7 @@ const fetchLastProducts = async () => {
 };
 
 const addToCart = () => {
-  const item = cart.rawItems.find((item) => item.postgresId === product.value.postgresId)
+  const item = cart.cartItems.find((item) => item.postgresId === product.value.postgresId)
   if(item) getQuantity(qty.value + item.quantity);
   else getQuantity(qty.value);
   // TODO : manage size but need to be added in the product mongo model first

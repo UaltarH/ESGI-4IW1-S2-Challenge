@@ -5,6 +5,7 @@ import { computed, ref } from "vue";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useRouter } from "vue-router";
 import { useNotificationStore} from "@/stores/notification.ts";
+import {useCartStore} from "@/stores/cart.ts";
 
 const { loginUser } = useAuth();
 
@@ -18,9 +19,11 @@ export const useUserStore = defineStore(('user'), () => {
         return {id: data.id, role: data.role};
     });
     function logout() {
+        const cartStore = useCartStore();
         localStorage.removeItem('auth_token');
         localStorage.removeItem('cartId');
         token.value = null;
+        cartStore.$reset();
         // we could do other stuff like redirecting the user
         const router = useRouter();
         router.push({name: 'home'}).then(() => {

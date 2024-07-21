@@ -15,44 +15,57 @@ class userController {
   }
 
   static async register(req, res, next) {
-    const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
-
-    const { data, error } = await crudService.create(User, fieldsForCreateUser);
-    if (error) {
-      return error;
-    }
-
-    const User_prefData = {
-      UserId: data.id,
-      newProduct,
-      restockProduct,
-      priceChange,
-    };
-    await crudService.create(User_pref, User_prefData);
-
-    await userQueue.add(
-      { userId: data.id },
-      { delay: 30 * 60 * 1000 }
-    );
-
-    const mailOptions = {
-      from: {
-        name: "BoxToBe Administration",
-        address: process.env.USER_MAIL,
-      },
-      to: [req.body.email],
-      subject: "Veuillez vérifier votre compte",
-      text:
-        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/verify/` +
-        data.verification_token,
-    };
     try {
-      await sendMail(mailOptions);
+      const existingUser = await crudService.findOne(User, { email: req.body.email });
+      if (existingUser.data) {
+        return res.status(409);
+      }
+
+      const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
+
+      const { data, error } = await crudService.create(User, fieldsForCreateUser);
+      if (error) {
+        return res.status(500);
+      }
+
+      const User_prefData = {
+        UserId: data.id,
+        newProduct,
+        restockProduct,
+        priceChange,
+      };
+      await crudService.create(User_pref, User_prefData);
+
+      await userQueue.add(
+        { userId: data.id },
+        { delay: 30 * 60 * 1000 }
+      );
+
+      const mailOptions = {
+        from: {
+          name: "BoxToBe Administration",
+          address: process.env.USER_MAIL,
+        },
+        to: [req.body.email],
+        subject: "Veuillez vérifier votre compte",
+        text:
+          `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/verify/` +
+          data.verification_token,
+      };
+
+      try {
+        await sendMail(mailOptions);
+      } catch (error) {
+        console.error("Failed to send email controller", error);
+      }
+
+      res.sendStatus(201);
     } catch (error) {
-      console.error("Failed to send email controller", error);
+      console.error("Erreur lors de l'enregistrement de l'utilisateur", error);
+      res.status(500).json({ error: "Une erreur interne s'est produite." });
     }
-    res.sendStatus(201);
   }
+
 
   static async getUser(req, res) {
     const attributes = req.query.fields ? req.query.fields.split(",") : [];
@@ -72,11 +85,26 @@ class userController {
   }
 
   static async deleteUser(req, res) {
-    const { data, error } = await crudService.destroy(User, req.params.id);
-    if (error) {
-      return res.status(404);
+    try {
+      const user = await User.findByPk(req.params.id);
+
+      if (!user) {
+        return res.status(404);
+      }
+
+      if (user.role === 'admin') {
+        return res.status(403);
+      }
+
+      const { data, error } = await crudService.destroy(User, req.params.id);
+      if (error) {
+        return res.status(500);
+      }
+
+      res.status(204)
+    } catch (error) {
+      res.status(500);
     }
-    res.status(204).json({ user: data });
   }
 
   static async deleteMultiplesUsers(req, res) {
@@ -84,7 +112,16 @@ class userController {
     const ids = usersId.split(",");
 
     try {
-      const deletionPromises = ids.map(async (id) => {
+      const users = await User.findAll({
+        where: {
+          id: ids
+        }
+      });
+
+      const nonAdminUsers = users.filter(user => user.role !== 'admin');
+      const nonAdminIds = nonAdminUsers.map(user => user.id);
+
+      const deletionPromises = nonAdminIds.map(async (id) => {
         const { data, error } = await crudService.destroy(User, id);
         if (error) {
           throw new Error(`User with ID ${id} not found: ${error.message}`);
@@ -99,6 +136,7 @@ class userController {
       res.status(500).json({ error: "An error occurred while deleting the users" });
     }
   }
+
 
   static async replaceUser(req, res) {
     const { data: deletedData, error: deleteError } = await crudService.destroy(User, req.params.id);
@@ -132,6 +170,10 @@ class userController {
         return res.sendStatus(401);
       }
 
+      if (!user.is_verified) {
+        return res.sendStatus(403);
+      }
+
       const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
       if (!isPasswordValid) {
         return res.sendStatus(401);
@@ -144,6 +186,7 @@ class userController {
       return res.sendStatus(500);
     }
   }
+
   static async verify(req, res) {
     const { token } = req.params;
 

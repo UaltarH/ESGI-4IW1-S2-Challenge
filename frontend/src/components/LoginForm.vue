@@ -76,7 +76,7 @@ const fetchLogin = async (param: { [key: string]: string }) => {
 async function handleLoginResponse(code: number) {
   if (code === 200) {
     notificationStore.add({type: 'success', message: 'Connexion réussie', timeout: 3000});
-    await cartStore.init();
+    await cartStore.mergeOrLinkCart();
     setTimeout(() => {
       // redirection si y a un param redirect dans la query
       if (router.currentRoute.value.query.redirect) {
@@ -92,6 +92,16 @@ async function handleLoginResponse(code: number) {
       notificationStore.add({
         type: 'error',
         message: 'L\'identifiant ou le mot de passe sont incorrects',
+        timeout: 3000
+      })
+    }, 3000);
+  } else if (code === 403) {
+    setTimeout(() => {
+      disabled.value = false;
+      loading.value = false;
+      notificationStore.add({
+        type: 'error',
+        message: 'Vous n\'avez pas encore vérifié votre compte',
         timeout: 3000
       })
     }, 3000);

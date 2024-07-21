@@ -16,4 +16,6 @@ export const Api = {
   cart: "/carts",
   dashboard: "/dashboard",
   cartByUser: "/carts/user/",
+  userPref: '/userPref',
+  notification: '/notif',
 };

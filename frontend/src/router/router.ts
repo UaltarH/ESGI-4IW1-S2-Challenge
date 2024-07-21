@@ -91,6 +91,11 @@ const routes = [
         meta: { requiresAuth: true, isAdmin: true },
       },
       {
+        path: "stocks",
+        component: () => import("@/pages/admin/stock/index.vue"),
+        meta: { requiresAuth: true, isAdmin: true },
+      },
+      {
         path: "",
         redirect: "dashboard",
         meta: { requiresAuth: true, isAdmin: true },

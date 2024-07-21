@@ -8,6 +8,10 @@ module.exports = function (sequelize, DataTypes) {
             Product.belongsTo(models.Category);
             Product.hasMany(models.Cart_item);
             Product.hasMany(models.Order_item);
+
+            Product.afterCreate(afterCreateHook(models));
+            Product.afterUpdate(afterUpdateHook(models));
+            Product.afterDestroy(afterDestroyHook);
         }
     }
     Product.init(
@@ -34,6 +38,14 @@ module.exports = function (sequelize, DataTypes) {
                 type: DataTypes.INTEGER,
                 allowNull: false,
             },
+            imagePath: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            threshold: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
         },
         {
             sequelize: sequelize,
@@ -42,9 +54,7 @@ module.exports = function (sequelize, DataTypes) {
         }
     );
 
-    Product.afterCreate(afterCreateHook);
-    Product.afterUpdate(afterUpdateHook);
-    Product.afterDestroy(afterDestroyHook);
+
 
     return Product;
 }

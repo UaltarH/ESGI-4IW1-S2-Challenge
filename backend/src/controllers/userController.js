@@ -1,4 +1,4 @@
-const { User } = require("../sequelize/models/");
+const { User, User_pref } = require("../sequelize/models/");
 const crudService = require("../services/crudGeneric");
 const { sendMail } = require("../services/sendMail");
 const bcrypt = require("bcryptjs");
@@ -14,10 +14,20 @@ class userController {
   }
 
   static async register(req, res, next) {
-    const { data, error } = await crudService.create(User, req.body);
+    const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
+
+    const { data, error } = await crudService.create(User, fieldsForCreateUser);
     if (error) {
       return error;
     }
+
+    const User_prefData = {
+      UserId: data.id,
+      newProduct,
+      restockProduct,
+      priceChange,
+    };
+    await crudService.create(User_pref, User_prefData);
 
     const mailOptions = {
       from: {
@@ -27,7 +37,7 @@ class userController {
       to: [req.body.email],
       subject: "Veuillez vérifier votre compte",
       text:
-        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173": "https://boxtobe.mapa-server.org"}/verify/` +
+        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/verify/` +
         data.verification_token,
     };
     try {
@@ -157,7 +167,7 @@ class userController {
       user.verification_token = null;
       await user.save();
       return res.sendStatus(200);
-      
+
     } catch (error) {
       return res.sendStatus(500);
     }

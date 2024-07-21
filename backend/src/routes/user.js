@@ -9,5 +9,6 @@ userRouter.patch("/users/:id", checkRole(), userController.modifyUsers);
 userRouter.get("/users", checkRole(), userController.getUsers);
 userRouter.delete("/users/:id", checkRole(), userController.deleteUser);
 userRouter.delete("/users/", checkRole(), userController.deleteMultiplesUsers);
+userRouter.post("/users", checkRole(), userController.register);
 
 module.exports = userRouter;

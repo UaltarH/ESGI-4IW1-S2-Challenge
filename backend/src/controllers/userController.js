@@ -16,7 +16,8 @@ class userController {
   static async register(req, res, next) {
     try {
       const existingUser = await crudService.findOne(User, { email: req.body.email });
-      if (existingUser) {
+      console.log(existingUser);
+      if (existingUser.data) {
         return res.status(409).json({ error: "L'adresse e-mail est déjà utilisée." }); 
       }
   

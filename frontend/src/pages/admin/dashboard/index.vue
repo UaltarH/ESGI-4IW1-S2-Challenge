@@ -109,6 +109,7 @@ async function addWidget(dataWidget: ModalResponse) {
             };
 
         const response = await dashboardService.createWidget(createWidgetInput);
+        await dashboardService.getWidgets();
         const newWidget = response.widget;
         
         grid.value.removeWidget(`#${tempWidgetId}`);

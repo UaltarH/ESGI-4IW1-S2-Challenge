@@ -8,6 +8,7 @@ const updateCartByUserSchema = require("./cart/updateCartByUser.schema.js");
 const updateCartByGuestSchema = require("./cart/updateCartByGuest.schema.js");
 const createCartByUserSchema = require("./cart/createCartByUser.schema.js");
 const createCartByGuestSchema = require("./cart/createCartByGuest.schema.js");
+const dashboardConfigSchema = require("./dashboard/dashboard.schema.js");
 
 module.exports = {
     userUpdateByUserSchema,
@@ -20,4 +21,5 @@ module.exports = {
     updateCartByGuestSchema,
     createCartByUserSchema,
     createCartByGuestSchema,
+    dashboardConfigSchema,
 };

@@ -12,6 +12,7 @@ const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
 const cartRouter = require('./routes/cart');
 const mockRouter = require("./routes/mock");
+const notificationRouter = require('./routes/notification');
 const dashboardRouter = require('./routes/dashboard');
 const app = express();
 
@@ -43,6 +44,7 @@ app.use(orderRouter);
 app.use(cartRouter);
 app.use(mockRouter);
 app.use(dashboardRouter);
+app.use(notificationRouter);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'template', 'pdf'));

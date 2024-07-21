@@ -321,6 +321,14 @@ module.exports = {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
+      imagePath: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      threshold: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       CategoryId: {
         type: DataTypes.UUID,
         allowNull: false,

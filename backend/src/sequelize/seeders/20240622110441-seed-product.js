@@ -24,6 +24,8 @@ module.exports = {
         description: faker.commerce.productDescription(),
         price: parseFloat(faker.number.float({ min: 10, max: 20, multipleOf: 0.01 }).toFixed(2)),
         stock: faker.number.int({ min: -10, max: 100 }),
+        imagePath: "/products/cartonExemple.png",
+        threshold: faker.number.int({ min: 5, max: 10 }),
         CategoryId: categoryId,
         createdAt: new Date(),
         updatedAt: new Date(),

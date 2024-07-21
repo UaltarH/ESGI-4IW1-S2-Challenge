@@ -42,8 +42,13 @@ export const ProductService = () => {
       };
       
 
-    const getSpecificMongoProduct = async (id: string):Promise<{product: mongoProduct}> => {
-        return await fetch(baseUrl + Api.mongoProducts + `/${id}`).then(res => res.json());
+    const getSpecificMongoProduct = async (id: string): Promise<{product: mongoProduct}> => {
+      const response = await fetch(`${baseUrl}${Api.mongoProducts}/${id}`);
+      if (!response.ok) {
+          throw new Error('Product not found');
+      }
+      const data = await response.json();
+      return data;
     }
 
     const getLastMongoProduct = async () => {

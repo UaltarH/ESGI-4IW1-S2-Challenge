@@ -109,11 +109,20 @@ class productController {
 
 
     static async getSpecificMongoProduct(req, res) {
-        const product = await MongoProduct.findById(req.params.id);
-        if (!product) {
+        try {
+            if (typeof req.params.id !== 'string' || !req.params.id.trim()) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            const product = await MongoProduct.findById(req.params.id);
+            
+            if (!product) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+    
+            res.json({ product: product });
+        } catch (error) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        res.json({ product: product });
     }
 
     static async getLast5MongoProduct(req, res) {

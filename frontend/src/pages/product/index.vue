@@ -38,6 +38,9 @@ import LastProductsCarousel  from '@/components/common/products/LastProductsCaro
 import { Separator } from '@/components/ui/separator';
 import { useCartStore } from "@/stores/cart.ts";
 import {useNotificationStore} from "@/stores/notification.ts";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const route = useRoute();
 const cart = useCartStore();
@@ -70,7 +73,10 @@ const imageUrls = [
 const fetchProduct = async () => {
   try {
     let productId = route.params.id as unknown as string;
-    const response = await ProductService().getSpecificMongoProduct(productId);
+    const response = await ProductService().getSpecificMongoProduct(productId)
+    .catch(() => {
+      router.push({ path: '/404' })
+  });
     product.value = response.product;
     product.value.price = parseFloat(product.value.price.toFixed(2));
     isProductAvailable.value = product.value.stock > 0;

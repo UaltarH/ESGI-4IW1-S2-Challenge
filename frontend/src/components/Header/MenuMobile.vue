@@ -1,6 +1,6 @@
 <template>
     <ul class="flex flex-col w-full text-center font-bold">
-        <li v-for="(item) in menuItems" class="menu-item relative parent-item">
+        <li v-for="(item) in filtererMenuItems" class="menu-item relative parent-item">
           <!-- item has children -->
           <RouterLink v-if="item.hasOwnProperty('children') && item.route !== ''" :to="item.route" class="menu-link" @click="emits('closeMenu')">
             {{ item.title }}
@@ -24,7 +24,31 @@
 </template>
 <script setup lang="ts">
 import { RouterLink } from 'vue-router';
-import {useMenuItems} from "@/composables/useMenuItems";
+import { useMenuItems } from "@/composables/useMenuItems";
+import { useUserStore } from "@/stores/user.ts";
+import { role } from "@/dto/role.dto.ts";
+import { ref, watch } from "vue";
 const {menuItems} = useMenuItems();
+const userStore = useUserStore();
+
 const emits = defineEmits(["closeMenu"]);
+
+const filterMenu = () => {
+  return menuItems.filter((item) => {
+    if (item.access == 'all') {
+      return true;
+    }
+    if (item.access == role.USER) {
+      return (Object.values(role).includes(userStore.user.role));
+    }
+    if (item.access == role.ADMIN) {
+      return userStore.user.role === role.ADMIN;
+    }
+  });
+}
+const filtererMenuItems = ref(filterMenu());
+
+watch(() => userStore.user, () => {
+  filtererMenuItems.value = filterMenu();
+});
 </script>

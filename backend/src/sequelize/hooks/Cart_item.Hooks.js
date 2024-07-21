@@ -1,9 +1,12 @@
 const afterCreateHook = async (cartItem, options) => {
     try {
-        await cartItem.sequelize.models.Product.decrement(
-            { stock: cartItem.quantity },
-            { where: { id: cartItem.ProductId } }
-        );
+        const product = await cartItem.sequelize.models.Product.findByPk(cartItem.ProductId);
+        if (product) {
+            product.stock -= cartItem.quantity;
+            await product.save();
+        } else {
+            console.error(`Product with id ${item.ProductId} not found` );
+        }
     } catch (error) {
         console.error('Error while decrementing product stock:', error);
         throw error;
@@ -11,10 +14,13 @@ const afterCreateHook = async (cartItem, options) => {
 }
 const afterDestroyHook = async (cartItem, options) => {
     try {
-        await cartItem.sequelize.models.Product.increment(
-            { stock: cartItem.quantity },
-            { where: { id: cartItem.ProductId } }
-        );
+        const product = await cartItem.sequelize.models.Product.findByPk(cartItem.ProductId);
+        if (product) {
+            product.stock += cartItem.quantity;
+            await product.save();
+        } else {
+            console.error(`Product with id ${item.ProductId} not found` );
+        }
     } catch (error) {
         console.error('Error while incrementing product stock:', error);
         throw error;

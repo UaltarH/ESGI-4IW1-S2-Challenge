@@ -3,6 +3,7 @@ const { Order, Payment, Shipping, Order_status, Cart } = require('../sequelize/m
 const { createStripeSession } = require('../services/stripeSession');
 const { createOrderTransac } = require('../services/createOrder');
 const { model } = require('mongoose');
+const { cartQueue } = require('../config/queueBullConfig')
 
 
 class orderController {

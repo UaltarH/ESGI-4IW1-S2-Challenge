@@ -3,6 +3,7 @@ const crudService = require("../services/crudGeneric");
 const { sendMail } = require("../services/sendMail");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { userQueue } = require('../config/queueBullConfig');
 
 class userController {
   static async getUsers(req, res) {
@@ -28,6 +29,11 @@ class userController {
       priceChange,
     };
     await crudService.create(User_pref, User_prefData);
+
+    await userQueue.add(
+      { userId: data.id },
+      { delay: 30 * 60 * 1000 }
+    );
 
     const mailOptions = {
       from: {
@@ -133,13 +139,6 @@ class userController {
 
       const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-      // res.cookie("auth_token", token, {
-      //   httpOnly: process.env.NODE_ENV === "production", // Le cookie n'est pas accessible via JavaScript
-      //   secure: process.env.NODE_ENV === "production", // Utiliser uniquement HTTPS en production
-      //   maxAge: 3600000, // 1 heure
-      //   domain: process.env.DOMAIN_FRONT,
-      // });
-
       return res.status(200).json({ token });
     } catch (error) {
       return res.sendStatus(500);
@@ -166,6 +165,14 @@ class userController {
       user.is_verified = true;
       user.verification_token = null;
       await user.save();
+
+      // remove job
+      const jobs = await userQueue.getJobs(['delayed']);
+      const userJob = jobs.find(job => job.data.userId === user.id);
+      if (userJob) {
+        await userJob.remove();
+      }
+
       return res.sendStatus(200);
 
     } catch (error) {

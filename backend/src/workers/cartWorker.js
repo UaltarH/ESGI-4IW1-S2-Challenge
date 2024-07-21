@@ -1,4 +1,3 @@
-// cartWorker.js
 const { cartQueue } = require('../config/queueBullConfig');
 const { Cart, Cart_item, Product, sequelize } = require('../sequelize/models');
 

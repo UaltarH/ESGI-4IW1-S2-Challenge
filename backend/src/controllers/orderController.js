@@ -2,8 +2,8 @@ const MongoOrder = require('../mongo/models/MongoOrder');
 const { Order, Payment, Shipping, Order_status, Cart } = require('../sequelize/models');
 const { createStripeSession } = require('../services/stripeSession');
 const { createOrderTransac } = require('../services/createOrder');
-const { model } = require('mongoose');
 const { cartQueue } = require('../config/queueBullConfig')
+const { sendMail } = require('../services/sendMail');
 
 
 class orderController {
@@ -141,6 +141,20 @@ class orderController {
                 if (cartJob) {
                     await cartJob.remove();
                 }
+
+                //send email to user
+                const user = await User.findByPk(order.UserId);
+                const mailOptions = {
+                    from: {
+                        name: "BoxToBe Administration",
+                        address: process.env.USER_MAIL
+                    },
+                    to: user.email,
+                    subject: "Confirmation de commande",
+                    text: `Votre commande a été confirmée, vous pouvez suivre son avancement sur votre espace client. Ainsi que votre facture.`
+                };
+                await sendMail(mailOptions);
+
 
                 return res.status(200).json({ message: "Order confirmed" });
             } else if (req.query.status === "false") {

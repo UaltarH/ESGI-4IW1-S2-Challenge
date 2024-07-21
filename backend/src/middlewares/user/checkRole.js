@@ -36,7 +36,10 @@ const checkRole = () => async (req, res, next) => {
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
                         if (req.method === 'POST')
-                            return validate(userRegisterByAdminSchema)(req, res, next);
+                            return validate(userRegisterAdminSchema)(req, res, (err) => {
+                                if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
+                                next();
+                            });
                         if (req.method === 'PATCH')
                             return validate(userModifyAdminSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
@@ -58,6 +61,9 @@ const checkRole = () => async (req, res, next) => {
                 } else if (req.method === 'POST') {
                     // un utilisateur non-admin ne peut créer d'utilisateur
                     return res.sendStatus(403);
+                } else if (req.method === 'DELETE') {
+                    // un utilisateur non-admin ne peut supprimer d'utilisateur
+                    return res.sendStatus(403);
                 } else if (req.method === 'GET') {
                     // un utilisateur non-admin ne peut voir que ses infos
                     const id = req.params.id;
@@ -65,6 +71,8 @@ const checkRole = () => async (req, res, next) => {
                     if (!id) return res.sendStatus(403);
                     if (data.id !== id) return res.sendStatus(403);
                     return next();
+                } else {
+                    return res.sendStatus(400);
                 }
             } catch (e) {
                 return res.sendStatus(401);

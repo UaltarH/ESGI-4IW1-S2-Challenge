@@ -9,5 +9,4 @@ cartRouter.put('/carts/', checkRole(), cartController.updateCart);
 cartRouter.patch('/carts/', checkRole(), cartController.updateCartUser);
 cartRouter.delete('/carts/:id', checkRole(), cartController.deleteCart);
 
-
 module.exports = cartRouter;

@@ -6,6 +6,7 @@ import { useCart } from "@/composables/api/useCart.ts";
 import {CartItemResponse} from "@/dto/api/cartItem.dto.ts";
 
 const {
+  getCart,
   getCartByUserId,
   createCart,
   createCartNoUser,
@@ -139,6 +140,27 @@ export const useCartStore = defineStore('cart', () => {
       }
     });
   }
+  async function getGuestCartItems(cartId: string) {
+    await getCart(cartId).then((res: Response) => {
+      if (res.status === 200) {
+        console.log('guest cart found in db');
+        return res.json().then((data) => {
+          rawItems.value = data.cart.Cart_items.map((item: CartItemResponse) => {
+            return {
+              postgresId: item.ProductId,
+              name: item.Product.name,
+              description: item.Product.description,
+              size: item.Product["size"] ? item.Product["size"] : 'N/A',
+              price: item.Product.price.toFixed(2),
+              quantity: item.quantity,
+            } as unknown as CartItem;
+          });
+        });
+      } else {
+        console.error('guest cart not found in db');
+      }
+    });
+  }
   async function addToCart(item: CartItem) {
     console.log('>>> adding item to cart');
     if(!id.value) {
@@ -211,6 +233,7 @@ export const useCartStore = defineStore('cart', () => {
     removeFromCart,
     itemTotalAmount,
     mergeOrLinkCart,
+    getGuestCartItems,
     $reset,
   }
 });

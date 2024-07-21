@@ -29,6 +29,26 @@ class cartController {
             next(error);
         }
     }
+    static async getCart(req, res, next) {
+        console.log('========== Getting guest cart ==========');
+        try {
+            const cart = await Cart.findOne({
+                where: { id: req.params.id },
+                include: {
+                    model: Cart_item,
+                },
+            });
+
+            if (cart) {
+                console.log('========== Cart found');
+                res.status(200).json({ cart });
+            } else {
+                res.sendStatus(404);
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
     static async getCartByUserId(req, res, next) {
         console.log('========== Getting cart by user id ==========');
         const UserId = req.params.id;

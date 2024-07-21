@@ -76,7 +76,7 @@ const fetchLogin = async (param: { [key: string]: string }) => {
 async function handleLoginResponse(code: number) {
   if (code === 200) {
     notificationStore.add({type: 'success', message: 'Connexion réussie', timeout: 3000});
-    await cartStore.init();
+    await cartStore.mergeOrLinkCart();
     setTimeout(() => {
       // redirection si y a un param redirect dans la query
       if (router.currentRoute.value.query.redirect) {

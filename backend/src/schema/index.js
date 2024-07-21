@@ -3,7 +3,11 @@ const userUpdateByAdminSchema = require("./user/updateByAdmin.schema");
 const userRegisterByUserSchema = require("./user/registerByUser.schema");
 const userRegisterByAdminSchema = require("./user/updateByAdmin.schema");
 const productModifySchema = require("./product.modifySchema");
-const cartSchema = require("./cart/schema.js");
+const updateCartUserSchema = require("./cart/updateCartUser.schema.js");
+const updateCartByUserSchema = require("./cart/updateCartByUser.schema.js");
+const updateCartByGuestSchema = require("./cart/updateCartByGuest.schema.js");
+const createCartByUserSchema = require("./cart/createCartByUser.schema.js");
+const createCartByGuestSchema = require("./cart/createCartByGuest.schema.js");
 
 module.exports = {
     userUpdateByUserSchema,
@@ -11,5 +15,9 @@ module.exports = {
     userRegisterByUserSchema,
     userRegisterByAdminSchema,
     productModifySchema,
-    cartSchema,
+    updateCartUserSchema,
+    updateCartByUserSchema,
+    updateCartByGuestSchema,
+    createCartByUserSchema,
+    createCartByGuestSchema,
 };

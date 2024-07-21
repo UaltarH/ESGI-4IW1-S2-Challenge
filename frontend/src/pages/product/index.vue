@@ -89,7 +89,7 @@ const fetchLastProducts = async () => {
 };
 
 const addToCart = () => {
-  const item = cart.rawItems.find((item) => item.postgresId === product.value.postgresId)
+  const item = cart.cartItems.find((item) => item.postgresId === product.value.postgresId)
   if(item) getQuantity(qty.value + item.quantity);
   else getQuantity(qty.value);
   // TODO : manage size but need to be added in the product mongo model first

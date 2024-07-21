@@ -255,7 +255,7 @@ module.exports = {
       },
       UserId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "User",
           key: "id",

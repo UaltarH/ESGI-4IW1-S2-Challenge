@@ -1,13 +1,8 @@
 const { z } = require("zod");
 const { requiredMessage, invalidStringMessage,invalidNumberMessage } = require("../formMessages");
 
-// Schéma global combiné
-const cartSchema = z.object({
-  id: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
-    .min(36, { message: "L'id doit contenir 36 caractères" })
-    .max(36, { message: "L'id doit contenir 36 caractères" }),
-
-  UserId: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+const createCartByUserSchema = z.object({
+  UserId: z.string({ invalid_type_error: invalidStringMessage })
     .min(36, { message: "L'id doit contenir 36 caractères" })
     .max(36, { message: "L'id doit contenir 36 caractères" }),
 
@@ -34,7 +29,7 @@ const cartSchema = z.object({
 
     price: z.coerce.number({ required_error: requiredMessage, invalid_type_error: invalidNumberMessage })
         .min(0, { message: "Le prix doit être au moins de 0" }),
-  })).optional(),
+  })),
 });
 
-module.exports = cartSchema;
+module.exports = createCartByUserSchema;

@@ -16,6 +16,7 @@ import { useUserStore } from "@/stores/user.ts";
 import { role } from "@/dto/role.dto.ts";
 import { UserService } from "@/composables/api/user.service.ts";
 import {useNotificationStore} from "@/stores/notification.ts";
+import { useCartStore } from "@/stores/cart.ts";
 
 const routes = [
   { path: "/", component: index, name: "home" },
@@ -159,6 +160,7 @@ router.beforeResolve(async (to, from, next) => {
       );
       if(status === 401) {
         localStorage.removeItem("auth_token");
+        useCartStore().$reset();
         userStore.token = null;
         notificationStore.add({
           message: 'Votre session a expirée, veuillez vous reconnecter',

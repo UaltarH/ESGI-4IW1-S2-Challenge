@@ -164,6 +164,10 @@ class userController {
         return res.sendStatus(401);
       }
 
+      if (!user.is_verified) {
+        return res.sendStatus(403);
+      }
+
       const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
       if (!isPasswordValid) {
         return res.sendStatus(401);

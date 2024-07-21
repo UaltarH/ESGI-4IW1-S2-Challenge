@@ -95,6 +95,16 @@ async function handleLoginResponse(code: number) {
         timeout: 3000
       })
     }, 3000);
+  } else if (code === 403) {
+    setTimeout(() => {
+      disabled.value = false;
+      loading.value = false;
+      notificationStore.add({
+        type: 'error',
+        message: 'Vous n\'avez pas encore vérifié votre compte',
+        timeout: 3000
+      })
+    }, 3000);
   } else {
     setTimeout(() => {
       disabled.value = false;

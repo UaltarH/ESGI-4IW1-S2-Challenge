@@ -1,7 +1,8 @@
 const MongoOrder = require('../mongo/models/MongoOrder');
-const { Order, Payment, Shipping, Order_status, Cart } = require('../sequelize/models');
+const { Order, Payment, Shipping, Order_status, Cart, User } = require('../sequelize/models');
 const { createStripeSession } = require('../services/stripeSession');
 const { createOrderTransac } = require('../services/createOrder');
+const { sendMail } = require("../services/sendMail");
 const { model } = require('mongoose');
 
 
@@ -116,6 +117,24 @@ class orderController {
                 await Order_status.create({ status: "Confirmée", OrderId: order.id });
                 await Cart.destroy({ where: { UserId: order.UserId } });
 
+                const customer = await User.findOne({ where: { id: order.UserId }, attributes: ["email"] });
+
+                const mailOptions = {
+                    from: {
+                        name: "BoToBe Administration",
+                        address: process.env.USER_MAIL,
+                    },
+                    to: [customer.email],
+                    subject: "Confirmation de commande BoxToBe n°" + order.orderNumber,
+                    text: `Votre commande n° ${ order.orderNumber } a bien été confirmée, vous pouvez suivre son avancement sur votre espace client :` +
+                        `${process.env.NODE_ENV === "development" ? "http://localhost:5173"  : "https://boxtobe.mapa-server.org"}/user/orders.`,
+                };
+
+                try {
+                    await sendMail(mailOptions);
+                } catch (error) {
+                    console.error("Failed to send email controller", error);
+                }
                 return res.status(200).json({ message: "Order confirmed" });
             } else if (req.query.status === "false") {
                 await Order.destroy({ where: { id: order.id } });

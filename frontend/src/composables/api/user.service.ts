@@ -133,9 +133,5 @@ export const UserService = () => {
             throw err;
         }
     }
-
-    const getRoles = async (handler:Function) => {
-        return await fetch(baseUrl + Api.getRoles).then(res => handler(res.json()));
-    }
-    return { getUserById, getUsers, updateUser, deleteUser, getRoles, deleteBatchUsers, createUser }
+    return { getUserById, getUsers, updateUser, deleteUser, deleteBatchUsers, createUser }
 }

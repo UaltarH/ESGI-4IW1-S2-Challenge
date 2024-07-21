@@ -189,7 +189,9 @@ async function handleSubmit(schema: FormField<any>[]) {
 }
 
 const fetchRegister = async (param: { [key: string]: string | number | Date }) => {
-  await registerUser(param, signal, handleRegister);
+  // take all param in key "user"
+  let body = { user: param };
+  await registerUser(body, signal, handleRegister);
 }
 
 function handleRegister(res: Response) {

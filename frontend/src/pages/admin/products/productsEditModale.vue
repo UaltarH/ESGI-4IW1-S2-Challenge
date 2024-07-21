@@ -60,9 +60,9 @@ import { Button } from '@/components/ui/button';
 import { FormControl, FormItem, FormLabel, FormField } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Category } from '@/dto/category.dto';
-import { useCategoryManagement } from "@/composables/useCategoryManagement.ts";
+import { CategoriesService } from "@/composables/api/categories.service";
 
-const { getCategories } = useCategoryManagement();
+const { getCategories } = CategoriesService();
 
 const categories = ref<Category[]>([]);
 getCategories().then(res => categories.value = res.categories);

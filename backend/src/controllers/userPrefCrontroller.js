@@ -22,10 +22,15 @@ class UserPrefController {
                 return res.status(404).json({ error: 'User preferences not found' });
             }
 
-            userPref.newProduct = req.body.newProduct;
-            userPref.restockProduct = req.body.restockProduct;
-            userPref.priceChange = req.body.priceChange;
+            const updatableFields = ['newProduct', 'restockProduct', 'priceChange'];
+
+            updatableFields.forEach(field => {
+                if (req.body.hasOwnProperty(field)) {
+                    userPref[field] = req.body[field];
+                }
+            });
             await userPref.save();
+
             res.json({ userPref });
         } catch (error) {
             console.error('Erreur dans updateUserPref :', error);

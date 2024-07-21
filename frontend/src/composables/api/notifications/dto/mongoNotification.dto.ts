@@ -1,4 +1,4 @@
-export interface Notification {
+export interface MongoNotification {
     _id: string;
     userId: string;
     roleUser: string;

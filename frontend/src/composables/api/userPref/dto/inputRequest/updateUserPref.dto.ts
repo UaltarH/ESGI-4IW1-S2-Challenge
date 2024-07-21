@@ -1,5 +1,5 @@
 export interface UpdateUserPref {
-    newProduct: boolean;
-    restockProduct: boolean;
-    priceChange: boolean;
+    newProduct?: boolean;
+    restockProduct?: boolean;
+    priceChange?: boolean;
 }

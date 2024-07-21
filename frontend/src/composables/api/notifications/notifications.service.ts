@@ -1,5 +1,5 @@
 import { Api } from '../routesApi';
-import { Notification } from './dto/notification.dto';
+import { MongoNotification } from './dto/mongoNotification.dto';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -19,7 +19,7 @@ export const NotificationService = () => {
         return response.json();
     };
 
-    const getNotificationsForUser = async (userId: string): Promise<{ notifications: Notification[] }> => {
+    const getNotificationsForUser = async (userId: string): Promise<{ notifications: MongoNotification[] }> => {
         try {
             const token = getToken();
             const response = await fetch(`${baseUrl}${Api.notification}/${userId}`, {
@@ -38,7 +38,7 @@ export const NotificationService = () => {
         }
     };
 
-    const updateNotification = async (notifId: string): Promise<{ notification: Notification }> => {
+    const updateNotification = async (notifId: string): Promise<{ notification: MongoNotification }> => {
         try {
             const token = getToken();
             const response = await fetch(`${baseUrl}${Api.notification}/${notifId}`, {

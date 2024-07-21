@@ -50,6 +50,12 @@ export const useMenuItems = () => {
           route: "/admin/dashboard",
           access: "admin",
         },
+        {
+          title: "Stocks",
+          icon: "",
+          route: "/admin/stocks",
+          access: "admin",
+        },
       ],
     }
   ]);

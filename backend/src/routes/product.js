@@ -13,6 +13,6 @@ productRouter.delete('/products', productController.deleteMultiplesProducts);
 productRouter.get('/mongoProducts', productController.getMongoProducts);
 productRouter.get('/mongoProducts/last', productController.getLast5MongoProduct);
 productRouter.get('/mongoProducts/:id', productController.getSpecificMongoProduct);
-productRouter.put('/mongoProducts/:id', checkRole(), productController.updateProduct);
+productRouter.put('/products/:id', checkRole(), productController.updateProduct);
 
 module.exports = productRouter;

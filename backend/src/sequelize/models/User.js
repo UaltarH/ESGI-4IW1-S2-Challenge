@@ -8,6 +8,7 @@ module.exports = function (sequelize, DataTypes) {
     static associate(models) {
       User.hasMany(models.Order);
       User.hasOne(models.Cart);
+      User.hasOne(models.User_pref);
     }
 
     static addHooks(models) {

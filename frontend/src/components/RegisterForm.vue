@@ -1,18 +1,59 @@
 <template>
   <section class="py-24 mx-12 mb-12">
     <Form ref="formRef" :schema="formSchema" @submit="handleSubmit" :disabled="formDisabled" :loading="formLoading"
-      :show-reset="true" />
+      :show-reset="true" >
+      <template #footer>
+        <div class="relative w-[390px]">
+          <Collapsible v-model:open="isOpenCollaps" class="border border-gray-200 rounded-lg absolute right-0 md:right-[34%] w-full sm:w-80 md:w-64 bg-white ">
+            <div class="flex items-center justify-between space-x-4 px-4">
+              <h4 class="text-sm font-semibold">
+                Notifications
+              </h4>
+              <CollapsibleTrigger as-child>
+                <Button variant="ghost" size="sm" class="w-9 p-0">
+                  <ChevronsUpDown class="h-4 w-4" />
+                  <span class="sr-only">Toggle</span>
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            
+            <CollapsibleContent class="w-full ">
+              <div class="space-y-4 p-4">
+                <p class="text-sm text-gray-500 mb-4">
+                  Ces notifications seront envoyées par e-mail et seront également visibles sur notre site.
+                </p>
+                <div v-for="(pref, key) in userPreferences" :key="key" class="flex items-center justify-between">
+                  <label :for="key" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                    {{ pref.label }}
+                  </label>
+                  <Switch v-model:checked="pref.value" :id="key" />
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
+
+        </div>
+      </template>
+    </Form>
   </section>
 </template>
 <script lang="ts" setup>
 import Form from "@/components/CustomForm.vue";
 import { FormField } from "@/dto/formField.dto.ts";
-import { onUnmounted, Ref, ref } from "vue";
+import { onUnmounted, reactive, Ref, ref } from "vue";
 import { z } from "zod";
 import { useAuth } from "@/composables/api/useAuth.ts";
 import { formMessages } from "@/composables/formMessages";
 import { useNotificationStore } from "@/stores/notification.ts";
 import { useRouter } from "vue-router";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import { Switch } from '@/components/ui/switch';
+import { ChevronsUpDown } from 'lucide-vue-next';
+import { Button } from '@/components/ui/button';
 
 onUnmounted(() => {
   controller.abort();
@@ -29,6 +70,14 @@ const maxDate = new Date();
 maxDate.setFullYear(maxDate.getFullYear() - 18);
 const minDate = new Date();
 minDate.setFullYear(minDate.getFullYear() - 120);
+
+//user pref
+const isOpenCollaps = ref(false)
+const userPreferences = reactive({
+  newProduct: { label: "Ajout d'un nouveau produit", value: true },
+  priceChange: { label: "Modification du prix d'un produit", value: true },
+  restockProduct: { label: "Nouveau stock pour un produit", value: true }
+});
 
 const formRef = ref<{ formRef: Ref<any>, SetFieldValue: Function, getFieldsValue: Function, handleReset: Function } | null>(null);
 const formSchema = ref<FormField<any>[]>([
@@ -189,8 +238,10 @@ async function handleSubmit(schema: FormField<any>[]) {
 }
 
 const fetchRegister = async (param: { [key: string]: string | number | Date }) => {
-  // take all param in key "user"
-  let body = { user: param };
+  let body = { 
+    ...param, 
+    ...Object.fromEntries(Object.entries(userPreferences).map(([key, value]) => [key, value.value]))
+  };  
   await registerUser(body, signal, handleRegister);
 }
 

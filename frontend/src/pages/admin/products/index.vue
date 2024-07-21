@@ -79,7 +79,7 @@
   import ConfirmModal from '@/components/ConfirmModal.vue';
   import visualizer from '@/components/common/visualizer.vue';
   
-  const { getAllMongoProducts, updateMongoProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
+  const { getAllMongoProducts, updateProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
   
   const openModal = ref<boolean>(false);
   const openModalMultiple = ref<boolean>(false);
@@ -125,7 +125,7 @@
     const itemCopy = { ...item };
     const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
-    updateMongoProduct(item.postgresId, itemCopyWithStringValues)
+    updateProduct(item.postgresId, itemCopyWithStringValues)
     .then(() => {
       refreshProducts();
       isModalVisible.value = false;

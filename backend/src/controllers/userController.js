@@ -14,39 +14,52 @@ class userController {
   }
 
   static async register(req, res, next) {
-    const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
-
-    const { data, error } = await crudService.create(User, fieldsForCreateUser);
-    if (error) {
-      return error;
-    }
-
-    const User_prefData = {
-      UserId: data.id,
-      newProduct,
-      restockProduct,
-      priceChange,
-    };
-    await crudService.create(User_pref, User_prefData);
-
-    const mailOptions = {
-      from: {
-        name: "BoxToBe Administration",
-        address: process.env.USER_MAIL,
-      },
-      to: [req.body.email],
-      subject: "Veuillez vérifier votre compte",
-      text:
-        `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/verify/` +
-        data.verification_token,
-    };
     try {
-      await sendMail(mailOptions);
+      const existingUser = await crudService.findOne(User, { email: req.body.email });
+      if (existingUser) {
+        return res.status(409).json({ error: "L'adresse e-mail est déjà utilisée." }); 
+      }
+  
+      const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
+
+      const { data, error } = await crudService.create(User, fieldsForCreateUser);
+        if (error) {
+          return res.status(500).json({ error: "Une erreur s'est produite lors de la création de l'utilisateur." });
+        }
+    
+      const User_prefData = {
+        UserId: data.id,
+        newProduct,
+        restockProduct,
+        priceChange,
+      };
+      await crudService.create(User_pref, User_prefData);
+
+      const mailOptions = {
+        from: {
+          name: "BoxToBe Administration",
+          address: process.env.USER_MAIL,
+        },
+        to: [req.body.email],
+        subject: "Veuillez vérifier votre compte",
+        text:
+          `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173"  : "https://boxtobe.mapa-server.org"}/verify/` +
+          data.verification_token,
+      };
+  
+      try {
+        await sendMail(mailOptions);
+      } catch (error) {
+        console.error("Failed to send email controller", error);
+      }
+  
+      res.sendStatus(201);
     } catch (error) {
-      console.error("Failed to send email controller", error);
+      console.error("Erreur lors de l'enregistrement de l'utilisateur", error);
+      res.status(500).json({ error: "Une erreur interne s'est produite." });
     }
-    res.sendStatus(201);
   }
+  
 
   static async getUser(req, res) {
     const attributes = req.query.fields ? req.query.fields.split(",") : [];

@@ -1,4 +1,5 @@
 import { mongoProduct } from '@/dto/MongoProduct.dto';
+import { Product } from '@/dto/product.dto';
 import {Api} from './routesApi';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
@@ -49,11 +50,11 @@ export const ProductService = () => {
         return await fetch(baseUrl + Api.mongoProducts + '/last').then(res => res.json());
     }
 
-    const updateMongoProduct = async (id: string, body: Object):Promise<{product: mongoProduct}> => {
+    const updateProduct = async (id: string, body: Partial<Product>):Promise<{product: Product}> => {
       try {       
         const token = localStorage.getItem('auth_token');
         if(token === null) throw new Error('Error while getting orders');
-        const response = await fetch(`${baseUrl}${Api.mongoProducts}/${id}`, {
+        const response = await fetch(`${baseUrl}${Api.products}/${id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -93,5 +94,5 @@ export const ProductService = () => {
       }).then(res => res);
     }
 
-    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateMongoProduct, deleteProduct, deleteMultiplesProducts};
+    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateProduct, deleteProduct, deleteMultiplesProducts};
 }

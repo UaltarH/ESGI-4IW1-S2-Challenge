@@ -5,6 +5,8 @@ export interface mongoProduct {
     description: string,
     price: number,
     stock: number,
+    imagePath: string,
+    threshold: number,
     categoryId: string,
     categoryName: string,
     createdAt: Date,

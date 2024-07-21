@@ -52,7 +52,11 @@ const registerByAdminSchema = z.object({
     .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" }),
 
   role: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
-      .refine(value => !Object.values(role).includes(value.role), { message: "Oops, une erreur inattendue s'est produite." })
+    .refine(value => !Object.values(role).includes(value.role), { message: "Oops, une erreur inattendue s'est produite." }),
+
+  newProduct: z.boolean(),
+  restockProduct: z.boolean(),
+  priceChange: z.boolean(),
 });
 
 module.exports = registerByAdminSchema;

@@ -48,8 +48,8 @@ async function createNotification(role, type, product, getModels) {
         subject: "Notification",
         text: messages[role][type]
     };
-
-    await sendMail(mailOptions);
+    // TODO: PROD uncomment
+    // await sendMail(mailOptions);
 }
 
 module.exports = { createNotification };

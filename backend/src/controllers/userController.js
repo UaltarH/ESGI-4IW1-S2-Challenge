@@ -16,16 +16,15 @@ class userController {
   static async register(req, res, next) {
     try {
       const existingUser = await crudService.findOne(User, { email: req.body.email });
-      console.log(existingUser);
       if (existingUser.data) {
-        return res.status(409).json({ error: "L'adresse e-mail est déjà utilisée." }); 
+        return res.status(409); 
       }
   
       const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
 
       const { data, error } = await crudService.create(User, fieldsForCreateUser);
         if (error) {
-          return res.status(500).json({ error: "Une erreur s'est produite lors de la création de l'utilisateur." });
+          return res.status(500);
         }
     
       const User_prefData = {
@@ -84,21 +83,21 @@ class userController {
           const user = await User.findByPk(req.params.id);
 
           if (!user) {
-              return res.status(404).json({ error: 'User not found' });
+              return res.status(404);
           }
 
           if (user.role === 'admin') {
-              return res.status(403).json({ error: 'Cannot delete admin user' });
+              return res.status(403);
           }
 
           const { data, error } = await crudService.destroy(User, req.params.id);
           if (error) {
-              return res.status(404).json({ error: 'Error deleting user' });
+              return res.status(500);
           }
 
-          res.status(204).json({ user: data });
+          res.status(204)
       } catch (error) {
-          res.status(500).json({ error: 'An error occurred' });
+          res.status(500);
       }
   }
 

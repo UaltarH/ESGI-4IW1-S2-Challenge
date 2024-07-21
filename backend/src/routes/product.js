@@ -12,5 +12,6 @@ productRouter.put('/mongoProducts/:id', checkRole(), productController.updatePro
 productRouter.delete('/products/:id', productController.deleteProduct);
 productRouter.delete('/products', productController.deleteMultiplesProducts);
 productRouter.put('/products/:id', checkRole(), productController.updateProduct);
+productRouter.post('/products', productController.createProduct);
 
 module.exports = productRouter;

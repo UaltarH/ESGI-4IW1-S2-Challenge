@@ -71,6 +71,8 @@ const checkRole = () => async (req, res, next) => {
                     if (!id) return res.sendStatus(403);
                     if (data.id !== id) return res.sendStatus(403);
                     return next();
+                } else {
+                    return res.sendStatus(400);
                 }
             } catch (e) {
                 return res.sendStatus(401);

@@ -277,7 +277,6 @@ function handleRegister(res: Response) {
     }
   } else if (res.status === 409) {
     setTimeout(() => {
-      console.error(res.statusText);
       formLoading.value = false;
       formDisabled.value = false;
       notificationStore.add({ message: 'L\'adresse mail est déjà utilisée', timeout: 3000, type: 'error' });

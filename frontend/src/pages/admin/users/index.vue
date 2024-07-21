@@ -218,12 +218,9 @@ function handleDeleteMultiple(items: User[]) {
 function deleteItem(item: User) {
   deleteUser(item.id)
   .then(() => refreshUsers())
-  .catch((error) => {
-      const errorMessage = error.message === 'Cannot delete admin user' ?
-          'Impossible de supprimer un administrateur' :
-          'Une erreur est survenue lors de la suppression de l\'utilisateur';
+  .catch(() => {
       notificationStore.add({
-          message: errorMessage,
+          message: 'Impossible de supprimer un administrateur',
           timeout: 3000,
           type: 'error'
       });
@@ -264,9 +261,9 @@ function deleteItems(items: User[]) {
       refreshUsers();
       openModalMultiple.value = false;
     })
-    .catch((error) => {
+    .catch(() => {
       notificationStore.add({
-        message: error.message || 'AnUne erreur est survenue',
+        message: 'Impossible de supprimer un administrateur',
         timeout: 3000,
         type: 'error'
       });

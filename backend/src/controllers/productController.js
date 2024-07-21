@@ -3,6 +3,14 @@ const crudService = require('../services/crudGeneric');
 const MongoProduct = require('../mongo/models/MongoProduct');
 
 class productController {
+    static async createProduct(req, res, next) {
+        const { data, error } = await crudService.create(Product, req.body);
+        if (error) {
+            return next(error);
+        }
+        res.status(201).json({ success: true, product: data });
+    }
+
     static async getProduct(req, res) {
         const { data, error } = await crudService.findByPk(Product, req.params.id);
         if (error) {
@@ -47,6 +55,14 @@ class productController {
             res.status(500).json({ error: 'An error occurred while deleting the products' });
         }
     }
+
+    // static async updateProduct(req, res) {
+    //     const { data, error } = await crudService.update(Product, req.params.id, req.body);
+    //     if (error) {
+    //         return res.status(400).json({ error: error.message });
+    //     }
+    //     res.json({ product: data });
+    // }
 
     static async getMongoProducts(req, res) {
         const limit = parseInt(req.query.limit) || 9;

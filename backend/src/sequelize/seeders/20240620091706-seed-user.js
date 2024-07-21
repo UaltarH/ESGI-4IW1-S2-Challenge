@@ -32,9 +32,9 @@ module.exports = {
         role = "admin";
       }
       else if (i === 2) {
-        role = "store_manager";
+        role = "admin";
       } else if (i === 3) {
-        role = "accountant";
+        role = "admin";
       } else {
         role = "user";
       }

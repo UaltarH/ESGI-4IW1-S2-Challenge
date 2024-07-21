@@ -14,3 +14,17 @@ export interface User {
     updatedAt?: Date,
     zipcode: number,
 }
+
+export interface createUser {
+    address: string,
+    birthdate: Date,
+    city: string,
+    country: string,
+    email: string,
+    firstname: string,
+    lastname: string,
+    password?: string,
+    phone: string,
+    role?: "admin" | "user" | "store_manager" | "accountant",
+    zipcode: number,
+}

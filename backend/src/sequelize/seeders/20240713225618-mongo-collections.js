@@ -3,6 +3,7 @@ const MongoProduct = require('../../mongo/models/MongoProduct');
 const MongoOrder = require('../../mongo/models/MongoOrder');
 const MongoAppHistory = require('../../mongo/models/MongoAppHistory');
 const MongoDashboardConfig = require('../../mongo/models/MongoDashboardConfig');
+const MongoNotification = require('../../mongo/models/MongoNotification');
 const mongoose = require('mongoose');
 const { createMongoOrder } = require('../../services/mongoOrderService');
 
@@ -26,6 +27,8 @@ module.exports = {
         description: product.description,
         price: product.price,
         stock: product.stock,
+        imagePath: product.imagePath,
+        threshold: product.threshold,
         categoryId: product.Category.id,
         categoryName: product.Category.name,
         createdAt: product.createdAt,
@@ -52,6 +55,43 @@ module.exports = {
       await createMongoOrder(order, order.UserId, orderItemsRes, paymentRes, shippingRes, orderStatusRes);
     }
 
+    //notifications
+    const users = await User.findAll();
+    const notificationTypes = {
+      user: ['newProduct', 'restockProduct', 'priceChange'],
+      admin: ['noStock', 'lowStock']
+    };
+
+    const notificationMessages = {
+      user: {
+        newProduct: 'Nouveau produit {product} est disponible',
+        restockProduct: 'Le produit {product} est de nouveau disponible',
+        priceChange: 'Le produit {product} a changé de prix'
+      },
+      admin: {
+        noStock: 'Alerte stock: le produit {product} est en rupture de stock',
+        lowStock: 'Alerte stock: le produit {product} a un stock faible'
+      }
+    };
+
+    for (const user of users) {
+      const roleNotifications = notificationTypes[user.role] || notificationTypes.user;
+
+      for (const type of roleNotifications) {
+        const message = notificationMessages[user.role][type].replace('{product}', 'ExempleProduit');
+
+        await MongoNotification.create({
+          userId: user.id,
+          roleUser: user.role,
+          typeNotification: type,
+          message: message,
+          read: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
+    }
+
     console.log('Data migrated successfully');
   },
 
@@ -63,6 +103,7 @@ module.exports = {
     await MongoOrder.deleteMany({});
     await MongoAppHistory.deleteMany({});
     await MongoDashboardConfig.deleteMany({});
+    await MongoNotification.deleteMany({});
     console.log('Migration rollback completed successfully');
   }
 };

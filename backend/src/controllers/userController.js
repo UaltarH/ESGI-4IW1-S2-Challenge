@@ -187,6 +187,7 @@ class userController {
       return res.sendStatus(500);
     }
   }
+  
   static async verify(req, res) {
     const { token } = req.params;
 

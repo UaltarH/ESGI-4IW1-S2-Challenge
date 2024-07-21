@@ -6,20 +6,6 @@ const { model } = require('mongoose');
 
 
 class orderController {
-    static async createOrderV1(req, res, next) {
-        try {
-            const { orderItems, userId, date, total, shipping } = req.body;
-
-            // await createOrderTransac(userId, date, orderItems, total, "test stripe id", shipping);
-
-            res.status(200).send({ sessionId: session.id });
-        }
-        catch (error) {
-            res.sendStatus(500);
-        }
-
-    }
-
     static async updateShippingStatus(req, res, next) {
         try {
             const trackingNumber = req.body.trackingNumber;

@@ -16,6 +16,7 @@ export const useCart = () => {
             },
         } ).then(res => res);
     }
+
     const getCartByUserId = async (id: string) => {
         const token = localStorage.getItem('auth_token');
         if (token === null) {
@@ -29,6 +30,7 @@ export const useCart = () => {
             }
         }).then(res => res);
     }
+
     const createCart = async (id: string, UserId: string, products: CartItem[]) => {
         const token = localStorage.getItem('auth_token');
         if (token === null) {
@@ -43,6 +45,7 @@ export const useCart = () => {
             body: JSON.stringify({ UserId, id, products }),
         }).then(res => res);
     }
+    
     const updateCart = async (id: string, UserId:string, products: CartItem[]) => {
         const token = localStorage.getItem('auth_token');
         if (token === null) {

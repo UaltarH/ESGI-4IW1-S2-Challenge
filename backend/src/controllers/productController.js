@@ -3,15 +3,6 @@ const crudService = require('../services/crudGeneric');
 const MongoProduct = require('../mongo/models/MongoProduct');
 
 class productController {
-    static async getProducts(req, res) {
-        const { data, error } = await crudService.findAll(Product, req.query);
-
-        if (error) {
-            return res.status(400).json({ error: error.message });
-        }
-        res.json({ products: data });
-    }
-
     static async createProduct(req, res, next) {
         const { data, error } = await crudService.create(Product, req.body);
         if (error) {
@@ -109,11 +100,20 @@ class productController {
 
 
     static async getSpecificMongoProduct(req, res) {
-        const product = await MongoProduct.findById(req.params.id);
-        if (!product) {
+        try {
+            if (typeof req.params.id !== 'string' || !req.params.id.trim()) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+            const product = await MongoProduct.findById(req.params.id);
+            
+            if (!product) {
+                return res.status(404).json({ error: 'Product not found' });
+            }
+    
+            res.json({ product: product });
+        } catch (error) {
             return res.status(404).json({ error: 'Product not found' });
         }
-        res.json({ product: product });
     }
 
     static async getLast5MongoProduct(req, res) {

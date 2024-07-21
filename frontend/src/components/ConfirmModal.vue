@@ -74,20 +74,7 @@ function handleSubmit() {
     error.value = 'Une erreur est survenue';
     return;
   }
-  props.action(props.data).then((data:ApiResponse) => {
-    if(data.success) {
-      success.value = data.message;
-      setTimeout(() => {
-        emit('confirm');
-      }, 1000);
-    }
-    else {
-      error.value = data.message;
-    }
-  }).catch((e) => {
-    console.error(e);
-    error.value = 'Une erreur est survenue';
-  });
+  props.action(props.data)
 }
 function handleClose() {
   emit('close');

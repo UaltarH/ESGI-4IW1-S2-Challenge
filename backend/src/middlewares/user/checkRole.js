@@ -61,6 +61,9 @@ const checkRole = () => async (req, res, next) => {
                 } else if (req.method === 'POST') {
                     // un utilisateur non-admin ne peut créer d'utilisateur
                     return res.sendStatus(403);
+                } else if (req.method === 'DELETE') {
+                    // un utilisateur non-admin ne peut supprimer d'utilisateur
+                    return res.sendStatus(403);
                 } else if (req.method === 'GET') {
                     // un utilisateur non-admin ne peut voir que ses infos
                     const id = req.params.id;

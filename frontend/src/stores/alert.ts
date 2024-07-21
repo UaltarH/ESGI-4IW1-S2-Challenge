@@ -10,7 +10,7 @@ export const useAlertStore = defineStore('alert', () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  const { getNotificationsForUser } = NotificationService();
+  const { getNotificationsForUser, updateNotification, deleteNotification } = NotificationService();
 
   const userUnreadCount = computed(() => 
     userNotifications.value.filter(n => !n.read).length
@@ -21,7 +21,12 @@ export const useAlertStore = defineStore('alert', () => {
   );
 
   async function fetchNotifications() {
-    if (!localStorage.getItem('auth_token')) return;
+    if (!localStorage.getItem('auth_token')){
+        // No token, no notifications remove all
+        userNotifications.value = [];
+        adminNotifications.value = [];
+        return;
+    } 
 
     isLoading.value = true;
     error.value = null;
@@ -56,6 +61,14 @@ export const useAlertStore = defineStore('alert', () => {
     if (notification) {
       notification.read = true;
     }
+
+    updateNotification(notificationId)
+      .then(() => {
+        console.log('Notification marked as read');
+      })
+      .catch(err => {
+        console.error('Failed to mark notification as read:', err);
+      });
   }
 
   function removeNotification(notificationId: string, isAdminNotification: boolean) {
@@ -64,6 +77,14 @@ export const useAlertStore = defineStore('alert', () => {
     } else {
       userNotifications.value = userNotifications.value.filter(n => n._id !== notificationId);
     }
+
+    deleteNotification(notificationId)
+      .then(() => {
+        console.log('Notification removed');
+      })
+      .catch(err => {
+        console.error('Failed to remove notification:', err);
+      });
   }
 
   return {

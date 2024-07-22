@@ -17,17 +17,17 @@ class userController {
   static async register(req, res, next) {
     try {
       const existingUser = await crudService.findOne(User, { email: req.body.email });
-      if (existingUser.data) {
-        return res.status(409);
+      if (existingUser) {
+        return res.status(409).json(); 
       }
 
       const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
 
       const { data, error } = await crudService.create(User, fieldsForCreateUser);
-      if (error) {
-        return res.status(500);
-      }
-
+        if (error) {
+          return res.status(500).json();
+        }
+    
       const User_prefData = {
         UserId: data.id,
         newProduct,

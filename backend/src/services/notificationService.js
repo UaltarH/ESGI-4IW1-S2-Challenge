@@ -19,7 +19,7 @@ async function createNotification(role, type, product, getModels) {
     if (role === 'user') {
         const userPrefs = await User_pref.findAll({
             where: { [type]: true },
-            include: [{ model: User, attributes: ['id', 'role'] }]
+            include: [{ model: User, attributes: ['id', 'role', 'email'] }]
         });
         users = userPrefs.map(pref => pref.User);
     } else {

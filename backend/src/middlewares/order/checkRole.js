@@ -1,69 +1,83 @@
 const jwt = require('jsonwebtoken');
 const { findByPk } = require("../../services/crudGeneric");
-const { User } = require('../../sequelize/models/');
-const bcrypt = require("bcryptjs");
+const { User, Order } = require('../../sequelize/models/');
 const validate = require("./../validate");
 const role = require("../../dto/role.dto");
 
 const checkRole = () => async (req, res, next) => {
-    const header = req.headers.Authorization ?? req.headers.authorization;
+    const header = req.headers.authorization || req.headers.Authorization;
+
     if (!header) {
-        if(req.method !== 'POST')
-            return res.sendStatus(401);
-        // else {
-        //     // création d'une commande par une personne non identifiée
-        //     validate(userRegisterUserSchema);
-        //     req.body.role = role.USER;
-        //     next();
-        // }
-    } else {
-        const [type, token] = header.split(/\s+/);
-        if (type !== "Bearer") return res.sendStatus(401);
+        if (req.method === 'POST' && req.path === '/orders/payment') {
+            req.body.role = role.USER;
+            return next();
+        }
+        return res.sendStatus(401);
+    }
 
-        if (token) {
-            try {
-                const payload = jwt.verify(token, process.env.JWT_SECRET);
-                const {data, error} = await findByPk(User, payload.id);
-                if (!data) return res.sendStatus(401);
+    const [type, token] = header.split(/\s+/);
+    if (type !== "Bearer") return res.sendStatus(401);
 
-                // admin
-                // if (payload.role === role.ADMIN) {
-                //     if (data.role === role.ADMIN) {
-                //         if (req.method === 'POST')
-                //             validate(userRegisterAdminSchema);
-                //         if (req.method === 'PATCH')
-                //             validate(userModifyAdminSchema);
-                //         return next();
-                //     } else {
-                //         return res.sendStatus(403);
-                //     }
-                // }
-                // non admin
-                if (req.method === 'PATCH') {
-                    // const isPasswordValid = await bcrypt.compare(req.body.password, data.password);
-                    // if (!isPasswordValid) {
-                    //     return res.sendStatus(401);
-                    // }
-                    // // un utilisateur non-admin ne peut modifier que certaines infos, même de son compte
-                    // validate(userModifyUserSchema);
-                    // return next();
-                } else if (req.method === 'POST') {
-                    // un utilisateur non-admin ne peut créer de commande
-                    return res.sendStatus(403);
-                } else if (req.method === 'GET') {
-                    // un utilisateur non-admin ne peut voir que ses infos
-                    const id = req.params.id;
-                    // pas d'id → il essaie de voir tous les commandes
-                    if (!id) return res.sendStatus(403);
-                    if (data.id !== id) return res.sendStatus(403);
+    try {
+        const payload = jwt.verify(token, process.env.JWT_SECRET);
+        const { data, error } = await findByPk(User, payload.id);
+        if (error || !data) {
+            // id envoyé est celui de la commande pas du user
+            if (req.path.startsWith('/orders/')) {
+                // Non-admin peut télécharger ses propres factures
+                const id = req.params.id;
+                const { data: order, error: orderError } = await findOne(Order, { id, UserId: userId });
+                if (orderError || !order) return res.sendStatus(403);
+                return next();
+            } else {
+                return res.sendStatus(401);
+            }
+        }
+
+        const isAdmin = payload.role === role.ADMIN;
+        const userId = data.id;
+
+        // admin
+        if (isAdmin) {
+            if (req.method === 'GET') {
+                return next();
+            } else if (req.method === 'POST') {
+                if (req.path === '/orders/updateShippingStatus') {
                     return next();
                 }
-            } catch (e) {
-                return res.sendStatus(500);
+                return next();
+            } else if (req.method === 'PATCH') {
+                return next();
+            } else {
+                return res.sendStatus(403);
             }
-        } else {
-            return res.sendStatus(401);
         }
+
+        // non admin
+        if (!isAdmin) {
+            if (req.method === 'GET') {
+                if (req.path.startsWith('/orders/user/')) {
+                    // Non-admin peut voir ses propres commandes
+                    const id = req.params.id;
+                    if (userId !== id) return res.sendStatus(403);
+                } else if (req.path === '/orders') {
+                    return res.sendStatus(403);
+                } 
+                return next();
+            } else if (req.method === 'POST') {
+                if (req.path === '/orders/payment') {
+                    // Non-admin peut créer une commande (seulement accessible pour les utilisateurs authentifiés)
+                    return next();
+                }
+                return res.sendStatus(403);
+            } else {
+                return res.sendStatus(403);  
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        return res.sendStatus(500);
     }
 }
+
 module.exports = checkRole;

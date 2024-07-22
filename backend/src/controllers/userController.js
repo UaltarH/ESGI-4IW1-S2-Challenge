@@ -17,7 +17,7 @@ class userController {
   static async register(req, res, next) {
     try {
       const existingUser = await crudService.findOne(User, { email: req.body.email });
-      if (existingUser) {
+      if (existingUser.data) {
         return res.status(409).json(); 
       }
 
@@ -88,23 +88,23 @@ class userController {
     try {
       const user = await User.findByPk(req.params.id);
 
-      if (!user) {
-        return res.status(404);
-      }
+          if (!user) {
+              return res.status(404).json();
+          }
 
-      if (user.role === 'admin') {
-        return res.status(403);
-      }
+          if (user.role === 'admin') {
+              return res.status(403).json();
+          }
 
-      const { data, error } = await crudService.destroy(User, req.params.id);
-      if (error) {
-        return res.status(500);
-      }
+          const { data, error } = await crudService.destroy(User, req.params.id);
+          if (error) {
+              return res.status(500).json();
+          }
 
-      res.status(204)
-    } catch (error) {
-      res.status(500);
-    }
+          res.status(204).json()
+      } catch (error) {
+          res.status(500).json();
+      }
   }
 
   static async deleteMultiplesUsers(req, res) {

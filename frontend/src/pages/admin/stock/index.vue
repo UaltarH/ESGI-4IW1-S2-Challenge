@@ -1,7 +1,7 @@
 <template>
   <div class="p-6 min-h-screen transition duration-200 ease-in-out">
     <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Gestion des stocks</h1>
-    <div class="max-w-4xl mx-auto bg-secondary-light dark:bg-primary-light p-6 shadow-lg rounded-lg">
+    <div class="max-w-4xl mx-auto bg-secondary-light dark:bg-dark-blue-dark p-6 shadow-lg rounded-lg">
       <input 
         v-model="searchQuery" 
         placeholder="Rechercher un produit..." 
@@ -41,7 +41,7 @@
           <PaginationPrev @click="goToPage(page - 1)" class="text-black"/>
           <template v-for="(item, index) in items" :key="index">
             <PaginationListItem v-if="item.type === 'page'" :value="item.value" as-child>
-              <Button class="w-10 h-10 p-0 rounded-full bg-primary hover:bg-primary-light dark:hover:bg-primary-light transition duration-150 ease-in-out" :variant="item.value === page ? 'default' : 'outline'" @click="goToPage(item.value)">
+              <Button class="w-10 h-10 p-0 rounded-full bg-primary dark:bg-dark-blue-dark hover:bg-primary-light dark:hover:bg-dark-blue hover:text-white transition duration-150 ease-in-out" :variant="item.value === page ? 'default' : 'outline'" @click="goToPage(item.value)">
                 {{ item.value }}
               </Button>
             </PaginationListItem>

@@ -22,6 +22,7 @@ class LaPosteAPIController {
                 if (response && response.ok) {
                     return res.json("ok");
                 } else {
+                    console.log("response node", response);
                     return res.status(500).json({ error: "Failed to update status" });
                 }
             } else {

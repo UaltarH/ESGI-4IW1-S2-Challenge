@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema({
             type: String,
             enum: ["standard", "express"],
         },
-        trackingNumber: String,
+        trackingNumber: Number,
         address: String,
         city: String,
         zipcode: Number,

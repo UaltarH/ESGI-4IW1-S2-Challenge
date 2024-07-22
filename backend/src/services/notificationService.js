@@ -1,4 +1,5 @@
 const MongoNotification = require('../mongo/models/MongoNotification');
+const { sendMail } = require('./sendMail');
 
 async function createNotification(role, type, product, getModels) {
     const { User, User_pref } = getModels();
@@ -36,6 +37,19 @@ async function createNotification(role, type, product, getModels) {
             updatedAt: new Date(),
         });
     }
+
+    //send mail
+    const mailOptions = {
+        from: {
+            name: "BoxToBe Administration",
+            address: process.env.USER_MAIL,
+        },
+        to: users.map(user => user.email),
+        subject: "Notification",
+        text: messages[role][type]
+    };
+    // TODO: PROD uncomment
+    // await sendMail(mailOptions);
 }
 
 module.exports = { createNotification };

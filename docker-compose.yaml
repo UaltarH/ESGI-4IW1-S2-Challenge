@@ -125,6 +125,15 @@ services:
       - node
       - adminer
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - default_network
+    depends_on:
+      - node
+
 volumes:
   mongo-data: {}
   postgres-data: {}

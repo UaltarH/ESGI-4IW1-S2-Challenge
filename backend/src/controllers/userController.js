@@ -3,6 +3,7 @@ const crudService = require("../services/crudGeneric");
 const { sendMail } = require("../services/sendMail");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { userQueue } = require('../config/queueBullConfig');
 
 class userController {
   static async getUsers(req, res) {
@@ -17,16 +18,16 @@ class userController {
     try {
       const existingUser = await crudService.findOne(User, { email: req.body.email });
       if (existingUser.data) {
-        return res.status(409); 
+        return res.status(409);
       }
-  
+
       const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
 
       const { data, error } = await crudService.create(User, fieldsForCreateUser);
-        if (error) {
-          return res.status(500);
-        }
-    
+      if (error) {
+        return res.status(500);
+      }
+
       const User_prefData = {
         UserId: data.id,
         newProduct,
@@ -34,6 +35,11 @@ class userController {
         priceChange,
       };
       await crudService.create(User_pref, User_prefData);
+
+      await userQueue.add(
+        { userId: data.id },
+        { delay: 2 * 60 * 1000 }
+      );
 
       const mailOptions = {
         from: {
@@ -43,23 +49,23 @@ class userController {
         to: [req.body.email],
         subject: "Veuillez vérifier votre compte",
         text:
-          `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173"  : "https://boxtobe.mapa-server.org"}/verify/` +
+          `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/verify/` +
           data.verification_token,
       };
-  
+
       try {
         await sendMail(mailOptions);
       } catch (error) {
         console.error("Failed to send email controller", error);
       }
-  
+
       res.sendStatus(201);
     } catch (error) {
       console.error("Erreur lors de l'enregistrement de l'utilisateur", error);
       res.status(500).json({ error: "Une erreur interne s'est produite." });
     }
   }
-  
+
 
   static async getUser(req, res) {
     const attributes = req.query.fields ? req.query.fields.split(",") : [];
@@ -79,56 +85,56 @@ class userController {
   }
 
   static async deleteUser(req, res) {
-      try {
-          const user = await User.findByPk(req.params.id);
+    try {
+      const user = await User.findByPk(req.params.id);
 
-          if (!user) {
-              return res.status(404);
-          }
-
-          if (user.role === 'admin') {
-              return res.status(403);
-          }
-
-          const { data, error } = await crudService.destroy(User, req.params.id);
-          if (error) {
-              return res.status(500);
-          }
-
-          res.status(204)
-      } catch (error) {
-          res.status(500);
+      if (!user) {
+        return res.status(404);
       }
+
+      if (user.role === 'admin') {
+        return res.status(403);
+      }
+
+      const { data, error } = await crudService.destroy(User, req.params.id);
+      if (error) {
+        return res.status(500);
+      }
+
+      res.status(204)
+    } catch (error) {
+      res.status(500);
+    }
   }
 
   static async deleteMultiplesUsers(req, res) {
-      const { usersId } = req.body;
-      const ids = usersId.split(",");
+    const { usersId } = req.body;
+    const ids = usersId.split(",");
 
-      try {
-          const users = await User.findAll({
-              where: {
-                  id: ids
-              }
-          });
+    try {
+      const users = await User.findAll({
+        where: {
+          id: ids
+        }
+      });
 
-          const nonAdminUsers = users.filter(user => user.role !== 'admin');
-          const nonAdminIds = nonAdminUsers.map(user => user.id);
+      const nonAdminUsers = users.filter(user => user.role !== 'admin');
+      const nonAdminIds = nonAdminUsers.map(user => user.id);
 
-          const deletionPromises = nonAdminIds.map(async (id) => {
-              const { data, error } = await crudService.destroy(User, id);
-              if (error) {
-                  throw new Error(`User with ID ${id} not found: ${error.message}`);
-              }
-          });
+      const deletionPromises = nonAdminIds.map(async (id) => {
+        const { data, error } = await crudService.destroy(User, id);
+        if (error) {
+          throw new Error(`User with ID ${id} not found: ${error.message}`);
+        }
+      });
 
-          await Promise.all(deletionPromises);
+      await Promise.all(deletionPromises);
 
-          res.sendStatus(204);
-      } catch (error) {
-          console.error("Deletion error:", error);
-          res.status(500).json({ error: "An error occurred while deleting the users" });
-      }
+      res.sendStatus(204);
+    } catch (error) {
+      console.error("Deletion error:", error);
+      res.status(500).json({ error: "An error occurred while deleting the users" });
+    }
   }
 
 
@@ -175,19 +181,12 @@ class userController {
 
       const token = jwt.sign({ id: user.id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-      // res.cookie("auth_token", token, {
-      //   httpOnly: process.env.NODE_ENV === "production", // Le cookie n'est pas accessible via JavaScript
-      //   secure: process.env.NODE_ENV === "production", // Utiliser uniquement HTTPS en production
-      //   maxAge: 3600000, // 1 heure
-      //   domain: process.env.DOMAIN_FRONT,
-      // });
-
       return res.status(200).json({ token });
     } catch (error) {
       return res.sendStatus(500);
     }
   }
-  
+
   static async verify(req, res) {
     const { token } = req.params;
 
@@ -209,6 +208,14 @@ class userController {
       user.is_verified = true;
       user.verification_token = null;
       await user.save();
+
+      // remove job
+      const jobs = await userQueue.getJobs(['delayed']);
+      const userJob = jobs.find(job => job.data.userId === user.id);
+      if (userJob) {
+        await userJob.remove();
+      }
+
       return res.sendStatus(200);
 
     } catch (error) {

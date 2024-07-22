@@ -14,6 +14,7 @@ const useOrders = () => {
                     status: status
                 })
             });
+            console.log('response updateShippingStatus: ', response);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);

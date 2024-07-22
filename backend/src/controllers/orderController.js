@@ -3,7 +3,7 @@ const { Order, Payment, Shipping, Order_status, Cart, User } = require('../seque
 const { createStripeSession } = require('../services/stripeSession');
 const { createOrderTransac } = require('../services/createOrder');
 const { sendMail } = require("../services/sendMail");
-const { model } = require('mongoose');
+const { cartQueue } = require('../config/queueBullConfig')
 
 
 class orderController {
@@ -20,6 +20,7 @@ class orderController {
 
             return res.status(200).json({ message: "Shipping status updated" });
         } catch (error) {
+            console.error("Error updating shipping status:", error);
             res.status(500).json({ message: "Erreur interne, veuillez réessayer" });
         }
     }
@@ -39,14 +40,14 @@ class orderController {
             const page = parseInt(req.query.page) || 1;
             const limit = parseInt(req.query.limit) || 10;
             const skip = (page - 1) * limit;
-    
+
             const orders = await MongoOrder.find({ 'user.userId': userId })
-                                           .skip(skip)
-                                           .limit(limit);
-    
+                .skip(skip)
+                .limit(limit);
+
             const totalOrders = await MongoOrder.countDocuments({ 'user.userId': userId });
-    
-            res.json({ 
+
+            res.json({
                 orders: orders,
                 totalOrders: totalOrders,
                 currentPage: page,
@@ -115,7 +116,18 @@ class orderController {
             // check in query params if payment was successful
             if (req.query.status === "true") {
                 await Order_status.create({ status: "Confirmée", OrderId: order.id });
-                await Cart.destroy({ where: { UserId: order.UserId } });
+                const deletedCart = await Cart.destroy({
+                    where: { UserId: order.UserId },
+                    returning: true,
+                    plain: true
+                });
+
+                //remove the worker for this cart
+                const jobs = await cartQueue.getJobs(['delayed']);
+                const cartJob = jobs.find(job => job.data.cartId === deletedCart.id);
+                if (cartJob) {
+                    await cartJob.remove();
+                }
 
                 const customer = await User.findOne({ where: { id: order.UserId }, attributes: ["email"] });
 
@@ -126,8 +138,8 @@ class orderController {
                     },
                     to: [customer.email],
                     subject: "Confirmation de commande BoxToBe n°" + order.orderNumber,
-                    text: `Votre commande n° ${ order.orderNumber } a bien été confirmée, vous pouvez suivre son avancement sur votre espace client :` +
-                        `${process.env.NODE_ENV === "development" ? "http://localhost:5173"  : "https://boxtobe.mapa-server.org"}/user/orders.`,
+                    text: `Votre commande n° ${order.orderNumber} a bien été confirmée, vous pouvez suivre son avancement sur votre espace client :` +
+                        `${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/user/orders.`,
                 };
 
                 try {
@@ -152,7 +164,7 @@ class orderController {
     // todo : create a function to call fake api laposte to get a number tracking
 }
 
-// const response = await fetch("http://laposteapi:7000/shipping", {
+// const response = await fetch("http://laposteapi:7001/shipping", {
 //             method: "POST",
 //             headers: {
 //                 "Content-Type": "application/json"

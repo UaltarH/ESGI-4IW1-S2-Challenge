@@ -18,7 +18,7 @@
           v-if="orderVisualizer != undefined"
           :title="'Commande'"
           :data="orderVisualizer"
-          :buttons="['close']"
+          :buttons="['close', 'invoice']"
           :fields="[
             'orderNumber', 
             'date', 
@@ -56,6 +56,7 @@
             'shipping.country': 'Pays',
           }"
           @closeVisualizer="onCloseVisualizer"
+          @createFacture="onCreateFacture"
         />
 
         <p v-if="isGenerating">Génération en cours...</p>
@@ -78,7 +79,7 @@
     amount: number;
     date: Date;
     email: string;
-    trackingNumber: string;
+    trackingNumber: number;
     status: string;
   }
   const { generatePdfFromOrder, isGenerating, error } = usePdfGenerator();
@@ -95,7 +96,7 @@
       { name: "Montant", key: "amount", sort: true, typeData: "string" },
       { name: "Date", key: "date", sort: true, typeData: "date" },
       { name: "Email", key: "email", sort: true, typeData: "string" },
-      { name: "Numéro de livraison", key: "trackingNumber", sort: true, typeData: "string" },
+      { name: "Numéro de livraison", key: "trackingNumber", sort: true, typeData: "number" },
       { name: "Status", key: "status", sort: true, typeData: "string" },
     ],
     actions: { edit: false, delete: false, visualize: true },

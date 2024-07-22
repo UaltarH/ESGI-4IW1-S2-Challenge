@@ -15,19 +15,19 @@
 
 <div class="p-6 bg-white dark:bg-dark-blue grid grid-cols-1 md:grid-cols-4 gap-6 mx-auto">
   <div class="flex flex-col items-center">
-    <img src="../../public/reassurance-qualite.svg" class="w-16 h-16" />
+    <img src="/reassurance-qualite.svg" class="w-16 h-16" />
     <p class="text-center mt-4">Emballage de qualité<br />Réception produit sécurisée</p>
   </div>
   <div class="flex flex-col items-center">
-    <img src="../../public/reassurance-expedition.svg" class="w-16 h-16" />
+    <img src="/reassurance-expedition.svg" class="w-16 h-16" />
     <p class="text-center mt-4">Commande avant 13H<br />Expédition le jour même</p>
   </div>
   <div class="flex flex-col items-center">
-    <img src="../../public/reassurance-livraison.svg" class="w-16 h-16" />
-    <p class="text-center mt-4">Livraison 24/48H à domicile<br />France et Bénélux</p>
+    <img src="/reassurance-livraison.svg" class="w-16 h-16" />
+    <p class="text-center mt-4">Livraison 24/48H à domicile<br />France</p>
   </div>
   <div class="flex flex-col items-center">
-    <img src="../../public/reassurance-notification.svg" class="w-16 h-16" />
+    <img src="/reassurance-notification.svg" class="w-16 h-16" />
     <p class="text-center mt-4">Notification par mail et SMS<br />le jour de l'expédition</p>
   </div>
 </div>
@@ -64,7 +64,7 @@ const fetchLastProducts = async () => {
 </script>
 <style scoped>
 .banner {
-  background-image: url("../../public/home-page-image-test.png");
+  background-image: url("/home-page-image-test.png");
   background-size: cover;
   background-repeat: no-repeat;
   height: 40rem;

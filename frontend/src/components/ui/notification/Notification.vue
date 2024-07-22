@@ -38,9 +38,7 @@ function getNotification() {
     setTimeout(() => {
       getNotification();
       if(unref(currentNotifications).length > 0) {
-        console.log(unref(currentNotifications))
         currentNotifications.value.shift();
-        console.log(currentNotifications.value)
       }
     }, currentNotification.timeout)
   }
@@ -48,7 +46,6 @@ function getNotification() {
 watch(
     () => notificationStore.notifications.length,
     () => {
-      console.log('Running')
         getNotification()
     },
     { immediate: true }

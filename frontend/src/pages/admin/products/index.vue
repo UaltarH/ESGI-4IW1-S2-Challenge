@@ -10,14 +10,38 @@
             @visualize-item="handleVisualize"
             @edit-item="handleEdit"
             @delete-item="handleDelete"
-            @delete-multiple-items="handleDeleMultiple"
+            @delete-multiple-items="handleDeleteMultiple"
         ></CustomizableTable>
 
-        <visualizer class="mt-4" v-if="productVisualizer != undefined" :title="'Produit'" :data="productVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
-  
+        <visualizer
+          class="mt-4"
+          v-if="productVisualizer != undefined"
+          :title="'Produit'"
+          :data="productVisualizer"
+          :buttons="['close']"
+          :fields="[
+            'postgresId', 
+            'name', 
+            'description', 
+            'price', 
+            'stock', 
+            'categoryName', 
+          ]"
+          :labels="{
+            postgresId: 'Identifiant Postgres',
+            name: 'Nom',
+            description: 'Description',
+            price: 'Prix',
+            stock: 'Stock',
+            categoryName: 'Nom de la Catégorie',
+          }"       
+          @closeVisualizer="onCloseVisualizer"
+        ></visualizer>  
+
       <Dialog v-model:open="isModalVisible">
           <ProductEditModale
             :model="selectedItem"
+            :errors="errors"
             @close="isModalVisible = false"
             @save="handleSave"
           />
@@ -35,7 +59,7 @@
       <confirm-modal
           v-if="openModalMultiple"
           :data="selectedItems"
-          :title="'Confirmer la suppression de ' + selectedItems?.length + ' utilisateurs ?'"
+          :title="'Confirmer la suppression de ' + selectedItems?.length + ' produits ?'"
           size="sm"
           @confirm="openModalMultiple = false"
           @close="openModalMultiple = false"
@@ -46,7 +70,7 @@
   </template>
   
   <script lang="ts" setup>
-  import { reactive, ref, onMounted, Ref } from 'vue';
+  import { reactive, ref, onMounted, Ref, watch } from 'vue';
   import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
   import { ProductService } from '@/composables/api/products.service.ts';
   import { mongoProduct } from '@/dto/MongoProduct.dto';
@@ -55,7 +79,7 @@
   import ConfirmModal from '@/components/ConfirmModal.vue';
   import visualizer from '@/components/common/visualizer.vue';
   
-  const { getAllMongoProducts, updateMongoProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
+  const { getAllMongoProducts, updateProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
   
   const openModal = ref<boolean>(false);
   const openModalMultiple = ref<boolean>(false);
@@ -81,6 +105,8 @@
   const isModalVisible = ref(false);
   const selectedItem = ref<mongoProduct | null>(null);
   const selectedItems = ref<mongoProduct[] | null>(null);
+
+  const errors: Ref<{ [key: string]: string }> = ref({});
   
   function handleVisualize(item: mongoProduct) {
     productVisualizer.value = item;
@@ -95,13 +121,27 @@
   }
   
   function handleSave(item: mongoProduct) {
+    errors.value = {};
     const itemCopy = { ...item };
     const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
-    updateMongoProduct(item.postgresId, itemCopyWithStringValues)
-    .then(() => refreshProducts())
+    updateProduct(item.postgresId, itemCopyWithStringValues)
+    .then(() => {
+      refreshProducts();
+      isModalVisible.value = false;
+    })
     .catch(error => {
-        console.error('Error in handleSave:', error);
+      const parsedErrors = JSON.parse(error);
+      if (parsedErrors.errors && Array.isArray(parsedErrors.errors)) {
+        parsedErrors.errors.forEach((errItem: { path: string[], message: string }) => {
+          if (errItem.path && errItem.path.length > 0) {
+            const key = errItem.path[0];
+            errors.value[key] = errItem.message;
+          }
+        });
+      } else {
+        console.error('Unexpected error format:', parsedErrors);
+      }
     });
   }
   
@@ -120,7 +160,7 @@
     openModal.value = true
   }
   
-  function handleDeleMultiple(items: mongoProduct[]) {
+  function handleDeleteMultiple(items: mongoProduct[]) {
     selectedItems.value = items
     openModalMultiple.value = true
   }

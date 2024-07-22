@@ -18,8 +18,6 @@ export const CategoriesService = () => {
             throw error;
         }
     };
-    
-    
 
     return {getCategories};
 }

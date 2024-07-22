@@ -1,7 +1,7 @@
 export interface mongoOrder {
     _id: string,
     postgresId: string,
-    totalPrice: number,
+    orderNumber: string,
     date: Date,
     user: {
         userId: string,
@@ -30,14 +30,14 @@ export interface mongoOrder {
     ],
     payment: {
         paymentId: string,
-        paymentMethod: string,
+        stripePaymentId: string,
         amount: number,
         _id: string
     },
     shipping: {
         shippingId: string,
         shippingMethod: string,
-        trackingNumber: string,
+        trackingNumber: number,
         address: string
         city: string,
         zipcode: number,

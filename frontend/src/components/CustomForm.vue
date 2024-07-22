@@ -1,6 +1,6 @@
 <template>
   <component-wrapper :loading="props.loading">
-    <form ref="formRef" class="form" @submit.prevent>
+    <form ref="formRef" class="form" :class="props.bordered ? '' : 'border-none shadow-none rounded-none' " @submit.prevent>
       <form-item
           v-for="item in formSchema"
           :class="item.col == 2 ? 'col-2' : item.col == 0 ? 'col-0' : ''"
@@ -12,6 +12,7 @@
         </template>
         <template #component>
           <input
+          v-if="item.component === 'input'"
               :type="item.type"
               :id="item.name"
               :name="item.name"
@@ -23,6 +24,17 @@
               v-model="item.value"
               :disabled="item.disabled === undefined ? props.disabled : item.disabled"
           >
+          <select v-else-if="item.component === 'select'"
+              :id="item.name"
+              :name="item.name"
+              :required="getFieldRequired(item.name)"
+              @blur="validateField(item)"
+              v-model="item.value"
+              :disabled="item.disabled === undefined ? props.disabled : item.disabled"
+          >            
+            <option value="placeholder" disabled selected>{{ item.placeholder }}</option>
+            <option v-for="option in item.optionsSelect" :key="option.value" :value="option.value">{{ option.label }}</option>
+          </select>
           <p v-if="item.error" class="text-danger pl-2 text-xs">{{ item.error }}</p>
         </template>
       </form-item>
@@ -76,6 +88,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  bordered: {
+    type: Boolean,
+    default: true,
   }
 })
 const formSchema = ref<FormField<FieldSchema>[]>(props.schema);
@@ -87,8 +103,10 @@ function handleSubmit() {
 }
 function handleReset() {
   formSchema.value.forEach((item) => {
-    item.value = undefined;
-    item.error = undefined;
+    if(item.disabled != true){
+      item.value = undefined;
+      item.error = undefined;
+    }
   });
   emit("reset");
 }

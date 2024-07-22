@@ -8,7 +8,7 @@
       @apply font-semibold pl-2 mb-2;
     }
     input, textarea, select {
-      @apply p-2 rounded-lg dark:bg-dark-blue border border-gray-200 dark:border-gray-800 lg:w-1/2;
+      @apply p-2 rounded-lg dark:bg-dark-blue border dark:disabled:text-gray-500 border-gray-200 dark:border-gray-800 lg:w-1/2 disabled:cursor-not-allowed;
     }
   }
   .form-item.col-0 {

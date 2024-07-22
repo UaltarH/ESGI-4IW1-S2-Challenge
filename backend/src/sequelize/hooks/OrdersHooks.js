@@ -4,7 +4,7 @@ const afterCreateHook = async (order, options) => {
     const user = await order.getUser();
     await MongoOrder.create({
         postgresId: order.id,
-        totalPrice: order.totalPrice,
+        orderNumber: order.orderNumber,
         date: order.date,
         user: {
             userId: user.id,

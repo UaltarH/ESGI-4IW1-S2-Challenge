@@ -28,6 +28,7 @@ defineProps<{
             :name="content.name"
             :description="content.description"
             :price="content.price"
+            :in-stock="content.stock > 0"
             />
           </RouterLink>
 

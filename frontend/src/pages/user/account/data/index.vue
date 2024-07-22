@@ -32,28 +32,24 @@ import CustomForm from "@/components/CustomForm.vue";
 import { FormField } from "@/dto/formField.dto.ts";
 import { z } from "zod";
 import { formMessages } from "@/composables/formMessages.ts";
-import { onBeforeMount, Ref, ref } from "vue";
+import { onMounted, Ref, ref } from "vue";
 import { UserService } from "@/composables/api/user.service.ts";
-import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/user";
 import { useNotificationStore } from "@/stores/notification";
 import { User } from "@/dto/user.dto.ts";
+import { useRouter } from "vue-router";
 
 const { getUserById, updateUser } = UserService();
-const router = useRouter();
 const userStore = useUserStore();
 const notificationStore = useNotificationStore();
+const router = useRouter();
 
-onBeforeMount(async () => {
-  if (!userStore.user.id) {
-    router.push("/auth");
-  } else {
-    await getUserById(
-        userStore.user.id,
-        handleUserInfo,
-        {fields: ["firstname", "lastname", "email", "phone", "birthdate", "address", "zipcode", "city", "country"]}
-    );
-  }
+onMounted(async () => {
+  await getUserById(
+      userStore.user.id,
+      handleUserInfo,
+      {fields: ["firstname", "lastname", "email", "phone", "birthdate", "address", "zipcode", "city", "country"]}
+  );
 });
 
 const user = ref<User>();
@@ -198,28 +194,47 @@ const accountSchema:FormField<any>[] = [
   },
 ]
 
-function handleUserInfo(res: Response) {
-  res.json().then((data) => {
-    if(!data.user) {
+function handleUserInfo(res: Response | number) {
+  if(typeof res === "number") {
+    notificationStore.add({
+      message: "Impossible de récupérer les données de l'utilisateur.",
+      type: "error",
+      timeout: 3000
+    });
+    router.push({ path: '/500'});
+  } else {
+    if (res.status === 200) {
+      res.json().then((data) => {
+        if (!data.user) {
+          notificationStore.add({
+            message: "Impossible de récupérer les données de l'utilisateur.",
+            type: "error",
+            timeout: 3000
+          });
+          router.push({path: '/500'});
+        }
+        const {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country} = data.user;
+        user.value = {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country};
+        formRef.value?.SetFieldValue({firstname: user.value.firstname}, "firstname");
+        formRef.value?.SetFieldValue({lastname: user.value.lastname}, "lastname");
+        formRef.value?.SetFieldValue({email: user.value.email}, "email");
+        formRef.value?.SetFieldValue({phone: user.value.phone}, "phone");
+        formRef.value?.SetFieldValue({birthdate: user.value.birthdate}, "birthdate");
+        formRef.value?.SetFieldValue({address: user.value.address}, "address");
+        formRef.value?.SetFieldValue({zipcode: user.value.zipcode}, "zipcode");
+        formRef.value?.SetFieldValue({city: user.value.city}, "city");
+        formRef.value?.SetFieldValue({country: user.value.country}, "country");
+      });
+    } else {
       notificationStore.add({
         message: "Impossible de récupérer les données de l'utilisateur.",
         type: "error",
         timeout: 3000
       });
-      return;
+      router.push({path: '/500'});
     }
-    const {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country} = data.user;
-    user.value = {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country};
-    formRef.value?.SetFieldValue({firstname: user.value.firstname}, "firstname");
-    formRef.value?.SetFieldValue({lastname: user.value.lastname}, "lastname");
-    formRef.value?.SetFieldValue({email: user.value.email}, "email");
-    formRef.value?.SetFieldValue({phone: user.value.phone}, "phone");
-    formRef.value?.SetFieldValue({birthdate: user.value.birthdate}, "birthdate");
-    formRef.value?.SetFieldValue({address: user.value.address}, "address");
-    formRef.value?.SetFieldValue({zipcode: user.value.zipcode}, "zipcode");
-    formRef.value?.SetFieldValue({city: user.value.city}, "city");
-    formRef.value?.SetFieldValue({country: user.value.country}, "country");
-  });
+  }
+
 }
 async function handleSave() {
   if(user.value === undefined) {

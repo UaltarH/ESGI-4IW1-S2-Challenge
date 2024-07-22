@@ -8,9 +8,71 @@
       <h1>Mes commandes</h1>
       <AccountSideMenu></AccountSideMenu>
     </div>
+    <div class="flex-1 overflow-auto max-h-screen">
+      <div class="flex flex-col justify-start items-start">
+        <div v-for="order in orders" :key="order._id" class="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+          <div class="w-full flex flex-col justify-start items-start space-y-8">
+            <h3 class="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">Commande {{ order.orderNumber }}</h3>
+            <div class="flex justify-start items-start flex-col space-y-2">
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Date: </span>{{ new Date(order.date).toLocaleDateString() }}</p>
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Total: </span>{{ order.payment.amount.toFixed(2) }}€</p>
+              <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Statut: </span>{{ order.status.sort((a, b) => new Date(b.date) - new Date(a.date))[0].status }}</p>
+            </div>
+            <div class="w-full">
+              <h4 class="text-lg dark:text-white xl:text-xl font-semibold leading-6 text-gray-800">Articles</h4>
+              <div v-for="item in order.orderItems" :key="item.orderItemId" class="flex justify-between items-start w-full py-2 border-b border-gray-200">
+                <p class="text-base dark:text-white xl:text-lg leading-6">{{ item.productName }}</p>
+                <p class="text-base dark:text-white xl:text-lg leading-6">{{ item.quantity }} x {{ item.price }}€</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-if="totalPages !== 0" class="flex justify-center items-center py-4">
+        <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700">Précédent</button>
+        <span class="px-4">{{ currentPage }} / {{ totalPages }}</span>
+        <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700">Suivant</button>
+      </div>
+    </div>
   </div>
 </template>
-<script lang="ts" setup>
 
+<script lang="ts" setup>
+import { ref, onMounted } from "vue";
 import AccountSideMenu from "@/components/AccountSideMenu.vue";
+import { OrdersService } from "@/composables/api/orders/orders.service";
+import { mongoOrder } from '@/dto/MongoOrder.dto';
+import { useUserStore } from "@/stores/user.ts";
+
+const orders = ref<mongoOrder[]>([]);
+const currentPage = ref(1);
+const totalPages = ref(0);
+const userStore = useUserStore();
+
+const fetchOrders = async (page: number = 1) => {
+  try {
+    const response = await OrdersService().getSpecificMongoOrder(userStore.user.id, page);
+    orders.value = response.orders;
+    currentPage.value = response.currentPage;
+    totalPages.value = response.totalPages;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    fetchOrders(currentPage.value + 1);
+  }
+};
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    fetchOrders(currentPage.value - 1);
+  }
+};
+
+onMounted(() => {
+  fetchOrders();
+});
 </script>

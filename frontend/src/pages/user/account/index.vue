@@ -45,31 +45,38 @@
 </template>
 <script lang="ts" setup>
 import { useUserStore } from "@/stores/user.ts";
-import {onBeforeMount, ref} from "vue";
-import { useRouter } from "vue-router";
+import { onMounted, ref } from "vue";
 import { UserService } from "@/composables/api/user.service";
+import { useNotificationStore } from "@/stores/notification.ts";
+import { useRouter } from "vue-router";
 
 const { getUserById } = UserService();
-const router = useRouter();
 const userStore = useUserStore();
+const notificationStore = useNotificationStore();
+const router = useRouter();
 const user = ref();
 
-onBeforeMount(async () => {
-  if (!userStore.user.id) {
-    router.push("/auth");
-  } else {
-    await getUserById(
-        userStore.user.id,
-        handleUserInfo,
-        {fields: ["firstname", "lastname"]},
-    );
-  }
+onMounted(async () => {
+  await getUserById(
+      userStore.user.id,
+      handleUserInfo,
+      {fields: ["firstname", "lastname"]},
+  );
 });
 
-function handleUserInfo(res: Response) {
-  res.json().then((data) => {
-    user.value = data.user;
-  });
+function handleUserInfo(res: Response | number) {
+  if(typeof res === "number") {
+    notificationStore.add({
+      message: "Impossible de récupérer les données de l'utilisateur.",
+      type: "error",
+      timeout: 3000
+    });
+    router.push({ path: '/500' });
+  } else {
+    res.json().then((data) => {
+      user.value = data.user;
+    });
+  }
 }
 </script>
 <style scoped>

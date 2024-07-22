@@ -57,6 +57,15 @@ module.exports = {
         defaultValue: "user",
         allowNull: false,
       },
+      verification_token: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      is_verified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -76,8 +85,8 @@ module.exports = {
         primaryKey: true,
         allowNull: false,
       },
-      totalPrice: {
-        type: DataTypes.FLOAT,
+      orderNumber: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       date: {
@@ -163,8 +172,8 @@ module.exports = {
         onUpdate: "CASCADE",
         onDelete: "CASCADE",
       },
-      paymentMethod: {
-        type: DataTypes.ENUM("credit_card", "paypal"),
+      stripeSessionId: {
+        type: DataTypes.STRING,
         allowNull: false,
       },
       amount: {
@@ -205,8 +214,8 @@ module.exports = {
         allowNull: false,
       },
       trackingNumber: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.INTEGER,
+        allowNull: true,
       },
       address: {
         type: DataTypes.STRING,
@@ -246,7 +255,7 @@ module.exports = {
       },
       UserId: {
         type: DataTypes.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "User",
           key: "id",
@@ -309,6 +318,14 @@ module.exports = {
         allowNull: false,
       },
       stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      imagePath: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      threshold: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -423,9 +440,51 @@ module.exports = {
         defaultValue: Sequelize.fn("NOW"),
       },
     });
+
+    await queryInterface.createTable("User_pref", {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+      },
+      newProduct: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      restockProduct: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      priceChange: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+      },
+      UserId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+        references: {
+          model: "User",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
+      createdAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+      updatedAt: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.fn("NOW"),
+      },
+    });
   },
 
   async down(queryInterface, Sequelize) {
+    await queryInterface.dropTable("User_pref");
     await queryInterface.dropTable("Cart_item");
     await queryInterface.dropTable("Order_item");
     await queryInterface.dropTable("Order_status");

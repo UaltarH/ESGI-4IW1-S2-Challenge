@@ -27,12 +27,6 @@ export const useMenuItems = () => {
       access: "admin",
       children: [
         {
-          title: "Roles",
-          icon: "",
-          route: "/admin/roles",
-          access: "admin",
-        },
-        {
           title: "Utilisateurs",
           icon: "",
           route: "/admin/users",
@@ -56,22 +50,14 @@ export const useMenuItems = () => {
           route: "/admin/dashboard",
           access: "admin",
         },
-      ],
-    },
-    {
-      title: "Composants",
-      icon: "",
-      route: "",
-      access: "all",
-      children: [
         {
-          title: "Tableau",
+          title: "Stocks",
           icon: "",
-          route: "/components/table",
-          access: "all",
+          route: "/admin/stocks",
+          access: "admin",
         },
       ],
-    },
+    }
   ]);
 
   const adminItems = menuItems.filter(item =>

@@ -20,9 +20,8 @@
         :title="'Utilisateur'"
         :data="userVisualizer"
         :buttons="['close']"
-        :fields="['id', 'email', 'firstname', 'lastname', 'password', 'phone', 'address','city', 'country', 'birthdate',  'role']"
+        :fields="['email', 'firstname', 'lastname', 'password', 'phone', 'address','city', 'country', 'birthdate', 'is_verified', 'role']"
         :labels="{
-          id: 'Identifiant',
           phone: 'Numéro de Téléphone',
           password: 'Mot de Passe',
           address: 'Adresse',
@@ -32,6 +31,7 @@
           email: 'Adresse Email',
           firstname: 'Prénom',
           lastname: 'Nom de Famille',
+          is_verified: 'Vérifié',
           role: 'Rôle'
         }"        
         :valueTransforms="{ password: '******' }"
@@ -116,9 +116,9 @@ const refreshUsers = async () => {
 const data = reactive({
   datas: datas,
   columns: [
-    { name: 'ID', key: 'id', sort: true, typeData: 'string' },
     { name: 'Email', key: 'email', sort: true, typeData: 'string' },
     { name: 'Rôle', key: 'role', sort: true, typeData: 'string' },
+    { name: 'Vérifié', key: 'is_verified', sort: true, typeData: 'boolean' },
   ],
   actions: { edit: true, delete: true, visualize: true },
   numberOfItemsPerPage: [5, 10, 15, 20],
@@ -174,7 +174,7 @@ async function handleSave(item: User) {
   })
   .then(() => {
     refreshUsers();
-    isModalVisible.value = false;
+    isEditModalVisible.value = false;
   })
   .catch(error => {
     const parsedErrors = JSON.parse(error);

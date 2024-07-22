@@ -10,3 +10,13 @@ export interface Product {
     createdAt: string;
     updatedAt: string;
 } 
+
+export interface createProduct {
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    imagePath: string;
+    threshold: number;
+    CategoryId: string;
+} 

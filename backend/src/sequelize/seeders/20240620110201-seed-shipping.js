@@ -16,7 +16,7 @@ module.exports = {
         id: uuidv4(),
         OrderId: orderId,
         shippingMethod: faker.helpers.arrayElement(['standard', 'express']),
-        trackingNumber: faker.helpers.arrayElement(['40333870114531', '14804899007121', '39138761900988']),
+        trackingNumber: parseInt(faker.helpers.arrayElement(['5113090', '107121', '900988'])),
         address: faker.location.streetAddress(),
         city: faker.location.city(),
         zipcode: Number(faker.location.zipCode("####")),

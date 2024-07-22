@@ -38,7 +38,7 @@ class userController {
 
       await userQueue.add(
         { userId: data.id },
-        { delay: 30 * 60 * 1000 }
+        { delay: 2 * 60 * 1000 }
       );
 
       const mailOptions = {

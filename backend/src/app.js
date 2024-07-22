@@ -58,5 +58,6 @@ app.set('views', path.join(__dirname, 'template', 'pdf'));
 connectMongoDB();
 
 require('./workers/cartWorker');
+require('./workers/userWorker');
 
 module.exports = { app };

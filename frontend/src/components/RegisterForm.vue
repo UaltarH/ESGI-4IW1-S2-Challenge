@@ -263,7 +263,7 @@ function handleRegister(res: Response) {
   if (res.status === 201) {
     console.log("User registered");
     formLoading.value = false;
-    notificationStore.add({ message: 'Inscription réussie, un email de vérification vient de vous être envoyé', timeout: 3000, type: 'success' });
+    notificationStore.add({ message: 'Inscription réussie, un email de vérification a été envoyé. Vous avez 30 minutes pour confirmez votre inscription.', timeout: 6000, type: 'success' });
     // Ignore the warning :  formRef.value will hold an instance of <CustomForm> after the form is mounted (cf: template refs doc)
     if (formRef.value !== null) {
       formRef.value.handleReset();

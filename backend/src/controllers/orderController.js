@@ -20,6 +20,7 @@ class orderController {
 
             return res.status(200).json({ message: "Shipping status updated" });
         } catch (error) {
+            console.error("Error updating shipping status:", error);
             res.status(500).json({ message: "Erreur interne, veuillez réessayer" });
         }
     }
@@ -163,7 +164,7 @@ class orderController {
     // todo : create a function to call fake api laposte to get a number tracking
 }
 
-// const response = await fetch("http://laposteapi:7000/shipping", {
+// const response = await fetch("http://laposteapi:7001/shipping", {
 //             method: "POST",
 //             headers: {
 //                 "Content-Type": "application/json"

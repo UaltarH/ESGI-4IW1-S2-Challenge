@@ -214,7 +214,7 @@ module.exports = {
         allowNull: false,
       },
       trackingNumber: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       address: {

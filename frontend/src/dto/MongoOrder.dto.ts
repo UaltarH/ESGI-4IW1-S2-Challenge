@@ -37,7 +37,7 @@ export interface mongoOrder {
     shipping: {
         shippingId: string,
         shippingMethod: string,
-        trackingNumber: string,
+        trackingNumber: number,
         address: string
         city: string,
         zipcode: number,

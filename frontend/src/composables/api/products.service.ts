@@ -1,5 +1,5 @@
 import { mongoProduct } from '@/dto/MongoProduct.dto';
-import { Product } from '@/dto/api/product.dto';
+import { Product, createProduct } from '@/dto/api/product.dto';
 import {Api} from './routesApi';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
@@ -100,6 +100,35 @@ export const ProductService = () => {
         body: JSON.stringify({productsId})
       }).then(res => res);
     }
+    
+    const createProduct = async (bodyRequest: createProduct): Promise<{sessionId: string}> => {
+      try {
+          const token = localStorage.getItem('auth_token');
+          if(token === null) throw new Error('Error while getting orders');
+          const response = await fetch(baseUrl + Api.products, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${token}`,
+              },
+              body: JSON.stringify(bodyRequest)
+          });
 
-    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateProduct, deleteProduct, deleteMultiplesProducts};
+          if (!response.ok) {
+              const errorText = await response.text();
+              try {
+                  const errorJson = JSON.parse(errorText);
+                  throw errorJson;
+              } catch (err) {
+                  throw errorText;
+              }
+          }
+      
+          return await response.json();
+      } catch (err) {
+          throw err;
+      }
+  }
+
+    return { getProductById, getAllMongoProducts, getSpecificMongoProduct, getLastMongoProduct, updateProduct, deleteProduct, deleteMultiplesProducts, createProduct };
 }

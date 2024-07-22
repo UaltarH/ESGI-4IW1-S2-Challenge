@@ -8,7 +8,7 @@
         </DialogHeader>
         <form @submit.prevent="onSubmit" class="flex flex-col h-full">
             <div v-for="(value, key) in item" :key="key">
-                <div v-if="!['postgresId', '_id', '__v', 'categoryName'].includes(key)" class="m-5">
+                <div v-if="!['postgresId', '_id', '__v', 'categoryName', 'stock'].includes(key)" class="m-5">
                     <FormField :name="key" v-slot="{ componentField }">
                         <FormItem>
                             <div v-if="key === 'categoryId'">

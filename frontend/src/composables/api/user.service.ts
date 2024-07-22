@@ -54,8 +54,14 @@ export const UserService = () => {
     }
 
     const deleteUser = async (id: string) => {
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while deleting user');
         const response = await fetch(`${baseUrl}${Api.user}${id}`, {
             method: 'DELETE',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
         });
         if (!response.ok) {
             const errorData = await response.json();
@@ -65,6 +71,8 @@ export const UserService = () => {
     }
 
     const deleteBatchUsers = async (users: User[]) => {
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while deleting users');
         const nonAdminUsers = users.filter(user => user.role !== 'admin');
         const nonAdminIds = nonAdminUsers.map(user => user.id);
         
@@ -75,7 +83,8 @@ export const UserService = () => {
         const response = await fetch(`${baseUrl}${Api.user}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify({ usersId: nonAdminIds.join(',') })
         });

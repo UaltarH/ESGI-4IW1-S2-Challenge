@@ -109,6 +109,7 @@ async function addWidget(dataWidget: ModalResponse) {
             };
 
         const response = await dashboardService.createWidget(createWidgetInput);
+        await dashboardService.getWidgets();
         const newWidget = response.widget;
         
         grid.value.removeWidget(`#${tempWidgetId}`);
@@ -161,12 +162,11 @@ function closeDialog(){
         <h1>Compta Dashboard</h1>
     </div>
 
-    <div class="p-8 bg-gray-50 min-h-screen">
+    <div class="p-8 min-h-screen">
       <div class="py-2 px-2.5 flex justify-end space-x-2">
-        <!-- <btn v-if="isEditing" @click="addWidget">Ajouter</btn> -->
         <Dialog v-model="dialogIsOpen">
             <DialogTrigger as-child>
-                <btn variant="outline" @click="openDialog">
+                <btn variant="outline" @click="openDialog" class="bg-primary dark:bg-primary-light border-primary dark:border-primary-light hover:bg-primary-light hover:dark:bg-primary">
                     Ajouter un graphique
                 </btn>
             </DialogTrigger>

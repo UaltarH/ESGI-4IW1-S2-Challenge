@@ -4,6 +4,7 @@
       <form-item
           v-for="item in formSchema"
           :class="item.col == 2 ? 'col-2' : item.col == 0 ? 'col-0' : ''"
+          :key="item.name"
       >
         <template #label>
           <label :for="item.name" :class="item.error ? 'text-danger' : ''">

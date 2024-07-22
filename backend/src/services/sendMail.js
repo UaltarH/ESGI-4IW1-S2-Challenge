@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const ejs = require('ejs');
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -19,8 +20,37 @@ const sendMail = async (mailOptions) => {
         console.error('Failed to send email', err);
     }
 };
+const sendEmailWithTemplate = (receiver, subject, content, templatePath) => {
+    ejs.renderFile(__dirname + templatePath, { receiver, content }, (err, data) => {
+        if (err) {
+            console.log(err);
+        } else {
+            const mailOptions = {
+                from: {
+                    name: "BoToBe Administration",
+                    address: process.env.USER_MAIL,
+                },
+                to: receiver,
+                subject: subject,
+                html: data
+            };
+            try {
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        return console.log(error);
+                    }
+                    console.log('Message sent: %s', info.messageId);
+                });
+            } catch(err) {
+                console.error('Failed to send email', err);
+            }
+
+        }
+    });
+};
 
 
 module.exports = {
     sendMail,
+    sendEmailWithTemplate,
 };

@@ -51,6 +51,16 @@ export const useForm = (formSchema: Ref<FormField<any>[]>) => {
                 return false;
             }
         }
+        if(item.differentFrom !== undefined) {
+            const differentFrom = formSchema.value.find((field) => field.name == item.differentFrom!.field);
+            if(typeof differentFrom == "undefined") {
+                throw new Error(`Dependent field ${item.differentFrom} not found`);
+            }
+            if(differentFrom.value === item.value) {
+                item.error = item.differentFrom.errorMessage;
+                return false;
+            }
+        }
         return true;
     }
     function validate(): boolean {

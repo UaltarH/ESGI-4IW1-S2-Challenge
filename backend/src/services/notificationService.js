@@ -1,5 +1,5 @@
 const MongoNotification = require('../mongo/models/MongoNotification');
-const { sendMail } = require('./sendMail');
+const {sendEmailWithTemplate} = require('./sendMail');
 
 async function createNotification(role, type, product, getModels) {
     const { User, User_pref } = getModels();
@@ -29,7 +29,7 @@ async function createNotification(role, type, product, getModels) {
     for (const user of users) {
         await MongoNotification.create({
             userId: user.id,
-            roleUser: user.role,
+            roleUser: role,
             typeNotification: type,
             message: messages[role][type],
             read: false,
@@ -39,17 +39,18 @@ async function createNotification(role, type, product, getModels) {
     }
 
     //send mail
-    const mailOptions = {
-        from: {
-            name: "BoxToBe Administration",
-            address: process.env.USER_MAIL,
-        },
-        to: users.map(user => user.email),
-        subject: "Notification",
-        text: messages[role][type]
-    };
-    // TODO: PROD uncomment
-    // await sendMail(mailOptions);
+    try {
+        await sendEmailWithTemplate(
+            users.map(user => user.email),
+            "Notification",
+            {
+                alertMessage: messages[role][type],
+                host: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org",
+            },
+            "/../template/productAlert.ejs");
+    } catch (error) {
+        console.error("Failed to send email controller", error);
+    }
 }
 
 module.exports = { createNotification };

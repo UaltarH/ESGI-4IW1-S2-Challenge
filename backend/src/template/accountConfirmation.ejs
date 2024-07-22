@@ -1,0 +1,10 @@
+<%- include('./include/header.ejs') %>
+
+<div style="max-width: 640px; padding: 30px 15px; margin: auto;">
+    <h2>Vérification de création de compte</h2>
+    <p>Cher <b><%= content.fullname %></b></p>
+    <p>Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant. <br/>
+        <a href="<%= content.link %>">Lien de confirmation</a></p>
+</div>
+
+<%- include('./include/footer.ejs') %>

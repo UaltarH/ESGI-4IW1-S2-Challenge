@@ -1,5 +1,5 @@
 import {Api} from "@/composables/api/routesApi.ts";
-import { createUser } from '@/dto/user.dto';
+import { createUser, User } from '@/dto/user.dto';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -27,34 +27,17 @@ export const UserService = () => {
     const updateUser = async (id: string, data: any, handler: Function) => {
         const token = localStorage.getItem('auth_token');
         if (token === null) {
-            return handler(401);
+            handler(new Response(null, { status: 401 }));
         }
-    
-        try {
-            const response = await fetch(baseUrl + Api.user + `${id}`, {
-                method: "PATCH",
-                credentials: 'include',
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify(data),
-            });
-            
-            if (!response.ok) {
-                const errorText = await response.text();
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    throw errorJson;
-                } catch (err) {
-                    throw errorText;
-                }
-            }
-    
-            return handler(response);
-        } catch (error) {
-            throw error;
-        }
+        await fetch(baseUrl + Api.user + `${id}`, {
+            method: "PATCH",
+            credentials: 'include',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(data),
+        }).then(res => handler(res));
     }    
     const getUsers = async (handler:Function) => {
         const token = localStorage.getItem('auth_token');

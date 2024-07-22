@@ -29,7 +29,7 @@ async function createNotification(role, type, product, getModels) {
     for (const user of users) {
         await MongoNotification.create({
             userId: user.id,
-            roleUser: user.role,
+            roleUser: role,
             typeNotification: type,
             message: messages[role][type],
             read: false,

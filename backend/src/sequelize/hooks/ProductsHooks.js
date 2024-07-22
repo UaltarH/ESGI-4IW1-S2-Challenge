@@ -50,8 +50,8 @@ const afterUpdateHook = (models) => async (product, options) => {
 
     console.log(`MongoProduct updated: ${mongoProduct}`);
 
-    // notifications
-    if (oldProduct.stock === 0 && product.stock > 0) {
+    // notifications    
+    if (oldProduct.stock <= 0 && product.stock > 0) {
         await createNotification('user', 'restockProduct', product, () => models);
     }
     if (oldProduct.price !== product.price) {

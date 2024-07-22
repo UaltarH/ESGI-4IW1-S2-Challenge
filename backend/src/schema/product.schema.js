@@ -1,7 +1,7 @@
 const { z } = require("zod");
 const { invalidStringMessage } = require("./formMessages");
 
-const productModifySchema = z.object({
+const productSchema = z.object({
   name: z.string({ invalid_type_error: invalidStringMessage })
     .min(1, { message: "Le nom est requis" }).optional(),
 
@@ -24,4 +24,4 @@ const productModifySchema = z.object({
   imagePath: z.string({ invalid_type_error: invalidStringMessage }).optional(),
 });
 
-module.exports = productModifySchema;
+module.exports = productSchema;

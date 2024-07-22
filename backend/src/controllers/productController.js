@@ -65,7 +65,7 @@ class productController {
     // }
 
     static async getMongoProducts(req, res) {
-        const limit = parseInt(req.query.limit) || 9;
+        const limit = parseInt(req.query.limit) || 0;
         const skip = parseInt(req.query.skip) || 0;
         const maxPrice = parseFloat(req.query.maxPrice);
         const categories = req.query.categories ? req.query.categories.split(',') : [];

@@ -1,32 +1,32 @@
 <template>
-  <div class="p-6 bg-gray-50 min-h-screen">
-    <h1 class="text-3xl font-bold mb-6 text-center text-gray-800">Gestion des stocks</h1>
-    <div class="max-w-4xl mx-auto bg-white p-6 shadow-lg rounded-lg">
+  <div class="p-6 min-h-screen transition duration-200 ease-in-out">
+    <h1 class="text-3xl font-bold mb-6 text-center dark:text-white">Gestion des stocks</h1>
+    <div class="max-w-4xl mx-auto bg-secondary-light dark:bg-primary-light p-6 shadow-lg rounded-lg">
       <input 
         v-model="searchQuery" 
         placeholder="Rechercher un produit..." 
-        class="w-full p-3 mb-6 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+        class="w-full p-3 mb-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
         @input="filterProducts"
       />
 
       <ul class="space-y-4">
-        <li v-for="product in filteredProducts" :key="product.postgresId" class="bg-gray-100 p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out">
+        <li v-for="product in filteredProducts" :key="product.postgresId" class="bg-secondary-light dark:bg-dark-blue p-4 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out">
           <div>
-            <h2 class="text-xl font-semibold text-gray-800">{{ product.name }}</h2>
+            <h2 class="text-xl font-semibold dark:text-white">{{ product.name }}</h2>
             <div class="mt-2">
-              <p class="text-gray-600">Stock: 
+              <p>Stock: 
                 <input 
                   type="number" 
                   v-model="product.stock" 
-                  class="w-24 p-2 ml-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                  class="w-24 p-2 ml-2 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
                   @blur="updateProductField(product.postgresId, 'stock', product.stock)"
                 />
               </p>
-              <p class="text-gray-600 mt-1">Seuil d'alerte: 
+              <p class="mt-1">Seuil d'alerte: 
                 <input 
                   type="number" 
                   v-model="product.threshold" 
-                  class="w-24 p-2 ml-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                  class="w-24 p-2 ml-2 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
                   @blur="updateProductField(product.postgresId, 'threshold', product.threshold)"
                 />
               </p>
@@ -37,23 +37,23 @@
 
       <Pagination v-slot="{ page }" v-model:page="currentPage" :total="maxProducts" :sibling-count="1" show-edges :default-page="1" class="flex justify-center mt-8">
         <PaginationList v-slot="{ items }" class="flex items-center gap-1">
-          <PaginationFirst @click="goToPage(1)" />
-          <PaginationPrev @click="goToPage(page - 1)" />
+          <PaginationFirst @click="goToPage(1)" class="text-black"/>
+          <PaginationPrev @click="goToPage(page - 1)" class="text-black"/>
           <template v-for="(item, index) in items" :key="index">
             <PaginationListItem v-if="item.type === 'page'" :value="item.value" as-child>
-              <Button class="w-10 h-10 p-0 rounded-full bg-primary text-white hover:bg-primary-light transition duration-150 ease-in-out" :variant="item.value === page ? 'default' : 'outline'" @click="goToPage(item.value)">
+              <Button class="w-10 h-10 p-0 rounded-full bg-primary hover:bg-primary-light dark:hover:bg-primary-light transition duration-150 ease-in-out" :variant="item.value === page ? 'default' : 'outline'" @click="goToPage(item.value)">
                 {{ item.value }}
               </Button>
             </PaginationListItem>
             <PaginationEllipsis v-else :key="item.type" :index="index" />
           </template>
-          <PaginationNext @click="goToPage(page + 1)" />
-          <PaginationLast @click="goToPage(Math.ceil(maxProducts / maxProductsPerPage))" />
+          <PaginationNext @click="goToPage(page + 1)" class="text-black"/>
+          <PaginationLast @click="goToPage(Math.ceil(maxProducts / maxProductsPerPage))" class="text-black"/>
         </PaginationList>
       </Pagination>
 
       <div class="mt-12">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-4">Graphique des stocks</h2>
+        <h2 class="text-2xl font-semibold text-primary-dark dark:text-white mb-4">Graphique des stocks</h2>
         <BarChart
           :data="chartData"
           index="name"
@@ -65,6 +65,7 @@
     </div>
   </div>
 </template>
+
 
 <script lang="ts" setup>
 import {

@@ -2,7 +2,7 @@ const userUpdateByUserSchema = require( "./user/updateByUser.schema");
 const userUpdateByAdminSchema = require("./user/updateByAdmin.schema");
 const userRegisterByUserSchema = require("./user/registerByUser.schema");
 const userRegisterByAdminSchema = require("./user/updateByAdmin.schema");
-const productModifySchema = require("./product.modifySchema");
+const productSchema = require("./product.schema");
 const updateCartUserSchema = require("./cart/updateCartUser.schema.js");
 const updateCartByUserSchema = require("./cart/updateCartByUser.schema.js");
 const updateCartByGuestSchema = require("./cart/updateCartByGuest.schema.js");
@@ -14,7 +14,7 @@ module.exports = {
     userUpdateByAdminSchema,
     userRegisterByUserSchema,
     userRegisterByAdminSchema,
-    productModifySchema,
+    productSchema,
     updateCartUserSchema,
     updateCartByUserSchema,
     updateCartByGuestSchema,

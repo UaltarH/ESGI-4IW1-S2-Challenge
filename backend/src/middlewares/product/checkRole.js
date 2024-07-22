@@ -4,7 +4,7 @@ const { User } = require('../../sequelize/models/');
 const bcrypt = require("bcryptjs");
 const validate = require("./../validate");
 const role = require("../../dto/role.dto");
-const { productModifySchema } = require("../../schema/");
+const { productSchema } = require("../../schema/");
 
 const checkRole = () => async (req, res, next) => {
     const header = req.headers.Authorization ?? req.headers.authorization;
@@ -30,10 +30,13 @@ const checkRole = () => async (req, res, next) => {
                 // admin
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
-                        // if (req.method === 'POST')
-                            // validate(userRegisterAdminSchema);
+                        if (req.method === 'POST')
+                            return validate(productSchema)(req, res, (err) => {
+                                if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
+                                next();
+                            });
                         if (req.method === 'PUT')
-                            return validate(productModifySchema)(req, res, (err) => {
+                            return validate(productSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
                                 next();
                             });

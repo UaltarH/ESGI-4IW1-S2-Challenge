@@ -9,6 +9,7 @@
             :canDeleteAll="false"
             @visualize-item="handleVisualize"
             @edit-item="handleEdit"
+            @create-item="handleCreate"
             @delete-item="handleDelete"
             @delete-multiple-items="handleDeleteMultiple"
         ></CustomizableTable>
@@ -38,14 +39,20 @@
           @closeVisualizer="onCloseVisualizer"
         ></visualizer>  
 
-      <Dialog v-model:open="isModalVisible">
+      <Dialog v-model:open="isEditModalVisible">
           <ProductEditModale
             :model="selectedItem"
             :errors="errors"
-            @close="isModalVisible = false"
+            @close="isEditModalVisible = false"
             @save="handleSave"
           />
       </Dialog>
+      <Dialog v-model:open="isCreateModalVisible">
+          <ProductCreateModale
+            @close="onCloseCreate"
+          />
+      </Dialog>
+
       <confirm-modal
           v-if="openModal"
           :data="selectedItem"
@@ -70,16 +77,17 @@
   </template>
   
   <script lang="ts" setup>
-  import { reactive, ref, onMounted, Ref, watch } from 'vue';
+  import { reactive, ref, onMounted, Ref } from 'vue';
   import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
   import { ProductService } from '@/composables/api/products.service.ts';
   import { mongoProduct } from '@/dto/MongoProduct.dto';
   import ProductEditModale from '@/pages/admin/products/productsEditModale.vue';
   import { Dialog } from '@/components/ui/dialog'; 
+  import ProductCreateModale from '@/pages/admin/products/productCreateModale.vue';
   import ConfirmModal from '@/components/ConfirmModal.vue';
   import visualizer from '@/components/common/visualizer.vue';
   
-  const { getAllMongoProducts, updateProduct, deleteProduct, deleteMultiplesProducts } = ProductService();
+  const { getAllMongoProducts, updateProduct, deleteProduct, deleteMultiplesProducts, createProduct } = ProductService();
   
   const openModal = ref<boolean>(false);
   const openModalMultiple = ref<boolean>(false);
@@ -102,7 +110,8 @@
     numberOfItemsPerPage: [5, 10, 15, 20],
   });
   
-  const isModalVisible = ref(false);
+  const isEditModalVisible = ref(false);
+  const isCreateModalVisible = ref(false);
   const selectedItem = ref<mongoProduct | null>(null);
   const selectedItems = ref<mongoProduct[] | null>(null);
 
@@ -117,18 +126,18 @@
     delete itemCopy.createdAt;
     delete itemCopy.updatedAt;
     selectedItem.value = { ...itemCopy };
-    isModalVisible.value = true;
+    isEditModalVisible.value = true;
   }
   
   function handleSave(item: mongoProduct) {
     errors.value = {};
     const itemCopy = { ...item };
-    const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
+    const itemCopyWithStringValues = convertValues(itemCopy);
 
     updateProduct(item.postgresId, itemCopyWithStringValues)
     .then(() => {
       refreshProducts();
-      isModalVisible.value = false;
+      isEditModalVisible.value = false;
     })
     .catch(error => {
       const parsedErrors = JSON.parse(error);
@@ -145,15 +154,20 @@
     });
   }
   
-  const convertValuesToStrings = (obj: Record<string, any>): Record<string, string> => {
+  const convertValues = (obj: Record<string, any>): Record<string, string> => {
       const result: Record<string, string> = {};
       for (const key in obj) {
-          if (obj.hasOwnProperty(key)) {
+          if (obj.hasOwnProperty(key) && key !== 'threshold') {
               result[key] = String(obj[key]);
           }
       }
       return result;
   };
+
+  function onCloseCreate() {
+    isCreateModalVisible.value = false
+    refreshProducts()
+  }
   
   function handleDelete(item: mongoProduct) {
     selectedItem.value = item
@@ -163,6 +177,10 @@
   function handleDeleteMultiple(items: mongoProduct[]) {
     selectedItems.value = items
     openModalMultiple.value = true
+  }
+  
+  function handleCreate() {
+    isCreateModalVisible.value = true
   }
   
   function deleteItem(item: mongoProduct) {

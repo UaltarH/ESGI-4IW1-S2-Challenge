@@ -5,6 +5,12 @@ module.exports = {
     },
     url: process.env.DATABASE_URL,
   },
+  production: {
+    define: {
+      freezeTableName: true, // N'ajoute pas de 's' à la fin des noms de table
+    },
+    url: process.env.DATABASE_URL,
+  },
   test: {
     define: {
       freezeTableName: true,
@@ -12,3 +18,4 @@ module.exports = {
     url: process.env.TEST_DATABASE_URL, // URL de la base de données de test
   },
 }
+

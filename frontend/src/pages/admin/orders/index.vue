@@ -18,7 +18,7 @@
           v-if="orderVisualizer != undefined"
           :title="'Commande'"
           :data="orderVisualizer"
-          :buttons="['close']"
+          :buttons="['close', 'invoice']"
           :fields="[
             'orderNumber', 
             'date', 
@@ -56,6 +56,7 @@
             'shipping.country': 'Pays',
           }"
           @closeVisualizer="onCloseVisualizer"
+          @createFacture="onCreateFacture"
         />
 
         <p v-if="isGenerating">Génération en cours...</p>

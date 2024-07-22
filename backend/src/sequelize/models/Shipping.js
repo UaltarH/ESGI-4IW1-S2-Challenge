@@ -20,8 +20,8 @@ module.exports = function (sequelize, DataTypes) {
                 allowNull: false,
             },
             trackingNumber: {
-                type: DataTypes.STRING,
-                allowNull: false,
+                type: DataTypes.INTEGER,
+                allowNull: true,
             },
             address: {
                 type: DataTypes.STRING,

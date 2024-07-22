@@ -2,25 +2,28 @@
 import { defineStore, acceptHMRUpdate } from 'pinia'
 import { useAuth } from '@/composables/api/useAuth'
 import { computed, ref } from "vue";
-import Cookies from 'js-cookie';
 import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useRouter } from "vue-router";
 import { useNotificationStore} from "@/stores/notification.ts";
+import {useCartStore} from "@/stores/cart.ts";
 
 const { loginUser } = useAuth();
 
 export const useUserStore = defineStore(('user'), () => {
-    const token = ref(Cookies.get('auth_token'));
+    const token = ref(localStorage.getItem('auth_token'));
     const user = computed(() => {
-        if(token.value === undefined) {
+        if(token.value === null) {
             return {id: '', role: ''};
         }
         const data:JwtPayload & {id:string, role:string} = jwtDecode(token.value);
         return {id: data.id, role: data.role};
     });
     function logout() {
-        Cookies.remove('auth_token');
-        token.value = undefined;
+        const cartStore = useCartStore();
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('cartId');
+        token.value = null;
+        cartStore.$reset();
         // we could do other stuff like redirecting the user
         const router = useRouter();
         router.push({name: 'home'}).then(() => {
@@ -35,13 +38,16 @@ export const useUserStore = defineStore(('user'), () => {
         const { email, password } = param;
         const res:Response = await loginUser({ email, password });
         if(res.status === 200) {
-            const cookieToken = Cookies.get('auth_token');
-            if(cookieToken === undefined) {
-                handler(500);
-                return;
-            }
-            token.value = cookieToken;
-            handler(res.status);
+            res.json().then((data) => {
+                if(data.token) {
+                    token.value = data.token;
+                    localStorage.setItem('auth_token', data.token);
+                    handler(res.status);
+                }
+                else {
+                    handler(500);
+                }
+            });
         } else {
             handler(res.status);
         }

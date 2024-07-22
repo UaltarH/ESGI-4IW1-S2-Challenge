@@ -1,11 +1,23 @@
-const userModifyUserSchema = require( "./user.modifyUserSchema");
-const userModifyAdminSchema = require("./user.modifyAdminSchema");
-const userRegisterUserSchema = require("./user.registerUserSchema");
-const userRegisterAdminSchema = require("./user.registerAdminSchema");
+const userUpdateByUserSchema = require( "./user/updateByUser.schema");
+const userUpdateByAdminSchema = require("./user/updateByAdmin.schema");
+const userRegisterByUserSchema = require("./user/registerByUser.schema");
+const userRegisterByAdminSchema = require("./user/updateByAdmin.schema");
+const productModifySchema = require("./product.modifySchema");
+const updateCartUserSchema = require("./cart/updateCartUser.schema.js");
+const updateCartByUserSchema = require("./cart/updateCartByUser.schema.js");
+const updateCartByGuestSchema = require("./cart/updateCartByGuest.schema.js");
+const createCartByUserSchema = require("./cart/createCartByUser.schema.js");
+const createCartByGuestSchema = require("./cart/createCartByGuest.schema.js");
 
 module.exports = {
-    userModifyUserSchema,
-    userModifyAdminSchema,
-    userRegisterUserSchema,
-    userRegisterAdminSchema,
+    userUpdateByUserSchema,
+    userUpdateByAdminSchema,
+    userRegisterByUserSchema,
+    userRegisterByAdminSchema,
+    productModifySchema,
+    updateCartUserSchema,
+    updateCartByUserSchema,
+    updateCartByGuestSchema,
+    createCartByUserSchema,
+    createCartByGuestSchema,
 };

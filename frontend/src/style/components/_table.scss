@@ -1,0 +1,40 @@
+@layer components {
+  .custom-table {
+    @apply  w-full min-w-full overflow-hidden
+    border-separate border-spacing-0 border border-gray-300 dark:border-gray-950;
+    thead th, tbody tr td {
+      @apply p-2;
+    }
+    th:not(:last-child), td:not(:last-child) {
+      @apply border-r border-gray-200 dark:border-gray-900;
+    }
+    thead>tr>th,
+    thead>tr:not(:last-child)>td,
+    tbody>tr:not(:last-child)>th,
+    tbody>tr>td,
+    tfoot>tr:not(:last-child)>th,
+    tfoot>tr:not(:last-child)>td,
+    tr:not(:last-child)>td,
+    tr:not(:last-child)>th,
+    thead:not(:last-child),
+    tbody:not(:last-child),
+    tfoot:not(:last-child) {
+      @apply border-b border-gray-200 dark:border-gray-900;
+    }
+    thead {
+      @apply bg-primary-light;
+    }
+    tbody tr {
+      @apply bg-white dark:bg-dark-blue;
+    }
+    tbody tr:nth-child(even) {
+      @apply bg-gray-100 dark:bg-dark-blue-dark;
+    }
+    tfoot {
+      @apply bg-gray-300 dark:bg-dark-blue-dark;
+    }
+    select {
+      @apply bg-white dark:bg-dark-blue;
+    }
+  }
+}

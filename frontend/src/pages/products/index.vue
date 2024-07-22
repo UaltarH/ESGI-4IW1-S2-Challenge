@@ -35,12 +35,13 @@
     <!-- Products Section -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
       <div v-for="product in products">
-        <RouterLink :to="`/product/${product._id}`">
+        <RouterLink :to="`/product/${product._id}`" :aria-label="product.name">
           <ProductCard              
             :image="getImageUrl(product)"
             :name="product.name"
             :description="product.description"
             :price="product.price"
+            :inStock="product.stock > 0"
           />
         </RouterLink>
       </div>

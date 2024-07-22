@@ -1,9 +1,9 @@
 export const Api = {
   deleteUser: "/user/delete",
   user: "/users/",
-  getRoles: "/users/roles",
   register: "/users",
   login: "/login",
+  verify: "/verify/",
   search: "/search",
   category: "/categories",
   getMockRoles: "/mock/roles",
@@ -11,4 +11,10 @@ export const Api = {
   products: "/products",
   mongoProducts: "/mongoProducts",
   orders: "/orders",
+  order: "/order",
+  cart: "/carts",
+  dashboard: "/dashboard",
+  cartByUser: "/carts/user/",
+  userPref: '/userPref',
+  notification: '/notif',
 };

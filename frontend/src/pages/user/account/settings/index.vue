@@ -7,9 +7,70 @@
       <h1>Mes paramètres</h1>
       <AccountSideMenu></AccountSideMenu>
     </div>
+    <div class="flex-1 px-8">
+      <div class="flex flex-col space-y-8 mt-5 items-center lg:mt-O lg:items-start">
+        <h2 class="text-2xl font-bold mb-6">Préférences de notifications</h2>
+        <div v-if="userPref" class="space-y-4 w-[400px]">
+          <div v-for="(value, key) in userPref" :key="key" class="flex items-center justify-between">
+            <label :for="key" class="text-sm font-medium text-gray-700">
+              {{ getPreferenceLabel(key) }}
+            </label>
+            <Switch  v-model:checked="userPref[key]" :id="key" @update:checked="updatePreference(key)" />
+          </div>
+        </div>
+        <div v-else class="text-gray-500">Chargement des préférences...</div>
+      </div>
+    </div>
   </div>
 </template>
-<script lang="ts" setup>
 
+<script lang="ts" setup>
+import { ref, onMounted } from 'vue';
 import AccountSideMenu from "@/components/AccountSideMenu.vue";
+import { useUserStore } from "@/stores/user.ts";
+import { UserPrefService } from "@/composables/api/userPref/userPref.service";
+import { Switch } from '@/components/ui/switch';
+import { UpdateUserPref as UpdateUserPrefType } from '@/composables/api/userPref/dto/inputRequest/updateUserPref.dto';
+import { useNotificationStore } from "@/stores/notification.ts";
+const notificationStore = useNotificationStore();
+
+const userStore = useUserStore();
+const userId = userStore.user.id;
+const { getUserPref, updateUserPref } = UserPrefService();
+
+const userPref = ref<UpdateUserPrefType | null>(null);
+
+onMounted(async () => {
+  try {
+    const { userPref: fetchedPref } = await getUserPref(userId);
+    userPref.value = {
+      newProduct: fetchedPref.newProduct,
+      restockProduct: fetchedPref.restockProduct,
+      priceChange: fetchedPref.priceChange
+    };
+  } catch (error) {
+    notificationStore.add({ message: 'Erreur lors de la récupération des préférences', timeout: 3000, type: 'error' });
+  }
+});
+
+const updatePreference = async (key: keyof UpdateUserPrefType) => {
+  if (!userPref.value) return;
+
+  try {
+    await updateUserPref(userId, { [key]: userPref.value[key] });
+    notificationStore.add({ message: 'Préférence mise à jour', timeout: 3000, type: 'success' });
+  } catch (error) {
+    notificationStore.add({ message: 'Erreur lors de la mise à jour de la préférence', timeout: 3000, type: 'error' });
+    userPref.value[key] = !userPref.value[key];
+  }
+};
+
+const getPreferenceLabel = (key: string): string => {
+  const labels: Record<string, string> = {
+    newProduct: 'Nouveaux produits',
+    restockProduct: 'Réapprovisionnement de produits',
+    priceChange: 'Changements de prix'
+  };
+  return labels[key] || key;
+};
 </script>

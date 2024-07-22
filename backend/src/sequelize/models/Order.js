@@ -19,8 +19,8 @@ module.exports = function (sequelize, DataTypes) {
                 primaryKey: true,
                 allowNull: false,
             },
-            totalPrice: {
-                type: DataTypes.FLOAT,
+            orderNumber: {
+                type: DataTypes.STRING,
                 allowNull: false,
             },
             date: {

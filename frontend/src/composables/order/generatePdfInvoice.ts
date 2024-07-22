@@ -2,7 +2,7 @@ import { ref } from 'vue';
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { mongoOrder } from '@/dto/MongoOrder.dto';
-import { OrdersService } from '@/composables/api/orders.service.ts';
+import { OrdersService } from '@/composables/api/orders/orders.service';
 
 
 export function usePdfGenerator() {

@@ -9,39 +9,108 @@
           :canDeleteAll="false"
           @visualize-item="handleVisualize"
           @edit-item="handleEdit"
+          @create-item="handleCreate"
           @delete-item="handleDelete"
-          @delete-multiple-items="handleMultipleDelete"
+          @delete-multiple-items="handleDeleteMultiple"
       ></CustomizableTable>
 
-      <visualizer class="mt-4" v-if="userVisualizer != undefined" :title="'Produit'" :data="userVisualizer" :buttons="['close']" @closeVisualizer="onCloseVisualizer"></visualizer>
+      <visualizer
+        class="mt-4"
+        v-if="userVisualizer != undefined"
+        :title="'Utilisateur'"
+        :data="userVisualizer"
+        :buttons="['close']"
+        :fields="['id', 'email', 'firstname', 'lastname', 'password', 'phone', 'address','city', 'country', 'birthdate',  'role']"
+        :labels="{
+          id: 'Identifiant',
+          phone: 'Numéro de Téléphone',
+          password: 'Mot de Passe',
+          address: 'Adresse',
+          birthdate: 'Date de Naissance',
+          city: 'Ville',
+          country: 'Pays',
+          email: 'Adresse Email',
+          firstname: 'Prénom',
+          lastname: 'Nom de Famille',
+          role: 'Rôle'
+        }"        
+        :valueTransforms="{ password: '******' }"
+        @closeVisualizer="onCloseVisualizer"
+      ></visualizer>
 
-    <Dialog v-model:open="isModalVisible">
-        <GenericEditModal
-          :model="selectedItem"
-          @close="isModalVisible = false"
-          @save="handleSave"
-        />
-    </Dialog>
+      <Dialog v-model:open="isEditModalVisible">
+          <GenericEditModal
+            :model="selectedItem"
+            :errors="errors"
+            @close="isEditModalVisible = false"
+            @save="handleSave"
+          />
+      </Dialog>
+
+      <Dialog v-model:open="isCreateModalVisible">
+          <UserCreateModal
+            :errors="errors"
+            @close="onCloseCreate"
+            @save="createItem"
+          />
+      </Dialog>
+      <confirm-modal
+          v-if="openModal"
+          :data="selectedItem"
+          :title="'Confirmer la suppression de ' + selectedItem?.email + ' ?'"
+          size="sm"
+          @confirm="openModal = false"
+          @close="openModal = false"
+          :action="deleteItem"
+      >
+      </confirm-modal>
+      <confirm-modal
+          v-if="openModalMultiple"
+          :data="selectedItems"
+          :title="'Confirmer la suppression de ' + selectedItems?.length + ' utilisateurs ?'"
+          size="sm"
+          @confirm="openModalMultiple = false"
+          @close="openModalMultiple = false"
+          :action="deleteItems"
+      >
+      </confirm-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { reactive, ref, onMounted, Ref } from 'vue';
 import CustomizableTable from '@/components/common/custom-table/customizable-table.vue';
-import { useUserManagement } from '@/composables/api/useUserManagement';
+import { UserService } from '@/composables/api/user.service.ts';
 import { User } from '@/dto/user.dto';
 import GenericEditModal from '@/components/common/editModale/genericEditModale.vue';
+import UserCreateModal from '@/pages/admin/users/userCreateModale.vue';
 import { Dialog } from '@/components/ui/dialog'; 
+import ConfirmModal from '@/components/ConfirmModal.vue';
 import visualizer from '@/components/common/visualizer.vue';
+import {useRouter} from "vue-router";
+import {useNotificationStore} from "@/stores/notification.ts";
 
+const { getUsers, updateUser, deleteUser, deleteBatchUsers, createUser } = UserService();
 
-const { getUsers, updateUser, deleteUser, deleteMultiplesUsers } = useUserManagement();
+const router = useRouter();
+const notificationStore = useNotificationStore();
+
+const openModal = ref<boolean>(false);
+const openModalMultiple = ref<boolean>(false);
 
 const datas = ref<User[]>([]);
 const userVisualizer: Ref<User | undefined> = ref<User>();
 
-const refreshUsers = () => {
-  getUsers((datas: []) => datas).then(res => datas.value = res.users);
+const refreshUsers = async () => {
+  await getUsers((datas: []) => datas).then((res:Response) => {
+    if(res.status === 200) {
+      res.json().then(data => {
+        datas.value = data.users
+      });
+    } else {
+      router.push({ path: '/403'});
+    }
+  });
 }
 
 const data = reactive({
@@ -49,14 +118,18 @@ const data = reactive({
   columns: [
     { name: 'ID', key: 'id', sort: true, typeData: 'string' },
     { name: 'Email', key: 'email', sort: true, typeData: 'string' },
-    { name: 'Téléphone', key: 'phone', sort: false, typeData: 'string' },
+    { name: 'Rôle', key: 'role', sort: true, typeData: 'string' },
   ],
   actions: { edit: true, delete: true, visualize: true },
   numberOfItemsPerPage: [5, 10, 15, 20],
 });
 
-const isModalVisible = ref(false);
-const selectedItem = ref<Record<string, any> | null>(null);
+const isEditModalVisible = ref(false);
+const isCreateModalVisible = ref(false);
+const selectedItem = ref<User | null>(null);
+const selectedItems = ref<User[] | null>(null);
+
+const errors: Ref<{ [key: string]: string }> = ref({});
 
 function handleVisualize(item: User) {
   userVisualizer.value = item;
@@ -67,18 +140,54 @@ function handleEdit(item: User) {
   delete itemCopy.createdAt;
   delete itemCopy.updatedAt;  
   selectedItem.value = { ...itemCopy };
-  isModalVisible.value = true;
+  isEditModalVisible.value = true;
 }
 
-function handleSave(item: User) {
-  const itemCopy = { ...item } as Partial<typeof item>;
+async function handleSave(item: User) {
+  errors.value = {};
+  const itemCopy = {...item} as Partial<typeof item>;
   delete itemCopy.id;
   const itemCopyWithStringValues = convertValuesToStrings(itemCopy);
 
-  updateUser(item.id, data => {
+  await updateUser(item.id, itemCopyWithStringValues, (res:Response) => {
+    if(res.status === 204) {
+      refreshUsers();
+      notificationStore.add({
+        message: "Les données de l'utilisateur ont été sauvegardées.",
+        type: "success",
+        timeout: 3000
+      });
+    } else if(res.status === 401) {
+      notificationStore.add({
+        message: "Not authorized",
+        type: "error",
+        timeout: 3000
+      });
+    }
+    else {
+      notificationStore.add({
+        message: "Impossible de sauvegarder les données de l'utilisateur.",
+        type: "error",
+        timeout: 3000
+      });
+    }
+  })
+  .then(() => {
     refreshUsers();
-  }, itemCopyWithStringValues).catch(error => {
-    console.error('Error in handleSave:', error);
+    isModalVisible.value = false;
+  })
+  .catch(error => {
+    const parsedErrors = JSON.parse(error);
+    if (parsedErrors.errors && Array.isArray(parsedErrors.errors)) {
+      parsedErrors.errors.forEach((errItem: { path: string[], message: string }) => {
+        if (errItem.path && errItem.path.length > 0) {
+          const key = errItem.path[0];
+          errors.value[key] = errItem.message;
+        }
+      });
+    } else {
+      console.error('Unexpected error format:', parsedErrors);
+    }
   });
 }
 
@@ -91,18 +200,75 @@ function handleSave(item: User) {
       }
       return result;
   };
-
-
+  
 function handleDelete(item: User) {
-  deleteUser(item.id);
-  refreshUsers();
+  selectedItem.value = item
+  openModal.value = true
 }
 
-function handleMultipleDelete(items: User[]) {
-  deleteMultiplesUsers(items.map(item => item.id).join(','))
+function handleCreate() {
+  isCreateModalVisible.value = true
+}
+
+function handleDeleteMultiple(items: User[]) {
+  selectedItems.value = items
+  openModalMultiple.value = true
+}
+
+function deleteItem(item: User) {
+  deleteUser(item.id)
+  .then(() => refreshUsers())
+  .catch(() => {
+      notificationStore.add({
+          message: 'Impossible de supprimer un administrateur',
+          timeout: 3000,
+          type: 'error'
+      });
+  });
+  openModal.value = false
+}
+
+function onCloseCreate() {
+  isCreateModalVisible.value = false
+  refreshUsers()
+}
+
+function createItem(item: User) {
+  errors.value = {};
+  createUser(item)
   .then(() => {
     refreshUsers();
+    isCreateModalVisible.value = false
   })
+  .catch(error => {
+    const parsedErrors = JSON.parse(error);
+    if (parsedErrors.errors && Array.isArray(parsedErrors.errors)) {
+      parsedErrors.errors.forEach((errItem: { path: string[], message: string }) => {
+        if (errItem.path && errItem.path.length > 0) {
+          const key = errItem.path[0];
+          errors.value[key] = errItem.message;
+        }
+      });
+    } else {
+      console.error('Unexpected error format:', parsedErrors);
+    }
+  });
+}
+
+function deleteItems(items: User[]) {
+  deleteBatchUsers(items)
+    .then(() => {
+      refreshUsers();
+      openModalMultiple.value = false;
+    })
+    .catch(() => {
+      notificationStore.add({
+        message: 'Impossible de supprimer un administrateur',
+        timeout: 3000,
+        type: 'error'
+      });
+      openModalMultiple.value = false;
+    });
 }
 
 function onCloseVisualizer() {

@@ -36,12 +36,12 @@ const checkRole = () => async (req, res, next) => {
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
                         if (req.method === 'POST')
-                            return validate(userRegisterAdminSchema)(req, res, (err) => {
+                            return validate(userRegisterByAdminSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
                                 next();
                             });
                         if (req.method === 'PATCH')
-                            return validate(userModifyAdminSchema)(req, res, (err) => {
+                            return validate(userUpdateByAdminSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
                                 next();
                             });

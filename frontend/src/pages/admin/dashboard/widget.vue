@@ -47,7 +47,7 @@ function deleteWidget() {
               variant="destructive" 
               v-if="isEditing" 
               @click="deleteWidget">
-                  Supprimé
+                  Supprimer
           </btn>
       </div>
     </div>

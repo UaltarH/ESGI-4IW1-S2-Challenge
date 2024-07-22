@@ -174,7 +174,7 @@ async function handleSave(item: User) {
   })
   .then(() => {
     refreshUsers();
-    isModalVisible.value = false;
+    isEditModalVisible.value = false;
   })
   .catch(error => {
     const parsedErrors = JSON.parse(error);

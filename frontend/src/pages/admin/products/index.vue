@@ -20,19 +20,21 @@
           :data="productVisualizer"
           :buttons="['close']"
           :fields="[
-            'postgresId', 
             'name', 
             'description', 
             'price', 
             'stock', 
+            'threshold',
+            'imagePath',
             'categoryName', 
           ]"
           :labels="{
-            postgresId: 'Identifiant Postgres',
             name: 'Nom',
             description: 'Description',
             price: 'Prix',
             stock: 'Stock',
+            threshold: 'Seuil',
+            imagePath: 'Image',
             categoryName: 'Nom de la Catégorie',
           }"       
           @closeVisualizer="onCloseVisualizer"
@@ -94,8 +96,8 @@
   const data = reactive({
     datas: datas,
     columns: [
-      { name: 'ID', key: 'postgresId', sort: true, typeData: 'string' },
       { name: 'Nom', key: 'name', sort: true, typeData: 'string' },
+      { name: 'Stock', key: 'stock', sort: true, typeData: 'integer' },
       { name: 'Quantité', key: 'categoryName', sort: false, typeData: 'string' },
     ],
     actions: { edit: true, delete: true, visualize: true },

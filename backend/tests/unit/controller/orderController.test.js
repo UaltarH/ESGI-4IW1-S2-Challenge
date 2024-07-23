@@ -120,7 +120,7 @@ describe('orderController', () => {
       await orderController.createPdfOrder(req, res);
 
       expect(MongoOrder.findById).toHaveBeenCalledWith('123');
-      expect(res.render).toHaveBeenCalledWith('pdf/invoice', mockOrder);
+      expect(res.render).toHaveBeenCalledWith('invoice', mockOrder);
     });
 
     it('should return 404 if order not found', async () => {

@@ -435,28 +435,6 @@ async function editUser(newDataForUpdate: Record<string, any>) {
   }
 }
 
-function deleteUserFunc() {
-  if (!selectedUser.value) {
-    return;
-  }
-  deleteUser(selectedUser.value.id)
-    .then(() => {
-      refreshUsers();
-      notificationStore.add({
-        message: 'L\'utilisateur a été supprimé',
-        timeout: 3000,
-        type: 'success'
-      });
-    })
-    .catch(() => {
-      notificationStore.add({
-        message: 'Impossible de supprimer un administrateur',
-        timeout: 3000,
-        type: 'error'
-      });
-    });
-  openModal.value = false
-}
 function deleteItem(item: User) {
   deleteUser(item.id)
   .then(() => {
@@ -497,29 +475,6 @@ function deleteItems(items: User[]) {
       openModalMultiple.value = false;
     });
 }
-
-// function deleteUsers() {
-//   if (!selectedUsers.value) {
-//     return;
-//   }
-//   deleteBatchUsers(selectedUsers.value)
-//     .then(() => {
-//       refreshUsers();
-//       notificationStore.add({
-//         message: 'Les utilisateurs ont été supprimés',
-//         timeout: 3000,
-//         type: 'success'
-//       });
-//     })
-//     .catch(() => {
-//       notificationStore.add({
-//         message: 'Impossible de supprimer un administrateur',
-//         timeout: 3000,
-//         type: 'error'
-//       });
-//     });
-//   openModalMultiple.value = false;
-// }
 
 async function createUserFunc(item: User) {
   let body = { 

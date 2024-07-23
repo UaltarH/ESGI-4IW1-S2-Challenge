@@ -19,7 +19,7 @@
                   type="number" 
                   v-model="product.stock" 
                   class="w-24 p-2 ml-2 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                  @blur="updateProductField(product.postgresId, 'stock', product.stock)"
+                  @blur="updateProductField(product.postgresId, 'stock', product.stock, product.initialStock)"
                 />
               </p>
               <p class="mt-1">Seuil d'alerte: 
@@ -27,7 +27,7 @@
                   type="number" 
                   v-model="product.threshold" 
                   class="w-24 p-2 ml-2 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
-                  @blur="updateProductField(product.postgresId, 'threshold', product.threshold)"
+                  @blur="updateProductField(product.postgresId, 'threshold', product.threshold, product.initialThreshold)"
                 />
               </p>
             </div>
@@ -65,7 +65,6 @@
     </div>
   </div>
 </template>
-
 
 <script lang="ts" setup>
 import {
@@ -114,7 +113,11 @@ const fetchProducts = async () => {
       limit: maxProductsPerPage
     });
     
-    products.value = response.products;
+    products.value = response.products.map(product => ({
+      ...product,
+      initialStock: product.stock,
+      initialThreshold: product.threshold
+    }));
     maxProducts.value = response.totalCount;
   } catch (error) {
     console.error('Error fetching products:', error);
@@ -126,18 +129,22 @@ const goToPage = (page: number) => {
   fetchProducts();
 };
 
-const updateProductField = async (id: string, field: string, value: number) => {
+const updateProductField = async (id: string, field: string, value: number, initialValue: number) => {
+  if (value === initialValue) {
+    return;
+  }
   try {
     await ProductService().updateProduct(id, { [field]: value });
     notificationStore.add({ message: 'Produit mis à jour', timeout: 3000, type: 'success' });
     const index = products.value.findIndex(p => p.postgresId === id);
+    
     if (index !== -1) {
-      products.value[index] = { ...products.value[index], [field]: value };
+      products.value[index] = { ...products.value[index], [field]: value, [`initial${capitalize(field)}`]: value };
     }
   } catch (error) {
     notificationStore.add({ message: 'Erreur lors de la mise à jour du produit', timeout: 3000, type: 'error' });
-    fetchProducts();
   }
+  fetchProducts();
 };
 
 const chartData = computed(() => {
@@ -147,5 +154,6 @@ const chartData = computed(() => {
     Seuil: product.threshold
   }));
 });
-</script>
 
+const capitalize = (s: string) => s.charAt(0).toUpperCase + s.slice(1);
+</script>

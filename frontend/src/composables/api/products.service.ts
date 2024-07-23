@@ -57,7 +57,7 @@ export const ProductService = () => {
         return await fetch(baseUrl + Api.mongoProducts + '/last').then(res => res.json());
     }
 
-    const updateProduct = async (id: string, body: Partial<Product>):Promise<{product: Product}> => {
+    const updateProduct = async (id: string, body: Partial<mongoProduct>):Promise<{product: Product}> => {
       try {       
         const token = localStorage.getItem('auth_token');
         if(token === null) throw new Error('Error while getting orders');

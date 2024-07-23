@@ -19,7 +19,7 @@ class userController {
     try {
       const existingUser = await crudService.findOne(User, { email: req.body.email });
       if (existingUser.data) {
-        return res.status(409).json(); 
+        return res.status(400).json(); 
       }
 
       const { newProduct, restockProduct, priceChange, ...fieldsForCreateUser } = req.body;
@@ -160,6 +160,7 @@ class userController {
 
   static async login(req, res) {
     let { email, password } =  req.body;
+    if (!email) return res.sendStatus(401);
     email = email.toLowerCase();
     try {
       const user = await User.findOne({ where: { email } });

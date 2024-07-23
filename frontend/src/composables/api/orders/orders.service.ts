@@ -48,11 +48,17 @@ export const OrdersService = () => {
     }
 
     const handleAfterRequestOrder = async (sessionId: string, status: string): Promise<{message: string}> => {
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while getting orders');
         const url = new URL(baseUrl + Api.orders + '/payment/' + sessionId);
         url.searchParams.append('status', status);
 
         return await fetch(url.toString(), {
-            method: 'GET',
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            }
         }).then(res => res.json());
     }
 

@@ -27,7 +27,7 @@ class orderController {
 
     static async getAllOrders(req, res, next) {
         try {
-            const order = await MongoOrder.find();
+            const order = await MongoOrder.find().sort({ date: -1 });
             res.json({ orders: order });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -42,6 +42,7 @@ class orderController {
             const skip = (page - 1) * limit;
 
             const orders = await MongoOrder.find({ 'user.userId': userId })
+                .sort({ date: -1 })
                 .skip(skip)
                 .limit(limit);
 

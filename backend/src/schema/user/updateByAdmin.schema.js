@@ -17,8 +17,8 @@ const updateByAdminSchema = z.object({
     .optional(),
 
   birthdate: z.coerce.date({ required_error: requiredMessage, invalid_type_error: invalidDateMessage })
-      .min(minDate, { message: "Vous devez avoir au maximum 120 ans" })
-      .max(maxDate, { message: "Vous devez avoir au moins 18 ans" }),
+    .min(minDate, { message: "Vous devez avoir au maximum 120 ans" })
+    .max(maxDate, { message: "Vous devez avoir au moins 18 ans" }),
 
   address: z.string({ invalid_type_error: invalidStringMessage })
     .min(5, { message: "L'adresse doit contenir au moins 5 caractères" })
@@ -43,7 +43,13 @@ const updateByAdminSchema = z.object({
 
   phone: z.string({ invalid_type_error: invalidStringMessage })
     .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" })
-    .optional()
+    .optional(),
+
+  is_verified: z.boolean().optional(),
+  newProduct: z.boolean().optional(),
+  restockProduct: z.boolean().optional(),
+  priceChange: z.boolean().optional(),
+
 });
 
 module.exports = updateByAdminSchema;

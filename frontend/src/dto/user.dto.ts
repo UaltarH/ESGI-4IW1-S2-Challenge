@@ -13,6 +13,7 @@ export interface User {
     role?: "admin" | "user" | "store_manager" | "accountant",
     updatedAt?: Date,
     zipcode: number,
+    verification_token: string,
 }
 
 export interface createUser {

@@ -11,7 +11,7 @@ export const useForm = (formSchema: Ref<FormField<any>[]>) => {
         return schema;
     }
     const getFieldValues = () => {
-        let values:{[key:string] : string|undefined|number|Date} = {};
+        let values:{[key:string] : string|undefined|number|Date|boolean} = {};
         formSchema.value.forEach((item) => {
             values[item.name] = item.value;
         });

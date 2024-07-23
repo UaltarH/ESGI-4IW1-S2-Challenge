@@ -40,7 +40,7 @@
 <script lang="ts" setup>
 import Form from "@/components/CustomForm.vue";
 import { FormField } from "@/dto/formField.dto.ts";
-import { onUnmounted, Ref, ref, watch, reactive } from "vue";
+import { onUnmounted, reactive, Ref, ref } from "vue";
 import { z } from "zod";
 import { useAuth } from "@/composables/api/useAuth.ts";
 import { formMessages } from "@/composables/formMessages";
@@ -65,20 +65,6 @@ const { signal } = controller;
 const { registerUser } = useAuth();
 const { requiredMessage, invalidStringMessage, invalidDateMessage } = formMessages();
 const notificationStore = useNotificationStore();
-
-const emits = defineEmits(['close']);
-
-const props = defineProps<{ 
-  isForAdmin?: boolean, 
-}>();
-
-const item = reactive({
-  value: props.isForAdmin ?? false 
-});
-
-watch(() => props.isForAdmin, (newVal) => {
-  item.value = newVal ?? false; 
-}, { immediate: true });
 
 const maxDate = new Date();
 maxDate.setFullYear(maxDate.getFullYear() - 18);
@@ -240,7 +226,7 @@ const formDisabled = ref(false);
 
 async function handleSubmit(schema: FormField<any>[]) {
   // build param
-  let param: { [key: string]: string | number | Date } = {};
+  let param: { [key: string]: string | number | Date | boolean } = {};
   schema.forEach((item) => {
     if (item.value !== undefined)
       param[item.name] = item.value;
@@ -251,7 +237,7 @@ async function handleSubmit(schema: FormField<any>[]) {
   await fetchRegister(param);
 }
 
-const fetchRegister = async (param: { [key: string]: string | number | Date }) => {
+const fetchRegister = async (param: { [key: string]: string | number | Date | boolean }) => {
   let body = { 
     ...param, 
     ...Object.fromEntries(Object.entries(userPreferences).map(([key, value]) => [key, value.value]))
@@ -263,23 +249,13 @@ function handleRegister(res: Response) {
   if (res.status === 201) {
     console.log("User registered");
     formLoading.value = false;
-    notificationStore.add({ message: 'Inscription réussie, un email de vérification a été envoyé. Vous avez 30 minutes pour confirmez votre inscription.', timeout: 6000, type: 'success' });
+    notificationStore.add({ message: 'Inscription réussie, un email de vérification vient de vous être envoyé', timeout: 3000, type: 'success' });
     // Ignore the warning :  formRef.value will hold an instance of <CustomForm> after the form is mounted (cf: template refs doc)
     if (formRef.value !== null) {
       formRef.value.handleReset();
     }
-    if (item.value) {
-      emits('close');
-    } else {
-      setTimeout(() => {
-        router.push({ name: 'home' });
-      }, 3000);
-    }
-  } else if (res.status === 409) {
     setTimeout(() => {
-      formLoading.value = false;
-      formDisabled.value = false;
-      notificationStore.add({ message: 'L\'adresse mail est déjà utilisée', timeout: 3000, type: 'error' });
+      router.push({ name: 'home' });
     }, 3000);
   } else {
     setTimeout(() => {

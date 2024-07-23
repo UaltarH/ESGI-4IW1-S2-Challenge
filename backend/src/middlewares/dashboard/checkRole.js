@@ -3,7 +3,7 @@ const { findByPk } = require("../../services/crudGeneric");
 const { User } = require('../../sequelize/models/');
 const validate = require("./../validate");
 const role = require("../../dto/role.dto");
-const { dashboardConfigSchema } = require("../../schema/");
+const { dashboardConfigSchema, widgetValidationSchema } = require("../../schema/");
 
 const checkRole = () => async (req, res, next) => {
     const header = req.headers.Authorization ?? req.headers.authorization;
@@ -23,7 +23,7 @@ const checkRole = () => async (req, res, next) => {
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
                         if (req.method === 'PUT')
-                            return validate(dashboardConfigSchema)(req, res, (err) => {
+                            return validate(widgetValidationSchema)(req, res, (err) => {
                                 if (err) return;
                                 next();
                             });

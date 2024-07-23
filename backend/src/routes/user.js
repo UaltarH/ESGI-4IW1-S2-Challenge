@@ -6,6 +6,7 @@ const userRouter = Router();
 
 userRouter.get("/users/:id", checkRole(), userController.getUser);
 userRouter.patch("/users/:id", checkRole(), userController.modifyUsers);
+userRouter.patch("/users/:id/password", checkRole(), userController.modifyUsers);
 userRouter.get("/users", checkRole(), userController.getUsers);
 userRouter.delete("/users/:id", checkRole(), userController.deleteUser);
 userRouter.delete("/users/", checkRole(), userController.deleteMultiplesUsers);

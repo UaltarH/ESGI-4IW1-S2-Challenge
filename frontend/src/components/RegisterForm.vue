@@ -214,7 +214,7 @@ const formSchema = ref<FormField<any>[]>([
     name: "phone",
     placeholder: "Entrez votre téléphone",
     schema: z.object({
-      phone: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+      phone: z.string({ invalid_type_error: invalidStringMessage })
         .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" })
         .optional(),
     }),

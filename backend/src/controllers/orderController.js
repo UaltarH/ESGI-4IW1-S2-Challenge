@@ -2,7 +2,7 @@ const MongoOrder = require('../mongo/models/MongoOrder');
 const { Order, Payment, Shipping, Order_status, Cart, User } = require('../sequelize/models');
 const { createStripeSession } = require('../services/stripeSession');
 const { createOrderTransac } = require('../services/createOrder');
-const { sendMail } = require("../services/sendMail");
+const { sendEmailWithTemplate } = require("../services/sendMail");
 const { cartQueue } = require('../config/queueBullConfig')
 
 
@@ -64,7 +64,7 @@ class orderController {
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.render('invoice', order);
+            res.render('pdf/invoice', order);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -131,19 +131,12 @@ class orderController {
 
                 const customer = await User.findOne({ where: { id: order.UserId }, attributes: ["email"] });
 
-                const mailOptions = {
-                    from: {
-                        name: "BoToBe Administration",
-                        address: process.env.USER_MAIL,
-                    },
-                    to: [customer.email],
-                    subject: "Confirmation de commande BoxToBe n°" + order.orderNumber,
-                    text: `Votre commande n° ${order.orderNumber} a bien été confirmée, vous pouvez suivre son avancement sur votre espace client :` +
-                        `${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/user/orders.`,
-                };
-
                 try {
-                    await sendMail(mailOptions);
+                    await sendEmailWithTemplate(
+                        customer.email,
+                        "Confirmation de commande BoxToBe n°" + order.orderNumber,
+                        { orderNumber: order.orderNumber, host: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"},
+                        "/../template/orderConfirmation.ejs");
                 } catch (error) {
                     console.error("Failed to send email controller", error);
                 }

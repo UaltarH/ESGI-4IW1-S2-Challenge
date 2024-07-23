@@ -31,6 +31,12 @@ const updateByUserSchema = z.object({
       .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
       .max(50, { message: "Le mot de passe doit contenir au maximum 50 caractères" })
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+
+  newPassword: z.string({ invalid_type_error: invalidStringMessage })
+      .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
+      .max(50, { message: "Le mot de passe doit contenir au maximum 50 caractères" })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" })
+      .optional(),
 });
 
 module.exports = updateByUserSchema;

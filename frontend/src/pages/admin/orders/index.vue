@@ -91,7 +91,6 @@
   const data = reactive({
     datas: datasTable,
     columns: [
-      { name: "Id", key: "id", sort: true, typeData: "string" },
       { name: "Commande n°", key: "orderNumber", sort: true, typeData: "string" },
       { name: "Montant", key: "amount", sort: true, typeData: "string" },
       { name: "Date", key: "date", sort: true, typeData: "date" },

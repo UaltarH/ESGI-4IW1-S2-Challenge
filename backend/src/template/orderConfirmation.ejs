@@ -1,0 +1,9 @@
+<%- include('./include/header.ejs') %>
+
+<div style="max-width: 640px; padding: 30px 15px; margin: auto;">
+    <h2>Confirmation de commande n° <%= content.orderNumber %></h2>
+    <p>Merci pour votre commande, votre numéro de commande est le n°<%= content.orderNumber %>.</p>
+    <p>Vous retrouverez le suivi de votre commande dans votre <a href="<%= content.host %>/user/orders">espace client</a></p>
+</div>
+
+<%- include('./include/footer.ejs') %>

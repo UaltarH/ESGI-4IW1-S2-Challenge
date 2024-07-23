@@ -170,7 +170,7 @@ function closeDialog(){
                     Ajouter un graphique
                 </btn>
             </DialogTrigger>
-            <DialogContentCustom @submitCreation="addWidget"></DialogContentCustom>
+            <DialogContentCustom class="text-gray-500" @submitCreation="addWidget"></DialogContentCustom>
         </Dialog>
       </div>
       <div class="grid-stack">

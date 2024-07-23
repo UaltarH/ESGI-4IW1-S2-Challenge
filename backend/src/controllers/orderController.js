@@ -144,8 +144,6 @@ class orderController {
                 });
         
                 const trackingNumber = await response.text();
-                console.log('==================================================');
-                console.log(trackingNumber);
 
                 shipping.trackingNumber = trackingNumber
                 await shipping.save();
@@ -181,8 +179,6 @@ class orderController {
             return res.status(500).json({ message: "Internal server error" });
         }
     }
-
-    // todo : create a function to call fake api laposte to get a number tracking
 }
 
 module.exports = orderController;

@@ -10,6 +10,7 @@ const {
     userUpdateByAdminSchema,
     userRegisterByUserSchema,
     userRegisterByAdminSchema,
+    checkPasswordSchema,
     loginSchema
 } = require("../../schema/");
 
@@ -63,8 +64,8 @@ const checkRole = () => async (req, res, next) => {
                     // un utilisateur non-admin ne peut modifier que certaines infos, même de son compte
                     return validate(userUpdateByUserSchema)(req, res, next);
                 } else if (req.method === 'POST') {
-                    // un utilisateur non-admin ne peut créer d'utilisateur
-                    return res.sendStatus(403);
+                    // surement pour vérifier le mdp avant la suppression de compte
+                    return validate(checkPasswordSchema)(req, res, next);
                 } else if (req.method === 'DELETE') {
                     // un utilisateur non-admin ne peut supprimer d'utilisateur
                     if(req.params.id === data.id)

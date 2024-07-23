@@ -12,6 +12,7 @@
           &times;
         </button>
       </header>
+      <slot name="content"></slot>
       <CustomForm
         ref="formRef"
         :schema="formSchema"
@@ -33,8 +34,8 @@
 <script lang="ts" setup generic="FieldSchema extends ZodObject<any>">
 
 import { FormField } from "@/dto/formField.dto.ts";
-import { ZodObject } from "zod";    
-import { Ref, ref, onMounted, PropType} from "vue";
+import { ZodObject } from "zod";
+import { Ref, ref, onMounted, PropType } from "vue";
 import CustomForm from "@/components/CustomForm.vue";
 
 

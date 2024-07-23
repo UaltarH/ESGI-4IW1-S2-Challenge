@@ -22,7 +22,7 @@
       </section>
       <section class="tile mt-5 lg:mt-0 lg:items-start flex-1 h-min">
         <h2 class="text-2xl font-bold mb-6">Sécurité</h2>
-        <button class="btn btn--primary mb-4" aria-label="changer de mot de passe" @click="showPasswordForm = true">
+        <button class="btn btn--primary mb-4" aria-label="changer de mot de passe" @click="openModal('reset')">
           Changer mon mot de passe
           <svg class="fill-white dark:fill-dark-blue" width="24" height="24" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -37,7 +37,7 @@
             </g>
           </svg>
         </button>
-        <button class="btn btn--danger mb-4" aria-label="supprimer mon compte">
+        <button class="btn btn--danger mb-4" aria-label="supprimer mon compte" @click="openModal('delete')">
           Supprimer mon compte
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="stroke-white dark:stroke-dark-blue">
             <title>Supprimer</title>
@@ -51,7 +51,26 @@
       </section>
     </div>
   </div>
-  <PasswordResetForm v-if="showPasswordForm" @close="showPasswordForm=false"/>
+  <ModaleForm
+      v-if="showPasswordForm"
+      title="Changement de mot de passe"
+      :form-schema="passwordSchema"
+      @close="showPasswordForm = false"
+      @submit="changePassword"
+  >
+
+  </ModaleForm>
+  <ModaleForm
+      v-if="showDeleteModal"
+      title="Supprimer mon compte"
+      :form-schema="deleteSchema"
+      @close="showDeleteModal = false"
+      @submit="deleteAccount"
+  >
+    <template #content>
+      <p class="text-danger mt-6">Attention, cette action est irréversible !</p>
+    </template>
+  </ModaleForm>
 </template>
 
 <script lang="ts" setup>
@@ -62,16 +81,99 @@ import { UserPrefService } from "@/composables/api/userPref/userPref.service";
 import { Switch } from '@/components/ui/switch';
 import { UpdateUserPref as UpdateUserPrefType } from '@/composables/api/userPref/dto/inputRequest/updateUserPref.dto';
 import { useNotificationStore } from "@/stores/notification.ts";
-import PasswordResetForm from "@/components/PasswordResetForm.vue";
+import ModaleForm from "@/components/common/modaleForm.vue";
+import { z } from "zod";
+import { formMessages } from "@/composables/formMessages.ts";
+import { FormField } from "@/dto/formField.dto.ts";
+import { UserService } from "@/composables/api/user.service";
+import { useRouter } from "vue-router";
 
 const notificationStore = useNotificationStore();
-
+const router = useRouter();
+const { requiredMessage, invalidStringMessage } = formMessages();
 const userStore = useUserStore();
 const userId = userStore.user.id;
 const { getUserPref, updateUserPref } = UserPrefService();
+const { checkUser, deleteUser, updateUser } = UserService();
 
 const userPref = ref<UpdateUserPrefType | null>(null);
 const showPasswordForm = ref(false);
+const showDeleteModal = ref(false);
+
+const passwordSchema: FormField[] = [
+  {
+    label: "Mot de passe actuel",
+    component: "input",
+    type: "password",
+    name: "password",
+    placeholder: "Entrez votre mot de passe",
+    schema: z.object({
+      password: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+          .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
+          .max(32, { message: "Le mot de passe doit contenir au maximum 32 caractères" })
+          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+    }),
+    col: 0,
+  },
+  {
+    label: "Nouveau mot de passe",
+    component: "input",
+    type: "password",
+    name: "newPassword",
+    placeholder: "Entrez votre mot de passe",
+    schema: z.object({
+      newPassword: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+          .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
+          .max(32, { message: "Le mot de passe doit contenir au maximum 32 caractères" })
+          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+    }),
+    col: 0,
+    differentFrom: { field: "password", errorMessage: "Le nouveau mot de passe doit être différent de l'ancien" },
+  },
+  {
+    label: "Confirmation du mot de passe",
+    component: "input",
+    type: "password",
+    name: "passwordConfirmation",
+    placeholder: "Confirmez votre mot de passe",
+    schema: z.object({
+      passwordConfirmation: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+          .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
+          .max(50, { message: "Le mot de passe doit contenir au maximum 50 caractères" })
+          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,50}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+    }),
+    col: 0,
+    dependsOn: { field: "newPassword", errorMessage: "Les mots de passe ne correspondent pas" },
+  }
+];
+const deleteSchema: FormField[] = [
+  {
+    label: "Mot de passe",
+    component: "input",
+    type: "password",
+    name: "password",
+    placeholder: "Entrez votre mot de passe",
+    schema: z.object({
+      password: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+          .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
+          .max(32, { message: "Le mot de passe doit contenir au maximum 32 caractères" })
+          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+    }),
+    col: 0,
+  },
+  {
+    label: "Confirmer la suppression",
+    component: "input",
+    type: "text",
+    name: "confirm",
+    placeholder: "Entrez 'Je souhaite supprimer mon compte' pour confirmer",
+    schema: z.object({
+      confirm: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
+          .regex(/^je souhaite supprimer mon compte$/i, { message: "Veuillez entrer 'Je souhaite supprimer mon compte' pour confirmer la suppression" }),
+    }),
+    col: 0,
+  }
+];
 
 onMounted(async () => {
   try {
@@ -106,4 +208,55 @@ const getPreferenceLabel = (key: string): string => {
   };
   return labels[key] || key;
 };
+function openModal(modal: string) {
+  if (modal === 'reset') {
+    showPasswordForm.value = true;
+    showDeleteModal.value = false;
+  } else if (modal === 'delete') {
+    showDeleteModal.value = true;
+    showPasswordForm.value = false;
+  }
+}
+async function deleteAccount(data: { password: string, confirm: string }) {
+  const checkResponse = await checkUser(userStore.user.id, data.password);
+  if (checkResponse.status === 200) {
+    const deleteResponse = await deleteUser(userStore.user.id);
+    if(deleteResponse.status === 204) {
+      showDeleteModal.value = false;
+      notificationStore.add({ message: 'Votre compte a été supprimé.', timeout: 6000, type: 'success' });
+      userStore.deleteUser();
+    } else {
+      notificationStore.add({ message: 'Erreur lors de la suppression du compte', timeout: 3000, type: 'error' });
+    }
+  } else if(checkResponse.status === 401) {
+    notificationStore.add({message: 'Mot de passe incorrect', timeout: 3000, type: 'error'});
+  } else {
+    notificationStore.add({message: 'Erreur lors de la vérification du mot de passe', timeout: 3000, type: 'error'});
+  }
+}
+
+async function changePassword(data: { password: string, newPassword: string, passwordConfirmation: string }) {
+  await fetchChangePassword(data);
+}
+
+const fetchChangePassword = async (param: { [key: string]: string }) => {
+  await updateUser( userStore.user.id, param, handleChangeResponse);
+}
+
+async function handleChangeResponse(res:Response) {
+  if (res.status === 204) {
+    notificationStore.add({type: 'success', message: 'Changement de mot de passe effectué.', timeout: 3000});
+    showPasswordForm.value = false;
+  } else if (res.status === 403) {
+    router.push('/403');
+  } else {
+    setTimeout(() => {
+      notificationStore.add({
+        type: 'error',
+        message: 'Une erreur est survenue, veuillez réessayer plus tard.',
+        timeout: 3000
+      });
+    }, 3000);
+  }
+}
 </script>

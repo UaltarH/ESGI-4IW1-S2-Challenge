@@ -123,6 +123,33 @@ class orderController {
                     plain: true
                 });
 
+                const shipping = await Shipping.findOne({ where: { OrderId: order.id } });
+                
+                if (!shipping) {
+                    return res.status(404).json({ message: "Shipping not found" });
+                }
+
+                const response = await fetch("http://laposteapi:7001/shipping", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        shippingMethod: shipping.shippingMethod,
+                        address: shipping.address,
+                        city: shipping.city,
+                        zipcode: shipping.zipcode,
+                        country: shipping.country
+                    })
+                });
+        
+                const trackingNumber = await response.text();
+                console.log('==================================================');
+                console.log(trackingNumber);
+
+                shipping.trackingNumber = trackingNumber
+                await shipping.save();
+
                 //remove the worker for this cart
                 const jobs = await cartQueue.getJobs(['delayed']);
                 const cartJob = jobs.find(job => job.data.cartId === deletedCart.id);
@@ -157,21 +184,5 @@ class orderController {
 
     // todo : create a function to call fake api laposte to get a number tracking
 }
-
-// const response = await fetch("http://laposteapi:7001/shipping", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify({
-//                 shippingMethod: shipping.shippingMethod,
-//                 address: shipping.address,
-//                 city: shipping.city,
-//                 zipcode: shipping.zipcode,
-//                 country: shipping.country
-//             })
-//         });
-
-//         const trackingNumber = await response.text();
 
 module.exports = orderController;

@@ -15,12 +15,6 @@ export const useMenuItems = () => {
       access: "all",
     },
     {
-      title: "À propos",
-      icon: "",
-      route: "/about",
-      access: "all",
-    },
-    {
       title: "Admin",
       icon: "",
       route: "",

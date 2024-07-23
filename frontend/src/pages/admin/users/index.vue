@@ -401,7 +401,6 @@ function handleCreate() {
 }
 
 async function editUser(newDataForUpdate: Record<string, any>) {
-  console.log(newDataForUpdate);
   const userId = selectedUser.value?.id;
   if (!userId) {
     return;

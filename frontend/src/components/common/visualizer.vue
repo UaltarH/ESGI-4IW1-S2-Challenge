@@ -64,7 +64,7 @@ interface Props {
   buttons: string[];
   fields?: string[];
   labels?: { [key: string]: string };
-  valueTransforms?: { [key: string]: (value: any) => any };
+  valueTransforms?: { [key: string]: string | ((value: any) => any) };
 }
 
 const props = defineProps<Props>();

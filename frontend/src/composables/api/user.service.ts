@@ -13,7 +13,7 @@ export const UserService = () => {
         if( token === null) {
             return handler(401);
         }
-        return await fetch(baseUrl + Api.user + `${id}` + params, {
+        return await fetch(baseUrl + Api.user + `/${id}` + params, {
             method: "GET",
             credentials: 'include',
             headers: {
@@ -29,7 +29,7 @@ export const UserService = () => {
         if (token === null) {
             handler(new Response(null, { status: 401 }));
         }
-        await fetch(baseUrl + Api.user + `${id}`, {
+        await fetch(baseUrl + Api.user + `/${id}`, {
             method: "PATCH",
             credentials: 'include',
             headers: {
@@ -56,7 +56,7 @@ export const UserService = () => {
     const deleteUser = async (id: string) => {
         const token = localStorage.getItem('auth_token');
         if(token === null) throw new Error('Error while deleting user');
-        const response = await fetch(`${baseUrl}${Api.user}${id}`, {
+        const response = await fetch(baseUrl + `${Api.user}` + `/${id}`, {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export const UserService = () => {
             throw new Error('Impossible de supprimer un administrateur');
         }
     
-        const response = await fetch(`${baseUrl}${Api.user}`, {
+        const response = await fetch(`${baseUrl}/${Api.user}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export const UserService = () => {
         return response;
     }
 
-    const createUser = async (bodyRequest: createUser): Promise<{sessionId: string}> => {
+    const createUser = async (bodyRequest: any): Promise<{sessionId: string}> => {
         try {
             const token = localStorage.getItem('auth_token');
             if(token === null) throw new Error('Error while getting orders');
@@ -108,17 +108,7 @@ export const UserService = () => {
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(bodyRequest)
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                try {
-                    const errorJson = JSON.parse(errorText);
-                    throw errorJson;
-                } catch (err) {
-                    throw errorText;
-                }
-            }
+            });            
         
             return await response.json();
         } catch (err) {

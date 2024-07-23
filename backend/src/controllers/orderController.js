@@ -146,7 +146,21 @@ class orderController {
                 const trackingNumber = await response.text();
 
                 shipping.trackingNumber = trackingNumber
-                await shipping.save();
+                await shipping.save(); 
+                
+                //security : check if we already have status sent for this order
+                const orderStatusSent = await Order_status.findOne({
+                    where: {
+                        OrderId: order.id,
+                        status: "Expédiée"
+                    }
+                });
+    
+                if (orderStatusSent) {
+                    return res.status(200).json({ message: "Order already sent" });
+                }
+                
+                await Order_status.create({ status: "Expédiée", OrderId: order.id });
 
                 //remove the worker for this cart
                 const jobs = await cartQueue.getJobs(['delayed']);

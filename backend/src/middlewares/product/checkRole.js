@@ -4,12 +4,13 @@ const { User } = require('../../sequelize/models/');
 const bcrypt = require("bcryptjs");
 const validate = require("./../validate");
 const role = require("../../dto/role.dto");
-const { productModifySchema } = require("../../schema/");
+const { createProductSchema } = require("../../schema/");
+const { updateProductSchema } = require("../../schema/");
 
 const checkRole = () => async (req, res, next) => {
     const header = req.headers.Authorization ?? req.headers.authorization;
     if (!header) {
-        if(req.method !== 'POST')
+        if (req.method !== 'POST')
             return res.sendStatus(401);
         // else {
         //     // création d'une commande par une personne non identifiée
@@ -24,16 +25,19 @@ const checkRole = () => async (req, res, next) => {
         if (token) {
             try {
                 const payload = jwt.verify(token, process.env.JWT_SECRET);
-                const {data, error} = await findByPk(User, payload.id);
+                const { data, error } = await findByPk(User, payload.id);
                 if (!data) return res.sendStatus(401);
 
                 // admin
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
-                        // if (req.method === 'POST')
-                            // validate(userRegisterAdminSchema);
+                        if (req.method === 'POST')
+                            return validate(createProductSchema)(req, res, (err) => {
+                                if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
+                                next();
+                            });
                         if (req.method === 'PUT')
-                            return validate(productModifySchema)(req, res, (err) => {
+                            return validate(updateProductSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
                                 next();
                             });

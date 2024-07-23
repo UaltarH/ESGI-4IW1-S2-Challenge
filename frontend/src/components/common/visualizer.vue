@@ -1,35 +1,35 @@
 <template>
-  <Card class="bg-white shadow-lg rounded-lg">
+  <Card class="bg-white dark:bg-dark-blue dark:text-white shadow-lg rounded-lg">
     <CardHeader class="border-b border-gray-200 p-4">
-      <CardTitle class="text-2xl font-bold text-gray-900">{{ title }}</CardTitle>
-      <CardDescription class="text-gray-500">{{ title }}</CardDescription>
+      <CardTitle class="text-2xl font-bold">{{ title }}</CardTitle>
+      <CardDescription>{{ title }}</CardDescription>
     </CardHeader>
     <CardContent class="p-6">
       <div class="flex flex-wrap gap-4">
         <div
           v-for="(value, key) in filteredData"
           :key="key"
-          class="w-full flex flex-col border border-gray-300 rounded-lg p-4 shadow-sm bg-gray-50"
+          class="w-full flex flex-col border rounded-lg p-4 shadow-sm "
         >
           <div class="mb-2">
-            <label class="font-semibold text-gray-800">{{ getLabel(key) }}</label>
+            <label class="font-semibold">{{ getLabel(key) }}</label>
           </div>
           <div>
-            <span v-if="!(isObject(value) || isArray(value))" class="text-gray-900">
+            <span v-if="!(isObject(value) || isArray(value))">
               {{ transformValue(key, value) }}
             </span>
             <div v-if="isObject(value) || isArray(value)" class="mt-2">
               <div v-for="(nestedValue, nestedKey) in value" :key="nestedKey" class="pl-4 border-b border-gray-200 py-2">
-                <label class="font-semibold text-gray-800">{{ getLabel(`${key}.${nestedKey}`) }}</label>
+                <label class="font-semibold">{{ getLabel(`${key}.${nestedKey}`) }}</label>
                 <div class="mt-1">
-                  <span v-if="!(isObject(nestedValue) || isArray(nestedValue))" class="text-gray-900">
+                  <span v-if="!(isObject(nestedValue) || isArray(nestedValue))">
                     {{ transformValue(nestedKey, nestedValue) }}
                   </span>
                   <div v-if="isObject(nestedValue) || isArray(nestedValue)" class="mt-2">
                     <div v-for="(deepValue, deepKey) in nestedValue" :key="deepKey" class="pl-4 border-b border-gray-200 py-2">
-                      <label class="font-semibold text-gray-800">{{ getLabel(`${key}.${nestedKey}.${deepKey}`) }}</label>
+                      <label class="font-semibold">{{ getLabel(`${key}.${nestedKey}.${deepKey}`) }}</label>
                       <div class="mt-1">
-                        <span class="text-gray-900">
+                        <span>
                           {{ transformValue(deepKey, deepValue) }}
                         </span>
                       </div>
@@ -64,7 +64,7 @@ interface Props {
   buttons: string[];
   fields?: string[];
   labels?: { [key: string]: string };
-  valueTransforms?: { [key: string]: (value: any) => any };
+  valueTransforms?: { [key: string]: string | ((value: any) => any) };
 }
 
 const props = defineProps<Props>();

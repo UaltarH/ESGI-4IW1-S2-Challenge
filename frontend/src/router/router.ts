@@ -15,8 +15,11 @@ import Error404 from "@/pages/errors/404.vue";
 import { useUserStore } from "@/stores/user.ts";
 import { role } from "@/dto/role.dto.ts";
 import { UserService } from "@/composables/api/user.service.ts";
-import {useNotificationStore} from "@/stores/notification.ts";
+import { useNotificationStore } from "@/stores/notification.ts";
 import { useCartStore } from "@/stores/cart.ts";
+import PrivacyPolicy from "@/pages/privacy-policy/index.vue";
+import CGV from "@/pages/general-conditions-of-sale/index.vue";
+import Terms from "@/pages/terms-and-conditions/index.vue";
 
 const routes = [
   { path: "/", component: index, name: "home" },
@@ -35,6 +38,9 @@ const routes = [
   { path: "/product/:id", component: () => import("@/pages/product/index.vue") },
   { path: "/products", component: ProductsPage, name: "products" },
   { path: "/verify/:token", component: Verify },
+  { path: "/privacy-policy", component: PrivacyPolicy },
+  { path: "/general-conditions-of-sale", component: CGV },
+  { path: "/terms-and-conditons", component: Terms },
 
   {
     path: "/order",
@@ -42,29 +48,29 @@ const routes = [
     children: [
       {
         path: "",
-        component: () => import('@/pages/order/index.vue'),
+        component: () => import("@/pages/order/index.vue"),
         meta: { requiresAuth: true },
         name: "order",
       },
       {
         path: "success",
-        component: () => import('@/pages/order/success/index.vue'),
+        component: () => import("@/pages/order/success/index.vue"),
         meta: {
           requiresAuth: true,
-          expectedQuery: ['session_id']
+          expectedQuery: ["session_id"],
         },
-        name: "order-success"
+        name: "order-success",
       },
       {
         path: "cancel",
-        component: () => import('@/pages/order/cancel/index.vue'),
+        component: () => import("@/pages/order/cancel/index.vue"),
         meta: {
           requiresAuth: true,
-          expectedQuery: ['session_id']
+          expectedQuery: ["session_id"],
         },
-        name: "order-cancel"
-      }
-    ]
+        name: "order-cancel",
+      },
+    ],
   },
 
   {
@@ -149,66 +155,63 @@ router.beforeResolve(async (to, from, next) => {
   const { getUserById } = UserService();
   const notificationStore = useNotificationStore();
 
-  if (to.meta.requiresAuth){
+  if (to.meta.requiresAuth) {
     if (!userStore.user.id) {
       next({
         path: "/auth",
         query: { redirect: to.fullPath },
-      })
+      });
     } else {
       const status: number = await getUserById(
-          userStore.user.id,
-          (res: Response) => {
-            return res.status;
-          },
-          {fields: ["firstname"]}
+        userStore.user.id,
+        (res: Response) => {
+          return res.status;
+        },
+        { fields: ["firstname"] }
       );
-      if(status === 401) {
+      if (status === 401) {
         localStorage.removeItem("auth_token");
         useCartStore().$reset();
         userStore.token = null;
         notificationStore.add({
-          message: 'Votre session a expirée, veuillez vous reconnecter',
-          type: 'error',
-          timeout: 3000
+          message: "Votre session a expirée, veuillez vous reconnecter",
+          type: "error",
+          timeout: 3000,
         });
         next("/auth");
-      } else if(status === 200) {
+      } else if (status === 200) {
         next();
       } else {
         notificationStore.add({
-            message: 'Une erreur est survenue, veuillez réessayer ultérieurement',
-            type: 'error',
-            timeout: 3000
+          message: "Une erreur est survenue, veuillez réessayer ultérieurement",
+          type: "error",
+          timeout: 3000,
         });
         next("/500");
       }
     }
-  }
-  else if (to.meta.isAdmin) {
-    if(userStore.user.role !== role.ADMIN) {
+  } else if (to.meta.isAdmin) {
+    if (userStore.user.role !== role.ADMIN) {
       next("/403");
-    }
-    else {
+    } else {
       await getUserById(
-          userStore.user.id,
-          (res: Response) => {
-            if(res.status !== 200) {
+        userStore.user.id,
+        (res: Response) => {
+          if (res.status !== 200) {
+            localStorage.removeItem("auth_token");
+            userStore.token = null;
+            next("/auth");
+          }
+          res.json().then((data) => {
+            if (data.user.role !== role.ADMIN) {
               localStorage.removeItem("auth_token");
               userStore.token = null;
-              next("/auth");
-            }
-            res.json().then((data) => {
-              if(data.user.role !== role.ADMIN) {
-                localStorage.removeItem("auth_token");
-                userStore.token = null;
-                next("/403");
-              } else next();
-            });
-          },
-          { fields: ["role"] }
+              next("/403");
+            } else next();
+          });
+        },
+        { fields: ["role"] }
       );
     }
-  }
-  else next();
+  } else next();
 });

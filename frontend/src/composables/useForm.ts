@@ -11,7 +11,7 @@ export const useForm = (formSchema: Ref<FormField<any>[]>) => {
         return schema;
     }
     const getFieldValues = () => {
-        let values:{[key:string] : string|undefined|number|Date} = {};
+        let values:{[key:string] : string|undefined|number|Date|boolean} = {};
         formSchema.value.forEach((item) => {
             values[item.name] = item.value;
         });
@@ -48,6 +48,16 @@ export const useForm = (formSchema: Ref<FormField<any>[]>) => {
             }
             if(dependency.value !== item.value) {
                 item.error = item.dependsOn.errorMessage;
+                return false;
+            }
+        }
+        if(item.differentFrom !== undefined) {
+            const differentFrom = formSchema.value.find((field) => field.name == item.differentFrom!.field);
+            if(typeof differentFrom == "undefined") {
+                throw new Error(`Dependent field ${item.differentFrom} not found`);
+            }
+            if(differentFrom.value === item.value) {
+                item.error = item.differentFrom.errorMessage;
                 return false;
             }
         }

@@ -2,7 +2,7 @@ const MongoOrder = require('../mongo/models/MongoOrder');
 const { Order, Payment, Shipping, Order_status, Cart, User } = require('../sequelize/models');
 const { createStripeSession } = require('../services/stripeSession');
 const { createOrderTransac } = require('../services/createOrder');
-const { sendMail } = require("../services/sendMail");
+const { sendEmailWithTemplate } = require("../services/sendMail");
 const { cartQueue } = require('../config/queueBullConfig')
 
 
@@ -27,7 +27,7 @@ class orderController {
 
     static async getAllOrders(req, res, next) {
         try {
-            const order = await MongoOrder.find();
+            const order = await MongoOrder.find().sort({ date: -1 });
             res.json({ orders: order });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -42,6 +42,7 @@ class orderController {
             const skip = (page - 1) * limit;
 
             const orders = await MongoOrder.find({ 'user.userId': userId })
+                .sort({ date: -1 })
                 .skip(skip)
                 .limit(limit);
 
@@ -122,6 +123,45 @@ class orderController {
                     plain: true
                 });
 
+                const shipping = await Shipping.findOne({ where: { OrderId: order.id } });
+                
+                if (!shipping) {
+                    return res.status(404).json({ message: "Shipping not found" });
+                }
+
+                const response = await fetch("http://laposteapi:7001/shipping", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        shippingMethod: shipping.shippingMethod,
+                        address: shipping.address,
+                        city: shipping.city,
+                        zipcode: shipping.zipcode,
+                        country: shipping.country
+                    })
+                });
+        
+                const trackingNumber = await response.text();
+
+                shipping.trackingNumber = trackingNumber
+                await shipping.save(); 
+                
+                //security : check if we already have status sent for this order
+                const orderStatusSent = await Order_status.findOne({
+                    where: {
+                        OrderId: order.id,
+                        status: "Expédiée"
+                    }
+                });
+    
+                if (orderStatusSent) {
+                    return res.status(200).json({ message: "Order already sent" });
+                }
+                
+                await Order_status.create({ status: "Expédiée", OrderId: order.id });
+
                 //remove the worker for this cart
                 const jobs = await cartQueue.getJobs(['delayed']);
                 const cartJob = jobs.find(job => job.data.cartId === deletedCart.id);
@@ -131,19 +171,12 @@ class orderController {
 
                 const customer = await User.findOne({ where: { id: order.UserId }, attributes: ["email"] });
 
-                const mailOptions = {
-                    from: {
-                        name: "BoToBe Administration",
-                        address: process.env.USER_MAIL,
-                    },
-                    to: [customer.email],
-                    subject: "Confirmation de commande BoxToBe n°" + order.orderNumber,
-                    text: `Votre commande n° ${order.orderNumber} a bien été confirmée, vous pouvez suivre son avancement sur votre espace client :` +
-                        `${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/user/orders.`,
-                };
-
                 try {
-                    await sendMail(mailOptions);
+                    await sendEmailWithTemplate(
+                        customer.email,
+                        "Confirmation de commande BoxToBe n°" + order.orderNumber,
+                        { orderNumber: order.orderNumber, host: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org" },
+                        "/../template/orderConfirmation.ejs");
                 } catch (error) {
                     console.error("Failed to send email controller", error);
                 }
@@ -160,24 +193,6 @@ class orderController {
             return res.status(500).json({ message: "Internal server error" });
         }
     }
-
-    // todo : create a function to call fake api laposte to get a number tracking
 }
-
-// const response = await fetch("http://laposteapi:7001/shipping", {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             body: JSON.stringify({
-//                 shippingMethod: shipping.shippingMethod,
-//                 address: shipping.address,
-//                 city: shipping.city,
-//                 zipcode: shipping.zipcode,
-//                 country: shipping.country
-//             })
-//         });
-
-//         const trackingNumber = await response.text();
 
 module.exports = orderController;

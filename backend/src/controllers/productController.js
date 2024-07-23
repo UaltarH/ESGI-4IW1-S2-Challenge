@@ -65,7 +65,7 @@ class productController {
     // }
 
     static async getMongoProducts(req, res) {
-        const limit = parseInt(req.query.limit) || 9;
+        const limit = parseInt(req.query.limit) || 0;
         const skip = parseInt(req.query.skip) || 0;
         const maxPrice = parseFloat(req.query.maxPrice);
         const categories = req.query.categories ? req.query.categories.split(',') : [];
@@ -105,11 +105,11 @@ class productController {
                 return res.status(404).json({ error: 'Product not found' });
             }
             const product = await MongoProduct.findById(req.params.id);
-            
+
             if (!product) {
                 return res.status(404).json({ error: 'Product not found' });
             }
-    
+
             res.json({ product: product });
         } catch (error) {
             return res.status(404).json({ error: 'Product not found' });
@@ -129,8 +129,7 @@ class productController {
         const updateData = req.body;
 
         try {
-            const postgresUpdateData = { ...updateData, CategoryId: updateData.categoryId };
-            delete postgresUpdateData.categoryId;
+            const postgresUpdateData = { ...updateData };
             const { data, error } = await crudService.update(Product, id, postgresUpdateData);
             if (error) {
                 console.log(error);

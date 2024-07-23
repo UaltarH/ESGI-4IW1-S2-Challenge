@@ -21,7 +21,7 @@
 
 <script lang="ts" setup>
 import { role } from "@/dto/role.dto.ts";
-import { onUnmounted, ref, shallowRef, watch } from "vue";
+import { computed, onUnmounted, ref, shallowRef, watch } from "vue";
 import Tab from "@/components/ui/tab/Tab.vue";
 import { useUserStore } from "@/stores/user.ts";
 import NotificationUser from "@/components/Header/notification/NotificationUser.vue";
@@ -33,7 +33,7 @@ const props = defineProps({
 });
 const userStore = useUserStore();
 
-const userRole = userStore.user.role;
+const userRole = computed(() => userStore.user.role);
 
 const activeComp = shallowRef(NotificationUser);
 const activeTab = ref("tab1");

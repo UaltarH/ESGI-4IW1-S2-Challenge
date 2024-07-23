@@ -8,6 +8,7 @@
             :actions="data.actions"
             :numberOfItemsPerPage="data.numberOfItemsPerPage"
             :canDeleteAll="false"
+            :can-create="false"
             @visualize-item="handleVisualize"
             ></CustomizableTable>
         </div>
@@ -37,7 +38,7 @@
             'user.email': 'Adresse Email',
             'user.phone': 'Numéro de Téléphone',
             orderItems: 'Articles Commandés',
-            'orderItems.orderItemId': 'Identifiant de l\'Article',
+            'orderItems.orderItemId': 'Identifiant de l\'Article de la Commande',
             'orderItems.productId': 'Identifiant du Produit',
             'orderItems.productName': 'Nom du Produit',
             'orderItems.quantity': 'Quantité',
@@ -91,7 +92,6 @@
   const data = reactive({
     datas: datasTable,
     columns: [
-      { name: "Id", key: "id", sort: true, typeData: "string" },
       { name: "Commande n°", key: "orderNumber", sort: true, typeData: "string" },
       { name: "Montant", key: "amount", sort: true, typeData: "string" },
       { name: "Date", key: "date", sort: true, typeData: "date" },

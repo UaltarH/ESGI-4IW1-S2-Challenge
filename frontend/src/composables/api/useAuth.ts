@@ -2,7 +2,7 @@ import { Api } from "./routesApi";
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 export const useAuth = () => {
   const registerUser = async (data: any, signal: AbortSignal, handler: Function) => {
-    return await fetch(baseUrl + Api.register, {
+    return await fetch(baseUrl + Api.user, {
       signal,
       method: "POST",
       headers: {

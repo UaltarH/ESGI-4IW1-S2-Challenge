@@ -10,6 +10,8 @@ const {
     userUpdateByAdminSchema,
     userRegisterByUserSchema,
     userRegisterByAdminSchema,
+    checkPasswordSchema,
+    loginSchema
 } = require("../../schema/");
 
 const checkRole = () => async (req, res, next) => {
@@ -19,6 +21,9 @@ const checkRole = () => async (req, res, next) => {
             return res.sendStatus(401);
         else {
             // création d'un utilisateur par une personne non identifiée
+            if (req.path === '/login'){
+                return validate(loginSchema)(req, res, next);
+            }
             req.body.role = role.USER;
             return validate(userRegisterByUserSchema)(req, res, next);
         }
@@ -36,12 +41,12 @@ const checkRole = () => async (req, res, next) => {
                 if (payload.role === role.ADMIN) {
                     if (data.role === role.ADMIN) {
                         if (req.method === 'POST')
-                            return validate(userRegisterAdminSchema)(req, res, (err) => {
+                            return validate(userRegisterByAdminSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
                                 next();
                             });
                         if (req.method === 'PATCH')
-                            return validate(userModifyAdminSchema)(req, res, (err) => {
+                            return validate(userUpdateByAdminSchema)(req, res, (err) => {
                                 if (err) return; // `validate` a déjà envoyé une réponse en cas d'erreur
                                 next();
                             });
@@ -59,10 +64,12 @@ const checkRole = () => async (req, res, next) => {
                     // un utilisateur non-admin ne peut modifier que certaines infos, même de son compte
                     return validate(userUpdateByUserSchema)(req, res, next);
                 } else if (req.method === 'POST') {
-                    // un utilisateur non-admin ne peut créer d'utilisateur
-                    return res.sendStatus(403);
+                    // surement pour vérifier le mdp avant la suppression de compte
+                    return validate(checkPasswordSchema)(req, res, next);
                 } else if (req.method === 'DELETE') {
                     // un utilisateur non-admin ne peut supprimer d'utilisateur
+                    if(req.params.id === data.id)
+                        return next();
                     return res.sendStatus(403);
                 } else if (req.method === 'GET') {
                     // un utilisateur non-admin ne peut voir que ses infos

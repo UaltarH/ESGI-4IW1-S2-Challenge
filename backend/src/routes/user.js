@@ -10,5 +10,6 @@ userRouter.get("/users", checkRole(), userController.getUsers);
 userRouter.delete("/users/:id", checkRole(), userController.deleteUser);
 userRouter.delete("/users/", checkRole(), userController.deleteMultiplesUsers);
 userRouter.post("/users", checkRole(), userController.register);
+userRouter.post("/users/check", checkRole(), userController.checkUser);
 
 module.exports = userRouter;

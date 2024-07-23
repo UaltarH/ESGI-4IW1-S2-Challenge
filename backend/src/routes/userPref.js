@@ -1,6 +1,6 @@
 const express = require("express");
 
-const UserPrefController = require("../controllers/userPrefCrontroller");
+const UserPrefController = require("../controllers/userPrefController");
 
 const userPrefRouter = express.Router();
 userPrefRouter.get("/userPref/:userId", UserPrefController.getUserPref);

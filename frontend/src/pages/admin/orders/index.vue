@@ -8,6 +8,7 @@
             :actions="data.actions"
             :numberOfItemsPerPage="data.numberOfItemsPerPage"
             :canDeleteAll="false"
+            :can-create="false"
             @visualize-item="handleVisualize"
             ></CustomizableTable>
         </div>

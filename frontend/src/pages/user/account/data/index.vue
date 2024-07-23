@@ -213,8 +213,8 @@ function handleUserInfo(res: Response | number) {
           });
           router.push({path: '/500'});
         }
-        const {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country} = data.user;
-        user.value = {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country};
+        const {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country, verification_token} = data.user;
+        user.value = {id, firstname, lastname, email, phone, birthdate, address, zipcode, city, country, verification_token};
         formRef.value?.SetFieldValue({firstname: user.value.firstname}, "firstname");
         formRef.value?.SetFieldValue({lastname: user.value.lastname}, "lastname");
         formRef.value?.SetFieldValue({email: user.value.email}, "email");

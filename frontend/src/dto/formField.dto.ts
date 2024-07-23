@@ -1,6 +1,6 @@
 import { ZodObject } from "zod";
 
-export interface FormField<FieldSchema extends ZodObject<any>> {
+export interface FormField<FieldSchema extends ZodObject<any> = ZodObject<any>> {
     label: string;
     component: string;
     type: string;

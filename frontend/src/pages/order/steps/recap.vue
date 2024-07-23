@@ -9,7 +9,7 @@
             
             <div class="space-y-2 mb-4">
               <div class="flex justify-between items-center">
-                <span class="flex items-center">
+                <span class="flex items-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 23 17" aria-labelledby="Delivery" class="icon_2DB22" data-testid="icon-Delivery" fill="currentColor" height="16" version="1.1" width="16">
                         <path d="m20.265 5.368-.598-.199-1.936-3.228A4.02 4.02 0 0 0 14.301 0H2C.897 0 0 .897 0 2v10.677l3.04 1.216C3.238 15.636 4.706 17 
                         6.5 17c1.758 0 3.204-1.309 3.449-3h3.102c.245 1.691 1.691 3 3.449 3 1.758 0 3.204-1.309 3.449-3H21c1.103 0 2-.897 

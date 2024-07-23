@@ -1,5 +1,6 @@
 const { User, User_pref } = require("../sequelize/models/");
 const crudService = require("../services/crudGeneric");
+const { sendEmailWithTemplate } = require("../services/sendMail");
 const { sendMail } = require("../services/sendMail");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -41,20 +42,15 @@ class userController {
         { delay: 2 * 60 * 1000 }
       );
 
-      const mailOptions = {
-        from: {
-          name: "BoxToBe Administration",
-          address: process.env.USER_MAIL,
-        },
-        to: [req.body.email],
-        subject: "Veuillez vérifier votre compte",
-        text:
-          `Afin que nous puissions vérifier votre compte, veuillez cliquer sur le lien suivant : ${process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"}/verify/` +
-          data.verification_token,
-      };
-
       try {
-        await sendMail(mailOptions);
+        await sendEmailWithTemplate(
+            req.body.email,
+            "Veuillez vérifier votre compte",
+            {
+              fullname: req.body.firstname + " " + req.body.lastname ,
+              link: (process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org") + "/verify/" + data.verification_token
+          },
+            "/../template/accountConfirmation.ejs");
       } catch (error) {
         console.error("Failed to send email controller", error);
       }
@@ -151,6 +147,10 @@ class userController {
   }
 
   static async modifyUsers(req, res) {
+    if(req.body.newPassword) {
+      req.body.password = req.body.newPassword;
+      delete req.body.newPassword
+    }
     const { data, error } = await crudService.update(User, req.params.id, req.body);
     if (error) {
       return res.status(404);

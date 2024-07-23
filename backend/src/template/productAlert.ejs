@@ -1,0 +1,9 @@
+<%- include('./include/header.ejs') %>
+
+<div style="max-width: 640px; padding: 30px 15px; margin: auto;">
+    <h2>Alerte produit</h2>
+    <p><%= content.alertMessage %>.</p>
+    <p><small>Vous recevez cet email, car vous avez choisi de recevoir des alertes produits. Vous pouvez vous désinscrire à tout moment : <a href="<%= content.host %>/user/settings">Se désinscrire.</a></small></p>
+</div>
+
+<%- include('./include/footer.ejs') %>

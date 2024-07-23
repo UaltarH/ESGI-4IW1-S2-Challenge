@@ -62,11 +62,14 @@ const userStore = useUserStore();
 
 const { generatePdfFromOrder } = usePdfGenerator();
 
+const sortOrdersByDate = (orders: mongoOrder[]) => {
+  return orders.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+};
+
 const fetchOrders = async (page: number = 1) => {
   try {
     const response = await OrdersService().getSpecificMongoOrder(userStore.user.id, page);
-    // const response = await OrdersService().getSpecificMongoOrder("84fea277-37ad-480c-a9bd-6ee865ecc114", page);
-    orders.value = response.orders;
+    orders.value = sortOrdersByDate(response.orders);
     currentPage.value = response.currentPage;
     totalPages.value = response.totalPages;
   } catch (error) {
@@ -94,3 +97,4 @@ onMounted(() => {
   fetchOrders();
 });
 </script>
+

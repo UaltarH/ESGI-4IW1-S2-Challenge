@@ -11,6 +11,7 @@ const {
     userRegisterByUserSchema,
     userRegisterByAdminSchema,
     checkPasswordSchema,
+    loginSchema
 } = require("../../schema/");
 
 const checkRole = () => async (req, res, next) => {
@@ -20,6 +21,9 @@ const checkRole = () => async (req, res, next) => {
             return res.sendStatus(401);
         else {
             // création d'un utilisateur par une personne non identifiée
+            if (req.path === '/login'){
+                return validate(loginSchema)(req, res, next);
+            }
             req.body.role = role.USER;
             return validate(userRegisterByUserSchema)(req, res, next);
         }

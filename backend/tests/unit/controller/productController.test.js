@@ -237,7 +237,7 @@ describe('productController', () => {
 
       const req = { 
         params: { id: 1 },
-        body: { name: 'Updated Product', categoryId: 2 }
+        body: { name: 'Updated Product', CategoryId: 2 }
       };
       const res = {
         json: jest.fn()

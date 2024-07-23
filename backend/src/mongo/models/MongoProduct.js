@@ -14,6 +14,9 @@ const productSchema = new mongoose.Schema({
     updatedAt: Date,
 });
 
-const MongoProduct = mongoose.model('Product', productSchema);
+// Add text index for full text search (searchbar)
+productSchema.index({ name: 'text', description: 'text', categoryName: 'text' });
+
+const MongoProduct = mongoose.model('Product', productSchema, 'products');
 
 module.exports = MongoProduct;

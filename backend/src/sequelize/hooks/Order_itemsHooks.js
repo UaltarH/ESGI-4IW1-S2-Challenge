@@ -1,7 +1,6 @@
 const MongoOrder = require('../../mongo/models/MongoOrder');
 
 const afterCreateHook = async (order_item, options) => {
-    console.log(`Order_item created: ${order_item}`);
     const product = await order_item.getProduct();
     const mongoOrder = await MongoOrder.findOneAndUpdate(
         { postgresId: order_item.OrderId },
@@ -22,8 +21,6 @@ const afterCreateHook = async (order_item, options) => {
         console.error(`MongoOrder with postgresId ${order_item.OrderId} not found`);
         return;
     }
-
-    console.log(`MongoOrder updated: ${mongoOrder}`);
 };
 
 

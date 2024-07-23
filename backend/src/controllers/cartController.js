@@ -3,25 +3,18 @@ const { cartQueue } = require('../config/queueBullConfig');
 
 class cartController {
     static async createCart(req, res, next) {
-        console.log('========== Creating cart ==========');
         const { UserId, products } = req.body;
         const transaction = await sequelize.transaction();
-        console.log('UserId : ', UserId);
-        console.log('Products : ', products);
         try {
             const cart = await Cart.create(
                 { UserId },
                 { transaction }
             );
-            console.log('========== Cart created');
-            console.log(UserId ? 'User id : ' + UserId : 'Guest');
-            console.log('Cart id : ', cart.id);
             const cartItems = products.map(product => ({
                 CartId: cart.id,
                 ProductId: product.postgresId,
                 quantity: product.quantity,
             }));
-            console.log('========== Cart items created');
             await Cart_item.bulkCreate(cartItems, { transaction, individualHooks: true });
             await transaction.commit();
 
@@ -38,7 +31,6 @@ class cartController {
         }
     }
     static async getCart(req, res, next) {
-        console.log('========== Getting guest cart ==========');
         try {
             const cart = await Cart.findOne({
                 where: { id: req.params.id },
@@ -51,7 +43,6 @@ class cartController {
             });
 
             if (cart) {
-                console.log('========== Cart found');
                 res.status(200).json({ cart });
             } else {
                 res.sendStatus(404);
@@ -61,7 +52,6 @@ class cartController {
         }
     }
     static async getCartByUserId(req, res, next) {
-        console.log('========== Getting cart by user id ==========');
         const UserId = req.params.id;
 
         try {
@@ -80,7 +70,6 @@ class cartController {
             });
 
             if (cart) {
-                console.log('========== Cart found');
                 res.status(200).json({ cart });
             } else {
                 res.sendStatus(404);
@@ -91,7 +80,6 @@ class cartController {
     }
 
     static async updateCartUser(req, res, next) {
-        console.log('========== Updating cart owner ==========');
         const { id, UserId } = req.body;
         const transaction = await sequelize.transaction();
 
@@ -104,7 +92,6 @@ class cartController {
             if (cart) {
                 await cart.update({ UserId }, { transaction });
                 await transaction.commit();
-                console.log('========== Cart updated');
                 res.sendStatus(204);
             } else {
                 res.sendStatus(404);
@@ -116,7 +103,6 @@ class cartController {
     }
 
     static async updateCart(req, res, next) {
-        console.log('========== Updating cart ==========');
         const { id, products } = req.body;
         const transaction = await sequelize.transaction();
 

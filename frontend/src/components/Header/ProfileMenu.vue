@@ -30,13 +30,14 @@
 <script lang="ts" setup>
 import { useMenuItems } from "@/composables/useMenuItems.ts";
 import { useUserStore} from "@/stores/user.ts";
-import {ref} from "vue";
+import {computed} from "vue";
 
 const { profileMenuItems } = useMenuItems();
 const userStore = useUserStore();
-userStore.$subscribe((state) => {
-  isConnected.value = !!state.events.newValue;
-});
-let isConnected = ref(!!userStore.user.id);
+const isConnected = computed(() => !!userStore.user.id);
+// userStore.$subscribe((state) => {
+//   isConnected.value = !!state.events.newValue;
+// });
+// let isConnected = ref(!!userStore.user.id);
 const emit = defineEmits(["close"]);
 </script>

@@ -132,7 +132,6 @@ class productController {
             const postgresUpdateData = { ...updateData };
             const { data, error } = await crudService.update(Product, id, postgresUpdateData);
             if (error) {
-                console.log(error);
                 return res.status(404).json({ error: 'Product not found in postgres' });
             }
 

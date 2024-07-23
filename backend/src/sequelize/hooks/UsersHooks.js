@@ -22,8 +22,6 @@ const afterUpdateHook = async (user, options) => {
         console.error(`MongoOrder with userId ${user.id} not found`);
         return;
     }
-
-    console.log(`MongoOrder updated: ${mongoOrder}`);
 };
 
 const afterDeleteHook = async (user, options) => {

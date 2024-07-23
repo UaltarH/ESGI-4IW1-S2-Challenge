@@ -8,7 +8,7 @@ userQueue.process(async (job) => {
         const user = await User.findByPk(userId);
 
         if (!user) {
-            console.log(`User ${userId} not found or already processed`);
+            console.error(`User ${userId} not found or already processed`);
             return;
         }
 

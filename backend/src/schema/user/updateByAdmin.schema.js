@@ -44,10 +44,12 @@ const updateByAdminSchema = z.object({
   phone: z.string({ invalid_type_error: invalidStringMessage })
     .regex(/^0[1-9]\d{8}$/, { message: "Le téléphone doit être au format 0XXXXXXXXX" })
     .optional(),
-  is_verified: z.boolean(),
-  newProduct: z.boolean(),
-  restockProduct: z.boolean(),
-  priceChange: z.boolean(),
+
+  is_verified: z.boolean().optional(),
+  newProduct: z.boolean().optional(),
+  restockProduct: z.boolean().optional(),
+  priceChange: z.boolean().optional(),
+
 });
 
 module.exports = updateByAdminSchema;

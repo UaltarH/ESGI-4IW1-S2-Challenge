@@ -12,6 +12,7 @@ const dashboardConfigSchema = require("./dashboard/dashboard.schema.js");
 const widgetValidationSchema = require("./dashboard/widget.schema.js");
 const createProductSchema = require("./product/createProduct.schema.js");
 const updateProductSchema = require("./product/updateProduct.schema.js");
+const loginSchema = require("./user/login.schema.js");
 
 module.exports = {
     userUpdateByUserSchema,
@@ -28,4 +29,5 @@ module.exports = {
     widgetValidationSchema,
     createProductSchema,
     updateProductSchema,
+    loginSchema,
 };

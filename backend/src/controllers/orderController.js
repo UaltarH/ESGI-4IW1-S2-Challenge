@@ -65,7 +65,7 @@ class orderController {
             if (!order) {
                 return res.status(404).json({ message: "Order not found" });
             }
-            res.render('pdf/invoice', order);
+            res.render('invoice', order);
         } catch (error) {
             res.status(500).json({ message: error.message });
         }
@@ -136,7 +136,7 @@ class orderController {
                     await sendEmailWithTemplate(
                         customer.email,
                         "Confirmation de commande BoxToBe n°" + order.orderNumber,
-                        { orderNumber: order.orderNumber, host: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org"},
+                        { orderNumber: order.orderNumber, host: process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org" },
                         "/../template/orderConfirmation.ejs");
                 } catch (error) {
                     console.error("Failed to send email controller", error);

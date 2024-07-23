@@ -97,7 +97,7 @@ export const UserService = () => {
         return response;
     }
 
-    const createUser = async (bodyRequest: any): Promise<{sessionId: string}> => {
+    const createUser = async (bodyRequest: any): Promise<Response> => {
         try {
             const token = localStorage.getItem('auth_token');
             if(token === null) throw new Error('Error while getting orders');
@@ -110,7 +110,7 @@ export const UserService = () => {
                 body: JSON.stringify(bodyRequest)
             });            
         
-            return await response.json();
+            return response;
         } catch (err) {
             throw err;
         }

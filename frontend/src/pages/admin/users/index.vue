@@ -26,10 +26,11 @@
     <ModalForm v-if="showModalEdit" :title="'Modification d\'un utilisateur'" :formSchema="formSchemaEditUser"
       :data="dataEdit" @close="showModalEdit = false" @submit="editUser" />
 
-    <ModalForm v-if="showModalCreat" :title="'Ajout d\'un utilisateur'" :formSchema="formSchemaAdminCreateUser" :size="'lg'"
-      @close=" showModalCreat=false" @submit=" createUserFunc ">
+    <ModalForm v-if="showModalCreat" :title="'Ajout d\'un utilisateur'" :formSchema="formSchemaAdminCreateUser"
+      :size="'lg'" @close=" showModalCreat = false" @submit="createUserFunc">
       <template #footerModal>
-        <Collapsible v-model:open="isOpenCollaps" class="border border-gray-200 rounded-lg right-0 md:right-[34%] w-full sm:w-80 md:w-64 bg-white ">
+        <Collapsible v-model:open="isOpenCollaps"
+          class="border border-gray-200 rounded-lg right-0 md:right-[34%] w-full sm:w-80 md:w-64 bg-white ">
           <div class="flex items-center justify-between space-x-4 px-4">
             <h4 class="text-sm font-semibold">
               Notifications
@@ -41,14 +42,15 @@
               </Button>
             </CollapsibleTrigger>
           </div>
-          
+
           <CollapsibleContent class="w-full ">
             <div class="space-y-4 p-4">
               <p class="text-sm text-gray-500 mb-4">
                 Ces notifications seront envoyées par e-mail et seront également visibles sur notre site.
               </p>
               <div v-for="(pref, key) in userPreferences" :key="key" class="flex items-center justify-between">
-                <label :for="key" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                <label :for="key"
+                  class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                   {{ pref.label }}
                 </label>
                 <Switch v-model:checked="pref.value" :id="key" />
@@ -59,25 +61,13 @@
       </template>
     </ModalForm>
 
-    <confirm-modal
-        v-if="openModal"
-        :data="selectedUser"
-        :title="'Confirmer la suppression de ' + selectedUser?.email + ' ?'"
-        size="sm"
-        @confirm="openModal = false"
-        @close="openModal = false"
-        :action="deleteItem"
-    >
+    <confirm-modal v-if="openModal" :data="selectedUser"
+      :title="'Confirmer la suppression de ' + selectedUser?.email + ' ?'" size="sm" @confirm="openModal = false"
+      @close="openModal = false" :action="deleteItem">
     </confirm-modal>
-    <confirm-modal
-        v-if="openModalMultiple"
-        :data="selectedUsers"
-        :title="'Confirmer la suppression de ' + selectedUsers?.length + ' utilisateurs ?'"
-        size="sm"
-        @confirm="openModalMultiple = false"
-        @close="openModalMultiple = false"
-        :action="deleteItems"
-        >
+    <confirm-modal v-if="openModalMultiple" :data="selectedUsers"
+      :title="'Confirmer la suppression de ' + selectedUsers?.length + ' utilisateurs ?'" size="sm"
+      @confirm="openModalMultiple = false" @close="openModalMultiple = false" :action="deleteItems">
     </confirm-modal>
   </div>
 </template>
@@ -315,17 +305,17 @@ const formSchemaAdminCreateUser: FormField[] = [
     name: "role",
     placeholder: "Choisissez le role",
     schema: z.object({
-        role: z.enum(["user", "admin", "placeholder"], {
-            required_error: requiredMessage,
-            invalid_type_error: "Veuillez choisir un role valide"
-        }).refine(value => value !== "placeholder", {
-            message: "Veuillez choisir un rôle valide"
-        })
+      role: z.enum(["user", "admin", "placeholder"], {
+        required_error: requiredMessage,
+        invalid_type_error: "Veuillez choisir un role valide"
+      }).refine(value => value !== "placeholder", {
+        message: "Veuillez choisir un rôle valide"
+      })
     }),
     col: 2,
     optionsSelect: [
-        { value: "user", label: "Utilisateur" },
-        { value: "admin", label: "Administrateur" },
+      { value: "user", label: "Utilisateur" },
+      { value: "admin", label: "Administrateur" },
     ],
     value: "placeholder",
   },
@@ -436,21 +426,21 @@ async function editUser(newDataForUpdate: Record<string, any>) {
 
 function deleteItem(item: User) {
   deleteUser(item.id)
-  .then(() => {
-    refreshUsers(),
-    notificationStore.add({
-        message: 'L\'utilisateur a été supprimé',
-        timeout: 3000,
-        type: 'success'
-    })
-  })
-  .catch(() => {
-      notificationStore.add({
-          message: 'Impossible de supprimer un administrateur',
+    .then(() => {
+      refreshUsers(),
+        notificationStore.add({
+          message: 'L\'utilisateur a été supprimé',
           timeout: 3000,
-          type: 'error'
+          type: 'success'
+        })
+    })
+    .catch(() => {
+      notificationStore.add({
+        message: 'Impossible de supprimer un administrateur',
+        timeout: 3000,
+        type: 'error'
       });
-  });
+    });
   openModal.value = false
 }
 
@@ -476,12 +466,12 @@ function deleteItems(items: User[]) {
 }
 
 async function createUserFunc(item: User) {
-  let body = { 
-    ...item, 
+  let body = {
+    ...item,
     ...Object.fromEntries(Object.entries(userPreferences).map(([key, value]) => [key, value.value]))
-  };  
-  try {
-    await createUser(body);
+  };
+  const response = await createUser(body);
+  if (response.status == 201) {
     notificationStore.add({
       message: 'L\'utilisateur a été créé',
       timeout: 3000,
@@ -489,8 +479,7 @@ async function createUserFunc(item: User) {
     });
     showModalCreat.value = false;
     refreshUsers();
-    
-  } catch (error) {
+  } else {
     notificationStore.add({
       message: 'Impossible de créer l\'utilisateur',
       timeout: 3000,

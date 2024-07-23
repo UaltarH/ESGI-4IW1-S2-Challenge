@@ -1,6 +1,6 @@
 const MongoOrder = require('../../mongo/models/MongoOrder');
 
-const afterCreateHook = async (shipping, options) => {
+const afterCreateOrUpdateHook = async (shipping, options) => {
     const mongoOrder = await MongoOrder.findOneAndUpdate(
         { postgresId: shipping.OrderId },
         {
@@ -28,5 +28,5 @@ const afterCreateHook = async (shipping, options) => {
 
 
 module.exports = {
-    afterCreateHook,
+    afterCreateOrUpdateHook,
 };

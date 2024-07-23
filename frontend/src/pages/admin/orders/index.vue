@@ -37,7 +37,7 @@
             'user.email': 'Adresse Email',
             'user.phone': 'Numéro de Téléphone',
             orderItems: 'Articles Commandés',
-            'orderItems.orderItemId': 'Identifiant de l\'Article',
+            'orderItems.orderItemId': 'Identifiant de l\'Article de la Commande',
             'orderItems.productId': 'Identifiant du Produit',
             'orderItems.productName': 'Nom du Produit',
             'orderItems.quantity': 'Quantité',

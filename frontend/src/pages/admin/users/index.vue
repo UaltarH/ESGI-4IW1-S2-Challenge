@@ -2,7 +2,7 @@
   <div>
     <h1>Utilisateurs:</h1>
     <CustomizableTable :data="data.datas" :columns="data.columns" :actions="data.actions"
-      :numberOfItemsPerPage="data.numberOfItemsPerPage" :canDeleteAll="false" @visualize-item="handleVisualize"
+      :numberOfItemsPerPage="data.numberOfItemsPerPage" :canDeleteAll="false" :canCreate="true" @visualize-item="handleVisualize"
       @edit-item="handleEdit" @create-item="handleCreate" @delete-item="handleDelete"
       @delete-multiple-items="handleDeleteMultiple"></CustomizableTable>
 

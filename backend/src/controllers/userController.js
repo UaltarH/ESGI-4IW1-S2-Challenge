@@ -159,12 +159,10 @@ class userController {
   }
 
   static async login(req, res) {
-    if (Object.keys(req.body).length > 2) {
-      return res.sendStatus(400);
-    }
-
+    let { email, password } =  req.body;
+    email = email.toLowerCase();
     try {
-      const user = await User.findOne({ where: { email: req.body.email } });
+      const user = await User.findOne({ where: { email } });
 
       if (!user) {
         return res.sendStatus(401);
@@ -174,7 +172,7 @@ class userController {
         return res.sendStatus(403);
       }
 
-      const isPasswordValid = await bcrypt.compare(req.body.password, user.password);
+      const isPasswordValid = await bcrypt.compare(password, user.password);
       if (!isPasswordValid) {
         return res.sendStatus(401);
       }

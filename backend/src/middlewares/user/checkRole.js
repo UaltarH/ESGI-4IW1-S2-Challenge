@@ -63,6 +63,8 @@ const checkRole = () => async (req, res, next) => {
                     return res.sendStatus(403);
                 } else if (req.method === 'DELETE') {
                     // un utilisateur non-admin ne peut supprimer d'utilisateur
+                    if(req.params.id === data.id)
+                        return next();
                     return res.sendStatus(403);
                 } else if (req.method === 'GET') {
                     // un utilisateur non-admin ne peut voir que ses infos

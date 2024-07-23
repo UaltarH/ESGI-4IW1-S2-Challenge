@@ -17,6 +17,7 @@
                  placeholder="Rechercher un produit..."
                  class="search-input"
                  aria-label="Chercher un produit"
+                 maxlength="50"
           />
           <button v-if="searchTerm" @click="clearSearch"
                   class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
@@ -24,7 +25,7 @@
             &times;
           </button>
         </div>
-        <button @click="performSearch" class="search-button" aria-label="Chercher">
+        <button @click="performSearch()" class="search-button" aria-label="Chercher">
           <svg width="24" height="24" viewBox="0 0 24 24" class="stroke-dark-blue dark:stroke-white" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -76,6 +77,22 @@
           </li>
         </ul>
       </div>
+      <Pagination v-slot="{ page }" v-model:page="currentPage" :total="maxProducts" :sibling-count="1" show-edges :default-page="1" class="flex justify-center mt-8">
+        <PaginationList v-slot="{ items }" class="flex items-center gap-1">
+          <PaginationFirst @click="performSearch(1)" class="text-black"/>
+          <PaginationPrev @click="performSearch(page - 1)" class="text-black"/>
+          <template v-for="(item, index) in items" :key="index">
+            <PaginationListItem v-if="item.type === 'page'" :value="item.value" as-child>
+              <Button class="w-10 h-10 p-0 rounded-full bg-primary dark:bg-dark-blue-dark hover:bg-primary-light dark:hover:bg-dark-blue hover:text-white transition duration-150 ease-in-out" :variant="item.value === page ? 'default' : 'outline'" @click="performSearch(item.value)">
+                {{ item.value }}
+              </Button>
+            </PaginationListItem>
+            <PaginationEllipsis v-else :key="item.type" :index="index" />
+          </template>
+          <PaginationNext @click="performSearch(page + 1)" class="text-black"/>
+          <PaginationLast @click="performSearch(Math.ceil(maxProducts / maxProductsPerPage))" class="text-black"/>
+        </PaginationList>
+      </Pagination>
     </div>
   </Transition>
 </template>
@@ -88,6 +105,14 @@
   import { ref, onMounted, watchEffect } from "vue";
   import { useRouter, useRoute } from "vue-router";
   import { mongoProduct } from "@/dto/MongoProduct.dto";
+  import {
+    Pagination,
+    PaginationEllipsis, PaginationFirst,
+    PaginationLast,
+    PaginationList, PaginationListItem,
+    PaginationNext, PaginationPrev
+  } from "@/components/ui/pagination";
+  import {Button} from "@/components/ui/button";
   
   const { getSearch } = useSearchBarManagement();
   const { getCategories } = CategoriesService();
@@ -117,7 +142,11 @@
   const open = ref(false);
   const searchContainer = ref<HTMLElement | null>(null);
   const isToggled = ref(false);
-  
+
+  const maxProductsPerPage = 9;
+  const maxProducts = ref(0);
+  const currentPage = ref(1);
+
   const navigateToProduct = (id: string) => {
     router.push(`/product/${id}`).then(() => {
       isToggled.value = false;
@@ -129,12 +158,23 @@
       return price.toFixed(2);
   }
   
-  const performSearch = () => {
-    getSearch(searchTerm.value, categoryName.value, stock.value)
+  const performSearch = (page?:number) => {
+    if (page) {
+      currentPage.value = page;
+    }
+    let params = {
+      search: encodeURIComponent(searchTerm.value),
+      category: encodeURIComponent(categoryName.value),
+      stock: encodeURIComponent(stock.value),
+      page: currentPage.value,
+      limit: maxProductsPerPage
+    }
+    getSearch(params)
       .then(response => {
         products.value = response.products as mongoProduct[];
+        maxProducts.value = response.totalCount;
         if(searchTerm.value || categoryName.value || stock.value) {
-          router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+          router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value), page: currentPage.value } });
         }
       })
       .catch(error => {
@@ -193,8 +233,8 @@ const selectCategory = (name: string) => {
 
       if(searchTerm.value || categoryName.value || stock.value) {
         router.push({ query: { search: searchTerm.value, category: categoryName.value, stock: encodeURIComponent(stock.value) } });
+        performSearch();
       }
-      performSearch();
     }, 100);
   });
 

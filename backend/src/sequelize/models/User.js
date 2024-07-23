@@ -2,6 +2,7 @@ const { Model, DataTypes } = require("sequelize");
 const { afterUpdateHook, afterDeleteHook } = require("../hooks/UsersHooks");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
+const { normalizeString } = require("../../services/cleanUtils");
 
 module.exports = function (sequelize, DataTypes) {
   class User extends Model {
@@ -16,6 +17,7 @@ module.exports = function (sequelize, DataTypes) {
         user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());
         user.verification_token = uuidv4();
         user.is_verified = false;
+        user.email = normalizeString(user.email).toLowerCase();
       });
       User.addHook("beforeUpdate", async (user, { fields }) => {
         if (fields.includes("password")) user.password = await bcrypt.hash(user.password, await bcrypt.genSalt());

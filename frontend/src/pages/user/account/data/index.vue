@@ -185,10 +185,7 @@ const accountSchema:FormField<any>[] = [
     name: "password",
     placeholder: "Entrez votre mot de passe",
     schema: z.object({
-      password: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })
-          .min(12, { message: "Le mot de passe doit contenir au moins 12 caractères" })
-          .max(32, { message: "Le mot de passe doit contenir au maximum 32 caractères" })
-          .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{12,32}$/, { message: "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (@,$,!,%,*,?,&)" }),
+      password: z.string({ required_error: requiredMessage, invalid_type_error: invalidStringMessage })          
     }),
     col: 2,
   },

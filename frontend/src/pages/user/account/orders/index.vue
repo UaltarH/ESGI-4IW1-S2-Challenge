@@ -12,10 +12,11 @@
       <div class="flex flex-col justify-start items-start">
         <div v-for="order in orders" :key="order._id" class="flex flex-col justify-start items-start px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
           <div class="w-full flex flex-col justify-start items-start space-y-8 p-6 bg-white rounded-lg shadow-md dark:bg-dark-blue-dark">
-            <div class="w-full flex flex-row align-middle justify-between">
+            <div class="w-full flex flex-row align-middle justify-between items-center">
               <span class="text-xl dark:text-white font-semibold text-gray-800">
                 Commande {{ order.orderNumber }}
               </span>
+              <stepperStatusOrder :statuses="order.status" class="my-4"</stepperStatusOrder>
               <button 
                 @click="onCreateFacture(order)" 
                 class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600"
@@ -54,6 +55,7 @@ import { OrdersService } from "@/composables/api/orders/orders.service";
 import { mongoOrder } from '@/dto/MongoOrder.dto';
 import { useUserStore } from "@/stores/user.ts";
 import { usePdfGenerator } from '@/composables/order/generatePdfInvoice';
+import stepperStatusOrder  from '@/components/common/stepperStatusOrder.vue';
 
 const orders = ref<mongoOrder[]>([]);
 const currentPage = ref(1);

@@ -59,13 +59,25 @@
       </template>
     </ModalForm>
 
-    <confirm-modal v-if=" openModal " :data=" selectedUser "
-      :title=" 'Confirmer la suppression de ' + selectedUser?.email + ' ?' " size="sm" @confirm=" deleteUserFunc "
-      @close="openModal = false">
+    <confirm-modal
+        v-if="openModal"
+        :data="selectedUser"
+        :title="'Confirmer la suppression de ' + selectedUser?.email + ' ?'"
+        size="sm"
+        @confirm="openModal = false"
+        @close="openModal = false"
+        :action="deleteItem"
+    >
     </confirm-modal>
-    <confirm-modal v-if=" openModalMultiple " :data=" selectedUsers "
-      :title=" 'Confirmer la suppression de ' + selectedUsers?.length + ' utilisateurs ?' " size="sm"
-      @confirm=" deleteUsers " @close="openModalMultiple = false">
+    <confirm-modal
+        v-if="openModalMultiple"
+        :data="selectedUsers"
+        :title="'Confirmer la suppression de ' + selectedUsers?.length + ' utilisateurs ?'"
+        size="sm"
+        @confirm="openModalMultiple = false"
+        @close="openModalMultiple = false"
+        :action="deleteItems"
+        >
     </confirm-modal>
   </div>
 </template>
@@ -423,8 +435,11 @@ async function editUser(newDataForUpdate: Record<string, any>) {
   }
 }
 
-function deleteUserFunc(user: User) {
-  deleteUser(user.id)
+function deleteUserFunc() {
+  if (!selectedUser.value) {
+    return;
+  }
+  deleteUser(selectedUser.value.id)
     .then(() => {
       refreshUsers();
       notificationStore.add({
@@ -442,11 +457,31 @@ function deleteUserFunc(user: User) {
     });
   openModal.value = false
 }
+function deleteItem(item: User) {
+  deleteUser(item.id)
+  .then(() => {
+    refreshUsers(),
+    notificationStore.add({
+        message: 'L\'utilisateur a été supprimé',
+        timeout: 3000,
+        type: 'success'
+    })
+  })
+  .catch(() => {
+      notificationStore.add({
+          message: 'Impossible de supprimer un administrateur',
+          timeout: 3000,
+          type: 'error'
+      });
+  });
+  openModal.value = false
+}
 
-function deleteUsers(items: User[]) {
+function deleteItems(items: User[]) {
   deleteBatchUsers(items)
     .then(() => {
       refreshUsers();
+      openModalMultiple.value = false;
       notificationStore.add({
         message: 'Les utilisateurs ont été supprimés',
         timeout: 3000,
@@ -459,9 +494,32 @@ function deleteUsers(items: User[]) {
         timeout: 3000,
         type: 'error'
       });
+      openModalMultiple.value = false;
     });
-  openModalMultiple.value = false;
 }
+
+// function deleteUsers() {
+//   if (!selectedUsers.value) {
+//     return;
+//   }
+//   deleteBatchUsers(selectedUsers.value)
+//     .then(() => {
+//       refreshUsers();
+//       notificationStore.add({
+//         message: 'Les utilisateurs ont été supprimés',
+//         timeout: 3000,
+//         type: 'success'
+//       });
+//     })
+//     .catch(() => {
+//       notificationStore.add({
+//         message: 'Impossible de supprimer un administrateur',
+//         timeout: 3000,
+//         type: 'error'
+//       });
+//     });
+//   openModalMultiple.value = false;
+// }
 
 async function createUserFunc(item: User) {
   let body = { 

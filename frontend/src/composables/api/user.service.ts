@@ -80,7 +80,7 @@ export const UserService = () => {
             throw new Error('Impossible de supprimer un administrateur');
         }
     
-        const response = await fetch(`${baseUrl}/${Api.user}`, {
+        const response = await fetch(`${baseUrl}${Api.user}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',

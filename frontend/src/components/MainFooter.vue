@@ -6,8 +6,25 @@
         <div class=" text-right">
           <ul>
             <li>
-              <a class="flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 hover:bg-gray-50 dark:hover:bg-dark-blue-dark inline-flex items-center" aria-label="BoxToBe sur X" href="https://x.com/" rel="noopener noreferrer" target="_blank">
-              <x class="fill-black dark:fill-white"></x>
+              <RouterLink
+                class="flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 hover:bg-gray-50 dark:hover:bg-dark-blue-dark inline-flex items-center"
+                aria-label="BoxToBe sur Facebook" to="/privacy-policy"> Politique de
+                confidentialité</RouterLink>
+            </li>
+            <li>
+              <RouterLink
+                class="flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 hover:bg-gray-50 dark:hover:bg-dark-blue-dark inline-flex items-center"
+                aria-label="BoxToBe sur Twitter" to="/general-conditions-of-sale"> CGV</RouterLink>
+            </li>
+            <li>
+              <RouterLink
+                class="flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 hover:bg-gray-50 dark:hover:bg-dark-blue-dark inline-flex items-center"
+                aria-label="BoxToBe sur Instagram" to="/terms-and-conditons"> Mentions légales</RouterLink>
+            </li>
+            <li>
+              <a class="flex-shrink-0 font-medium rounded-md text-sm gap-x-1.5 p-1.5 hover:bg-gray-50 dark:hover:bg-dark-blue-dark inline-flex items-center"
+                aria-label="BoxToBe sur X" href="https://x.com/" rel="noopener noreferrer" target="_blank">
+                <x class="fill-black dark:fill-white"></x>
               </a>
             </li>
           </ul>
@@ -18,4 +35,5 @@
 </template>
 <script setup lang="ts">
 import X from "@/components/icons/x.vue";
+import { RouterLink } from "vue-router";
 </script>

@@ -14,7 +14,7 @@
 import Cookies from "js-cookie";
 import CookiesContent from "@/components/Cookies/CookiesContent.vue";
 import LogoWithText from "@/components/icons/logoWithText.vue";
-import {onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 
 const isCookiesReviewed = ref(false);
 
@@ -28,7 +28,6 @@ function handleAcceptCookies() {
   isCookiesReviewed.value = true;
 }
 function handleRefuseCookies() {
-  Cookies.set("accept-cookies", "false", { expires: 30 });
-  isCookiesReviewed.value = true;
+  window.location.href = "https://www.google.com";
 }
 </script>

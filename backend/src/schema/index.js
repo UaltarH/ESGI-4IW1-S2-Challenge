@@ -11,6 +11,7 @@ const createCartByGuestSchema = require("./cart/createCartByGuest.schema.js");
 const dashboardConfigSchema = require("./dashboard/dashboard.schema.js");
 const createProductSchema = require("./product/createProduct.schema.js");
 const updateProductSchema = require("./product/updateProduct.schema.js");
+const checkPasswordSchema = require("./user/checkPassword.schema.js");
 
 module.exports = {
     userUpdateByUserSchema,
@@ -26,4 +27,5 @@ module.exports = {
     dashboardConfigSchema,
     createProductSchema,
     updateProductSchema,
+    checkPasswordSchema,
 };

@@ -220,6 +220,19 @@ class userController {
       return res.sendStatus(500);
     }
   }
+  static async checkUser(req, res, next) {
+    const { UserId, password } = req.body;
+    const { data: user, error } = await crudService.findByPk(User, UserId);
+    if(UserId !== user.id)
+      return res.sendStatus(403);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.sendStatus(401);
+    }
+    else {
+      return res.sendStatus(200);
+    }
+  }
 }
 
 module.exports = userController;

@@ -1,5 +1,5 @@
 import {Api} from "@/composables/api/routesApi.ts";
-import { createUser, User } from '@/dto/user.dto';
+import { User } from '@/dto/user.dto';
 
 const baseUrl = import.meta.env.VITE_APP_API_URL;
 
@@ -52,7 +52,18 @@ export const UserService = () => {
             }
         }).then(res => handler(res));
     }
-
+    const checkUser = async(UserId: string, password: string) => {
+        const token = localStorage.getItem('auth_token');
+        if(token === null) throw new Error('Error while identifying user');
+        return await fetch(baseUrl + `${Api.user}` + `/check`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ UserId, password })
+        });
+    }
     const deleteUser = async (id: string) => {
         const token = localStorage.getItem('auth_token');
         if(token === null) throw new Error('Error while deleting user');
@@ -101,19 +112,17 @@ export const UserService = () => {
         try {
             const token = localStorage.getItem('auth_token');
             if(token === null) throw new Error('Error while getting orders');
-            const response = await fetch(baseUrl + Api.user, {
+            return await fetch(baseUrl + Api.user, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
                 body: JSON.stringify(bodyRequest)
-            });            
-        
-            return response;
+            });
         } catch (err) {
             throw err;
         }
     }
-    return { getUserById, getUsers, updateUser, deleteUser, deleteBatchUsers, createUser }
+    return { checkUser, getUserById, getUsers, updateUser, deleteUser, deleteBatchUsers, createUser }
 }

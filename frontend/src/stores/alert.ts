@@ -86,7 +86,13 @@ export const useAlertStore = defineStore('alert', () => {
         console.error('Failed to remove notification:', err);
       });
   }
+  function $reset() {
+    userNotifications.value = [];
+    adminNotifications.value = [];
+    isLoading.value = false;
+    error.value = null;
 
+  }
   return {
     userNotifications,
     adminNotifications,
@@ -96,6 +102,7 @@ export const useAlertStore = defineStore('alert', () => {
     adminUnreadCount,
     fetchNotifications,
     markAsRead,
-    removeNotification
+    removeNotification,
+    $reset,
   };
 });

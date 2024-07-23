@@ -6,6 +6,7 @@ import { jwtDecode, JwtPayload } from "jwt-decode";
 import { useRouter } from "vue-router";
 import { useNotificationStore} from "@/stores/notification.ts";
 import {useCartStore} from "@/stores/cart.ts";
+import {useAlertStore} from "@/stores/alert.ts";
 
 const { loginUser } = useAuth();
 
@@ -52,7 +53,19 @@ export const useUserStore = defineStore(('user'), () => {
             handler(res.status);
         }
     }
-    return { token, user, login, logout }
+
+    function deleteUser() {
+        const cartStore = useCartStore();
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('cartId');
+        token.value = null;
+        cartStore.$reset();
+        const alertStore = useAlertStore();
+        alertStore.$reset();
+
+        window.location = '/';
+    }
+    return { token, user, login, logout, deleteUser }
 });
 
 if (import.meta.hot) {

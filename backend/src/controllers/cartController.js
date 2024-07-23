@@ -44,6 +44,9 @@ class cartController {
                 where: { id: req.params.id },
                 include: {
                     model: Cart_item,
+                    include: {
+                        model: Product,
+                    },
                 },
             });
 

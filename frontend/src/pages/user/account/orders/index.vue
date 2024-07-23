@@ -10,9 +10,19 @@
     </div>
     <div class="flex-1 overflow-auto max-h-screen">
       <div class="flex flex-col justify-start items-start">
-        <div v-for="order in orders" :key="order._id" class="flex flex-col justify-start items-start dark:bg-gray-800 bg-gray-50 px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
-          <div class="w-full flex flex-col justify-start items-start space-y-8">
-            <h3 class="text-xl dark:text-white xl:text-2xl font-semibold leading-6 text-gray-800">Commande {{ order.orderNumber }}</h3>
+        <div v-for="order in orders" :key="order._id" class="flex flex-col justify-start items-start px-4 py-4 md:py-6 md:p-6 xl:p-8 w-full">
+          <div class="w-full flex flex-col justify-start items-start space-y-8 p-6 bg-white rounded-lg shadow-md dark:bg-dark-blue-dark">
+            <div class="w-full flex flex-row align-middle justify-between">
+              <span class="text-xl dark:text-white font-semibold text-gray-800">
+                Commande {{ order.orderNumber }}
+              </span>
+              <button 
+                @click="onCreateFacture(order)" 
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600"
+              >
+                Générer la facture
+              </button>
+            </div>
             <div class="flex justify-start items-start flex-col space-y-2">
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Date: </span>{{ new Date(order.date).toLocaleDateString() }}</p>
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Total: </span>{{ order.payment.amount.toFixed(2) }}€</p>
@@ -43,15 +53,19 @@ import AccountSideMenu from "@/components/AccountSideMenu.vue";
 import { OrdersService } from "@/composables/api/orders/orders.service";
 import { mongoOrder } from '@/dto/MongoOrder.dto';
 import { useUserStore } from "@/stores/user.ts";
+import { usePdfGenerator } from '@/composables/order/generatePdfInvoice';
 
 const orders = ref<mongoOrder[]>([]);
 const currentPage = ref(1);
 const totalPages = ref(0);
 const userStore = useUserStore();
 
+const { generatePdfFromOrder } = usePdfGenerator();
+
 const fetchOrders = async (page: number = 1) => {
   try {
     const response = await OrdersService().getSpecificMongoOrder(userStore.user.id, page);
+    // const response = await OrdersService().getSpecificMongoOrder("84fea277-37ad-480c-a9bd-6ee865ecc114", page);
     orders.value = response.orders;
     currentPage.value = response.currentPage;
     totalPages.value = response.totalPages;
@@ -59,6 +73,10 @@ const fetchOrders = async (page: number = 1) => {
     console.error(error);
   }
 };
+
+async function onCreateFacture(item: mongoOrder) {    
+  generatePdfFromOrder(item);    
+}
 
 const nextPage = () => {
   if (currentPage.value < totalPages.value) {

@@ -28,6 +28,10 @@
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Date: </span>{{ new Date(order.date).toLocaleDateString() }}</p>
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Total: </span>{{ order.payment.amount.toFixed(2) }}€</p>
               <p class="text-sm dark:text-white leading-none text-gray-800"><span class="dark:text-gray-400 text-gray-300">Statut: </span>{{ order.status.sort((a, b) => new Date(b.date) - new Date(a.date))[0].status }}</p>
+              <p v-if="order.shipping && order.shipping.trackingNumber" class="text-sm dark:text-white leading-none text-gray-800">
+                <span class="dark:text-gray-400 text-gray-300">Livraison No. </span>
+                {{ order.shipping.trackingNumber }}
+              </p>
             </div>
             <div class="w-full">
               <h4 class="text-lg dark:text-white xl:text-xl font-semibold leading-6 text-gray-800">Articles</h4>

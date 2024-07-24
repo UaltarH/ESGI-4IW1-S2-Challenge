@@ -6,7 +6,6 @@ class DashboardController {
         try {
             let widgetsRes = [];
             const widgets = await MongoDashboardConfig.find();
-            console.log(widgets);
             for (let widget of widgets) {
                 const chartData = await ChartDataService.getChartData(widget.dataSource, widget.indexData, widget.categoriesData[0]);
                 widgetsRes.push({
@@ -24,7 +23,6 @@ class DashboardController {
 
             res.json({ widgets: widgetsRes });
         } catch (error) {
-            console.log(error);
             res.sendStatus(500);
         }
     }
@@ -106,7 +104,6 @@ class DashboardController {
                 message: "Widgets updated successfully",
             });
         } catch (error) {
-            console.error('Error updating widgets:', error);
             res.status(500).json({ message: "An error occurred while updating widgets", error: error.message });
         }
     }

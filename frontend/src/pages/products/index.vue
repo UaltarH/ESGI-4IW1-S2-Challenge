@@ -169,7 +169,12 @@ const onSliderChange = () => {
 };
 
 const getImageUrl = (product: any) => {
-  return 'https://via.placeholder.com/150';
+  const images = [
+    '/products/exemple/cartonExemple.png',
+    '/products/exemple/cat.png',
+    '/products/exemple/snake.png',
+  ];
+  return images[Math.floor(Math.random() * images.length)];
 };
 
 

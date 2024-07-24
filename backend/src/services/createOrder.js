@@ -49,7 +49,6 @@ const createOrderTransac = async (userId, date, orderItemsInput, total, stripeSe
 
 
     } catch (error) {
-        console.log(error);
         await transaction.rollback();
         return;
     }

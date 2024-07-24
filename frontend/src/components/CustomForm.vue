@@ -40,7 +40,7 @@
         </template>
       </form-item>
       <footer class="w-full mt-4 flex flex-col items-center gap-4">
-        <div class=" flex justify-center gap-4">
+        <div class=" flex justify-center gap-4 flex-wrap">
           <button type="submit" class="btn btn--primary" :class="props.disabled ? 'btn--disabled' : ''" @click="handleSubmit" :disabled="props.disabled">{{ submitText }}</button>
           <button v-if="showReset" type="reset" class="btn btn--danger" :class="props.disabled ? 'btn--disabled' : ''" @click="handleReset" :disabled="props.disabled">Reset</button>
           <slot name="footer"></slot>

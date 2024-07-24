@@ -124,5 +124,35 @@ export const UserService = () => {
             throw err;
         }
     }
-    return { checkUser, getUserById, getUsers, updateUser, deleteUser, deleteBatchUsers, createUser }
+    const resetPasswordRequest = async (email: string) => {
+        const token = localStorage.getItem('auth_token');
+        if(token !== null) throw new Error('Error while resetting password');
+        return await fetch(baseUrl + Api.password, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({email})
+        });
+    }
+    const verifyResetToken = async (token: string) => {
+        return await fetch(baseUrl + Api.password + `/${token}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+    }
+    const resetPassword = async(token: string, password:string) => {
+        const jwt = localStorage.getItem('auth_token');
+        if(jwt !== null) throw new Error('Error while resetting password');
+        return await fetch(baseUrl + Api.password, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({token, password} )
+        });
+    }
+    return { checkUser, getUserById, getUsers, updateUser, deleteUser, deleteBatchUsers, createUser, resetPasswordRequest, resetPassword, verifyResetToken };
 }

@@ -36,7 +36,6 @@ export const useCartStore = defineStore('cart', () => {
     return (item.price * item.quantity).toFixed(2);
   }
   async function init(item: CartItem) {
-    console.log('init cart');
     rawItems.value = [item];
     const userStore = useUserStore();
     if(!userStore.user.id) {
@@ -45,10 +44,8 @@ export const useCartStore = defineStore('cart', () => {
     else {
       await initLoggedIn();
     }
-    console.log('cart initialized');
   }
   async function initNotLoggedIn() {
-    console.log('init not logged in');
     await createCartNoUser(rawItems.value!).then((res) => {
       if(res.status === 201) {
         res.json().then((data) => {
@@ -61,12 +58,10 @@ export const useCartStore = defineStore('cart', () => {
     });
   }
   async function initLoggedIn() {
-    console.log('init logged in');
     const userStore = useUserStore();
     await createCart(rawItems.value!, userStore.user.id).then((res) => {
       if (res.status === 201) {
         res.json().then((data) => {
-          console.log('cart created : ', data);
           id.value = data.cart.id;
         }).catch((e) => {
           console.error(e);
@@ -75,20 +70,16 @@ export const useCartStore = defineStore('cart', () => {
     });
   }
   async function mergeOrLinkCart() {
-    console.log('>>> merging or linking cart');
     const userStore = useUserStore();
     // get cart from db, if no cart check local storage
     await getCartByUserId(userStore.user.id).then(async (res) => {
       if (res.status === 200) {
-        console.log('cart found in db');
         res.json().then(async (data) => {
           await mergeCarts(data);
         });
       } else {
-        console.log('cart not found in db');
         const localCartId = localStorage.getItem('cartId');
         if (localCartId) {
-          console.log('cart id found, updating UserId of cart ...');
           await linkCartToUser(userStore.user.id, localCartId).then(() => {
 
             id.value = localCartId;
@@ -98,10 +89,8 @@ export const useCartStore = defineStore('cart', () => {
     });
   }
   async function mergeCarts(data :{cart: {id: string, Cart_items: CartItemResponse[]}}) {
-    console.log('>>> merging carts');
     const oldCartId = localStorage.getItem('cartId');
     localStorage.removeItem('cartId');
-    console.log('guest cart ? ', oldCartId);
     const cartItemsFromDb: CartItem[] = data.cart.Cart_items.map((item: CartItemResponse) => {
       return {
         postgresId: item.ProductId,
@@ -114,7 +103,6 @@ export const useCartStore = defineStore('cart', () => {
     });
     id.value = data.cart.id;
     if (oldCartId) {
-      console.log('cart found in local, merging ...');
       rawItems.value!.forEach((item) => {
         const existingItem = cartItemsFromDb.find((it) => it.postgresId === item.postgresId);
         if (existingItem) {
@@ -123,11 +111,9 @@ export const useCartStore = defineStore('cart', () => {
           cartItemsFromDb.push(item);
         }
       });
-      console.log('updating cart in db after merge : ', cartItemsFromDb);
       rawItems.value = cartItemsFromDb;
       await updateCartInDb().then(async () => {
         await linkCartToUser(useUserStore().user.id, oldCartId);
-        console.log('deleting old cart : ', oldCartId);
         await deleteCart(oldCartId!);
       });
     } else rawItems.value = cartItemsFromDb;
@@ -135,7 +121,6 @@ export const useCartStore = defineStore('cart', () => {
   async function linkCartToUser(userId: string, cartId:string) {
     await updateCartUser(cartId, userId).then(async (res) => {
       if (res.status === 204) {
-        console.log('cart successfully updated with UserId');
         localStorage.removeItem('cartId');
       }
     });
@@ -143,7 +128,6 @@ export const useCartStore = defineStore('cart', () => {
   async function getGuestCartItems(cartId: string) {
     await getCart(cartId).then((res: Response) => {
       if (res.status === 200) {
-        console.log('guest cart found in db');
         return res.json().then((data) => {
           rawItems.value = data.cart.Cart_items.map((item: CartItemResponse) => {
             return {
@@ -162,33 +146,25 @@ export const useCartStore = defineStore('cart', () => {
     });
   }
   async function addToCart(item: CartItem) {
-    console.log('>>> adding item to cart');
     if(!id.value) {
-      console.log('no cart id found, initializing cart ...');
       await init(item);
     } else {
       item.quantity = cleanQuantity(item.quantity);
       let existingItem = rawItems.value!.find((it) => it.postgresId === item.postgresId)
       if (existingItem) {
-        console.log('item already in cart, updating quantity');
         await updateQuantity(item.postgresId, existingItem.quantity + item.quantity);
       } else {
-        console.log('item not in cart, adding to cart');
         rawItems.value!.push(item);
         await updateCartInDb();
       }
     }
   }
   async function updateQuantity(postgresId: string, quantity: number) {
-    console.log('>>> updating quantity of item in cart');
     const existingItem = rawItems.value!.find((item) => item.postgresId === postgresId)
     if (existingItem) {
-      console.log('item found in cart');
       if(quantity <= 0) {
-        console.log('quantity is 0, removing item from cart');
         await removeFromCart(postgresId)
       } else {
-        console.log('updating quantity of item in cart');
         existingItem.quantity = cleanQuantity(quantity);
         await updateCartInDb();
       }
@@ -197,20 +173,17 @@ export const useCartStore = defineStore('cart', () => {
     }
   }
   async function removeFromCart(postgresId: string) {
-    console.log('>>> removing item from cart');
     rawItems.value = rawItems.value!.filter((item) => item.postgresId !== postgresId)
     if(rawItems.value.length === 0) await deleteCartFromDb();
     else await updateCartInDb();
   }
 
   async function deleteCartFromDb() {
-    console.log('>>> deleting cart');
     await deleteCart(id.value!);
     $reset();
   }
 
   async function updateCartInDb() {
-    console.log('>>> updating cart in db : ', id.value);
     await updateCartWithProduct(id.value!, rawItems.value!);
   }
   function cleanQuantity(quantity: number) {

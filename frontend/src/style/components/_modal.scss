@@ -8,6 +8,7 @@
     bg-white dark:bg-dark-blue-dark shadow-lg rounded-md p-4
     flex flex-col justify-between items-center
     ring-1 ring-inset ring-gray-300 dark:ring-gray-700
+    overflow-y-scroll max-h-[80vh]
     z-50;
 
     &--md {

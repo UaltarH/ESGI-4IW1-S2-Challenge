@@ -12,4 +12,5 @@ export const Api = {
   cartByUser: "/carts/user/",
   userPref: '/userPref',
   notification: '/notif',
+  password: '/password',
 };

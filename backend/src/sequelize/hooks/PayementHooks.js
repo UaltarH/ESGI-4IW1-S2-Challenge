@@ -19,7 +19,6 @@ const afterCreateHook = async (payment, options) => {
         return;
     }
 
-    console.log(`MongoOrder updated: ${mongoOrder}`);
 };
 
 

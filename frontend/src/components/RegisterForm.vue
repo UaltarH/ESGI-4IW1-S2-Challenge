@@ -1,10 +1,11 @@
 <template>
   <section class="py-24 mx-12 mb-12">
     <Form ref="formRef" :schema="formSchema" @submit="handleSubmit" :disabled="formDisabled" :loading="formLoading"
+      submitText="S'inscrire"
       :show-reset="true" >
       <template #footer>
         <div class="relative w-[390px]">
-          <Collapsible v-model:open="isOpenCollaps" class="border border-gray-200 rounded-lg absolute right-0 md:right-[34%] w-full sm:w-80 md:w-64 bg-white ">
+          <Collapsible v-model:open="isOpenCollaps" class="border border-gray-200 rounded-lg absolute right-0 md:right-[34%] w-full sm:w-80 md:w-64 bg-white dark:bg-dark-blue-dark">
             <div class="flex items-center justify-between space-x-4 px-4">
               <h4 class="text-sm font-semibold">
                 Notifications
@@ -17,7 +18,7 @@
               </CollapsibleTrigger>
             </div>
             
-            <CollapsibleContent class="w-full ">
+            <CollapsibleContent class="w-full dark:bg-dark-blue-dark">
               <div class="space-y-4 p-4">
                 <p class="text-sm text-gray-500 mb-4">
                   Ces notifications seront envoyées par e-mail et seront également visibles sur notre site.
@@ -247,7 +248,6 @@ const fetchRegister = async (param: { [key: string]: string | number | Date | bo
 
 function handleRegister(res: Response) {
   if (res.status === 201) {
-    console.log("User registered");
     formLoading.value = false;
     notificationStore.add({ message: 'Inscription réussie, un email de vérification vient de vous être envoyé', timeout: 3000, type: 'success' });
     // Ignore the warning :  formRef.value will hold an instance of <CustomForm> after the form is mounted (cf: template refs doc)

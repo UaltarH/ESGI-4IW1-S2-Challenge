@@ -23,7 +23,7 @@
         <button 
           type="button" 
           @click="handleSubmit" 
-          class="btn btn--confirm hover:bg-blue-600" 
+          class="btn btn--confirm"
           aria-label="confirmer modal"
         >
           {{ confirmText }}

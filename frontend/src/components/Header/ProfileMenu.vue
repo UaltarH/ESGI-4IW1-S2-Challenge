@@ -35,9 +35,5 @@ import {computed} from "vue";
 const { profileMenuItems } = useMenuItems();
 const userStore = useUserStore();
 const isConnected = computed(() => !!userStore.user.id);
-// userStore.$subscribe((state) => {
-//   isConnected.value = !!state.events.newValue;
-// });
-// let isConnected = ref(!!userStore.user.id);
 const emit = defineEmits(["close"]);
 </script>

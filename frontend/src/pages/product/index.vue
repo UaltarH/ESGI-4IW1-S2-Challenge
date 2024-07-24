@@ -63,11 +63,9 @@ watch(() => route.params.id, async () => {
 });
 
 const imageUrls = [
-  'https://placehold.co/150',
-  'https://placehold.co/600x400',
-  'https://placehold.co/600x400',
-  'https://placehold.co/600x400',
-  'https://placehold.co/600x400'
+  '/products/exemple/cartonExemple.png',
+  '/products/exemple/cat.png',
+  '/products/exemple/snake.png',
 ];
 
 const fetchProduct = async () => {

@@ -7,6 +7,15 @@ import Autoplay from 'embla-carousel-autoplay'
 defineProps<{
   contents: mongoProduct[];
 }>()
+
+const getImageUrl = () => {
+  const images = [
+    '/products/exemple/cartonExemple.png',
+    '/products/exemple/cat.png',
+    '/products/exemple/snake.png',
+  ];
+  return images[Math.floor(Math.random() * images.length)];
+};
 </script>
 
 <template>
@@ -24,7 +33,7 @@ defineProps<{
         <div class="p-1">
           <RouterLink :to="`/product/${content._id}`">
             <ProductCard          
-            :image="'https://via.placeholder.com/150'"
+            :image="getImageUrl()"
             :name="content.name"
             :description="content.description"
             :price="content.price"

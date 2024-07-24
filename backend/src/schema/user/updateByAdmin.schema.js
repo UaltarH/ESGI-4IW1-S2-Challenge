@@ -18,7 +18,8 @@ const updateByAdminSchema = z.object({
 
   birthdate: z.coerce.date({ required_error: requiredMessage, invalid_type_error: invalidDateMessage })
     .min(minDate, { message: "Vous devez avoir au maximum 120 ans" })
-    .max(maxDate, { message: "Vous devez avoir au moins 18 ans" }),
+    .max(maxDate, { message: "Vous devez avoir au moins 18 ans" })
+    .optional(),
 
   address: z.string({ invalid_type_error: invalidStringMessage })
     .min(5, { message: "L'adresse doit contenir au moins 5 caractères" })

@@ -59,6 +59,7 @@ const checkRole = () => async (req, res, next) => {
                 if (req.method === 'PATCH') {
                     const isPasswordValid = await bcrypt.compare(req.body.password, data.password);
                     if (!isPasswordValid) {
+                        console.error("wrong password")
                         return res.sendStatus(401);
                     }
                     // un utilisateur non-admin ne peut modifier que certaines infos, même de son compte
@@ -85,6 +86,7 @@ const checkRole = () => async (req, res, next) => {
                 return res.sendStatus(401);
             }
         } else {
+            console.error("basic error")
             return res.sendStatus(401);
         }
     }

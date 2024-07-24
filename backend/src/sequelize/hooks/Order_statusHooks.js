@@ -18,8 +18,6 @@ const afterCreateHook = async (order_status, options) => {
         console.error(`MongoOrder with postgresId ${order_item.OrderId} not found`);
         return;
     }
-
-    console.log(`MongoOrder updated: ${mongoOrder}`);
 };
 
 

@@ -22,7 +22,7 @@ const appHistorySchema = new mongoose.Schema({
             default: "user",
         },
     },
-    ordersDeleted: [
+    ordersAnonymized: [
         {
             orderId: String,
             orderNumber: String,

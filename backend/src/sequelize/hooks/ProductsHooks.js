@@ -2,8 +2,6 @@ const MongoProduct = require('../../mongo/models/MongoProduct');
 const { createNotification } = require('../../services/notificationService');
 
 const afterCreateHook = (models) => async (product, options) => {
-    console.log('afterCreateHook', options);
-
     const category = await product.getCategory();
     await MongoProduct.create({
         postgresId: product.id,
@@ -48,8 +46,6 @@ const afterUpdateHook = (models) => async (product, options) => {
         return;
     }
 
-    console.log(`MongoProduct updated: ${mongoProduct}`);
-
     // notifications    
     if (oldProduct.stock <= 0 && product.stock > 0) {
         await createNotification('user', 'restockProduct', product, () => models);
@@ -73,8 +69,6 @@ const afterDestroyHook = async (product, options) => {
         console.error(`MongoProduct with postgresId ${product.id} not found`);
         return;
     }
-
-    console.log(`MongoProduct deleted: ${mongoProduct}`);
 };
 
 module.exports = {

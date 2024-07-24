@@ -15,13 +15,11 @@ export const useDarkMode = () => {
             throw new Error("Dark mode toggle not found");
         }
         if(isToggled === undefined) {
-            console.log("Manually toggling dark mode");
             html.classList.toggle("dark");
             toggle.classList.toggle("dark");
             return html.classList.contains("dark");
         }
         else {
-            console.log("Applying dark mode preference");
             if(isToggled) {
                 html.classList.add("dark");
                 if(!toggle.classList.contains("dark"))

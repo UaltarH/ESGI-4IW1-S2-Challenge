@@ -82,7 +82,7 @@
         <p>En utilisant notre site internet, vous reconnaissez accepter également les conditions générales d'utilisation
             de notre partenaire Stripe, disponibles à l'adresse suivante :</p>
         <br>
-        <p><a href="#">Stripe Services Agreement — France</a></p>
+        <p><a href="https://stripe.com/fr/legal/ssa" target="_blank">https://stripe.com/fr/legal/ssa</a></p>
 
         <br>
 
@@ -138,8 +138,8 @@
             le concernant. Pour exercer ce droit, le Client peut envoyer un e-mail à dpo@boxtobe.fr.</p>
         <br>
         <p>Vous pouvez consulter notre politique de confidentialité à l'adresse suivante : <a
-                href="www.boxtobe.mapa-server.org/privacy-policy"
-                target="_blank">www.boxtobe.mapa-server.org/privacy-policy</a></p>
+                href="https://boxtobe.mapa-server.org/privacy-policy"
+                target="_blank">https://boxtobe.mapa-server.org/privacy-policy</a></p>
 
         <br>
 

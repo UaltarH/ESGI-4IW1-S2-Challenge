@@ -20,6 +20,7 @@ import { useCartStore } from "@/stores/cart.ts";
 import PrivacyPolicy from "@/pages/privacy-policy/index.vue";
 import CGV from "@/pages/general-conditions-of-sale/index.vue";
 import Terms from "@/pages/terms-and-conditions/index.vue";
+import ResetPassword from "@/pages/reset-password/index.vue";
 
 const routes = [
   { path: "/", component: index, name: "home" },
@@ -139,6 +140,7 @@ const routes = [
       },
     ],
   },
+  { path: "/reset-password/:token",component: ResetPassword },
   { path: "/500", component: Error },
   { path: "/403", component: Error403 },
   // Route par défaut (ou erreur 404)

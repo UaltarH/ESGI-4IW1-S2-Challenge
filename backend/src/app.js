@@ -15,6 +15,7 @@ const cartRouter = require('./routes/cart');
 const notificationRouter = require('./routes/notification');
 const userPrefRouter = require('./routes/userPref');
 const dashboardRouter = require('./routes/dashboard');
+const passwordRouter = require('./routes/password');
 const app = express();
 
 
@@ -42,6 +43,7 @@ app.use(cartRouter);
 app.use(dashboardRouter);
 app.use(notificationRouter);
 app.use(userPrefRouter);
+app.use(passwordRouter);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'template', 'pdf'));

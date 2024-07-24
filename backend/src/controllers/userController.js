@@ -234,6 +234,88 @@ class userController {
       return res.sendStatus(200);
     }
   }
+
+  static async passwordResetRequest(req, res, next) {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } })
+
+    if(!user)
+      return res.sendStatus(404);
+    else {
+        const verification_token = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: 30 * 60 });
+        const updatedUser = await crudService.update(User, user.id, { verification_token });
+        if(updatedUser.error)
+          return res.sendStatus(500);
+      try {
+        await sendEmailWithTemplate(
+            req.body.email,
+            "Réinitialisation du mot de passe",
+            {
+              fullname: user.firstname + " " + user.lastname ,
+              link: (process.env.NODE_ENV === "development" ? "http://localhost:5173" : "https://boxtobe.mapa-server.org") + "/reset-password/" + verification_token
+            },
+            "/../template/passwordReset.ejs");
+      } catch (error) {
+        console.error("Failed to send email controller", error);
+      }
+      return res.sendStatus(200);
+    }
+  }
+  static async verifyResetToken(req, res, next) {
+    const { token } = req.params;
+    if (!token) {
+      return res.sendStatus(400);
+    }
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const { email, error } = payload;
+      if (error) {
+        return res.sendStatus(401);
+      }
+
+      const user = await User.findOne({ where: { email, verification_token: token } });
+
+      if (!user) {
+        return res.sendStatus(404);
+      }
+
+      return res.sendStatus(200);
+
+    } catch (error) {
+      return res.sendStatus(401);
+    }
+  }
+  static async updateByEmail(req, res, next) {
+    const { token, password } = req.body;
+    if (!token) {
+      return res.sendStatus(400);
+    }
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET);
+      const { email, error } = payload;
+      if (error) {
+        return res.sendStatus(401);
+      }
+
+      const user = await User.findOne({ where: { email, verification_token: token } });
+      if (!user) {
+        return res.sendStatus(404);
+      }
+      const updatedUser = await crudService.update(User, user.id, {
+        password: password,
+        verification_token: null
+      });
+      if(updatedUser.error) {
+        return res.sendStatus(500);
+      }
+      return res.sendStatus(204);
+
+    } catch (error) {
+      return res.sendStatus(500);
+    }
+  }
 }
 
 module.exports = userController;

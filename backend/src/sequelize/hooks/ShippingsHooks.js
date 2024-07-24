@@ -22,8 +22,6 @@ const afterCreateOrUpdateHook = async (shipping, options) => {
         console.error(`MongoOrder with postgresId ${shipping.OrderId} not found`);
         return;
     }
-
-    console.log(`MongoOrder updated: ${mongoOrder}`);
 };
 
 

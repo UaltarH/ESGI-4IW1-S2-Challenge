@@ -12,7 +12,7 @@ cartQueue.process(async (job) => {
         });
 
         if (!cart) {
-            console.log(`Cart ${cartId} not found or already processed`);
+            console.error(`Cart ${cartId} not found or already processed`);
             return;
         }
 

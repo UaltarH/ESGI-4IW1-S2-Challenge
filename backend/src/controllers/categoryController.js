@@ -7,7 +7,6 @@ class CategoryController {
             const records = await Category.findAll();
             res.json({ categories: records });
         } catch (error) {
-            console.error('Error in getAllCategories:', error);
             res.status(500).json({ error: error.message });
         }
     }

@@ -8,9 +8,14 @@ const checkRole = () => async (req, res, next) => {
     const header = req.headers.authorization || req.headers.Authorization;
 
     if (!header) {
-        if (req.method === 'POST' && req.path === '/orders/payment') {
-            req.body.role = role.USER;
-            return next();
+        if (req.method === 'POST') {
+            if (req.path === '/orders/payment') {
+                req.body.role = role.USER;
+                return next();
+            }
+            if (req.path === '/orders/updateShippingStatus') { //used by FakeApiLaPoste
+                return next();
+            }
         }
         return res.sendStatus(401);
     }
@@ -62,7 +67,7 @@ const checkRole = () => async (req, res, next) => {
                     if (userId !== id) return res.sendStatus(403);
                 } else if (req.path === '/orders') {
                     return res.sendStatus(403);
-                } 
+                }
                 return next();
             } else if (req.method === 'POST') {
                 if (req.path === '/orders/payment') {
@@ -71,7 +76,7 @@ const checkRole = () => async (req, res, next) => {
                 }
                 return res.sendStatus(403);
             } else {
-                return res.sendStatus(403);  
+                return res.sendStatus(403);
             }
         }
     } catch (e) {

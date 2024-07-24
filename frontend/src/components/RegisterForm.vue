@@ -247,7 +247,6 @@ const fetchRegister = async (param: { [key: string]: string | number | Date | bo
 
 function handleRegister(res: Response) {
   if (res.status === 201) {
-    console.log("User registered");
     formLoading.value = false;
     notificationStore.add({ message: 'Inscription réussie, un email de vérification vient de vous être envoyé', timeout: 3000, type: 'success' });
     // Ignore the warning :  formRef.value will hold an instance of <CustomForm> after the form is mounted (cf: template refs doc)

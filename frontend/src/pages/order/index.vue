@@ -85,7 +85,6 @@ const handleShippingSave = (shippingInfoInput: shipping): void => {
 };
 const handleInvoiceSave = (invoiceInfoInput: invoice): void => {
   invoiceInfo.value = invoiceInfoInput;
-  console.log(invoiceInfo.value);
   stepsInfos.value[1].isValid = true;
 };
 

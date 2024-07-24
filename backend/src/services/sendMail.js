@@ -15,7 +15,6 @@ const transporter = nodemailer.createTransport({
 const sendMail = async (mailOptions) => {
     try {
         await transporter.sendMail(mailOptions);
-        console.log('Email sent');
     } catch (err) {
         console.error('Failed to send email', err);
     }
@@ -23,7 +22,7 @@ const sendMail = async (mailOptions) => {
 const sendEmailWithTemplate = (receiver, subject, content, templatePath) => {
     ejs.renderFile(__dirname + templatePath, { receiver, content }, (err, data) => {
         if (err) {
-            console.log(err);
+            console.error(err);
         } else {
             const mailOptions = {
                 from: {
@@ -37,11 +36,10 @@ const sendEmailWithTemplate = (receiver, subject, content, templatePath) => {
             try {
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (error) {
-                        return console.log(error);
+                        return console.error(error);
                     }
-                    console.log('Message sent: %s', info.messageId);
                 });
-            } catch(err) {
+            } catch (err) {
                 console.error('Failed to send email', err);
             }
 

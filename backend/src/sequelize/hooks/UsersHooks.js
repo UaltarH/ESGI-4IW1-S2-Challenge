@@ -27,21 +27,29 @@ const afterUpdateHook = async (user, options) => {
 const afterDeleteHook = async (user, options) => {
     try {
         const mongoOrders = await MongoOrder.find({ 'user.userId': user.id });
-        let mongoOrdersMapped = [];
-        if (!mongoOrders) {
-            console.error(`MongoOrders with userId ${user.id} not found`);
-        }
-        mongoOrdersMapped = mongoOrders.map((mongoOrder) => {
-            return {
-                orderId: mongoOrder.postgresId,
-                orderNumber: mongoOrder.orderNumber,
-                date: mongoOrder.date,
-                status: mongoOrder.status,
-                orderItems: mongoOrder.orderItems,
-                payment: mongoOrder.payment,
-                shipping: mongoOrder.shipping,
+
+        if (mongoOrders.length === 0) {
+            console.log(`Aucune commande trouvée pour l'utilisateur ${user.id}`);
+        } else {
+            const anonymizedUserInfo = {
+                userId: anonymizeValue('user'),
+                firstname: 'Anonymous',
+                lastname: 'Anonymous',
+                email: anonymizeValue('email@example.com'),
+                phone: anonymizeValue('phone'),
             };
-        });
+
+            const updatePromises = mongoOrders.map(order =>
+                MongoOrder.updateOne(
+                    { _id: order._id },
+                    { $set: { user: anonymizedUserInfo } }
+                )
+            );
+
+            await Promise.all(updatePromises);
+
+            console.log(`${updatePromises.length} commandes anonymisées pour l'utilisateur ${user.id}`);
+        }
 
         const userMapped = {
             userId: anonymizeValue('user'),
@@ -57,17 +65,25 @@ const afterDeleteHook = async (user, options) => {
             role: user.role,
         };
 
+        const ordersMapped = mongoOrders.map(order => ({
+            orderId: order.postgresId,
+            orderNumber: order.orderNumber,
+            date: order.date,
+            status: order.status,
+            orderItems: order.orderItems,
+            payment: order.payment,
+            shipping: order.shipping,
+        }));
+
         await MongoAppHistory.create({
             date: new Date(),
             userDeleted: userMapped,
-            ordersDeleted: mongoOrdersMapped,
+            ordersAnonymized: ordersMapped,
         });
 
-        await MongoOrder.deleteMany({ 'user.userId': user.id });
     } catch (error) {
-        console.error(error);
+        console.error("Erreur lors de l'anonymisation des commandes:", error);
     }
-
 };
 
 module.exports = {

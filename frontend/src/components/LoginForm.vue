@@ -1,13 +1,19 @@
 <template>
   <section class="pt-24 mx-12 lg:mx-auto mb-12 lg:w-1/2">
     <Form
+        v-if="!isResetFormVisible"
         :schema="loginSchema"
         submit-text="Connexion"
         @submit="handleLogin"
         :show-reset="false"
         :disabled="disabled"
         :loading="loading"
-    />
+    >
+      <template #footer>
+        <button type="button" aria-label="mot de passe oublié" class="underline basis-full" @click="isResetFormVisible = true">Mot de passe oublié</button>
+      </template>
+    </Form>
+    <ResetPasswordForm v-else @submit:.prevent @close="isResetFormVisible = false"/>
   </section>
 </template>
 <script lang="ts" setup>
@@ -21,6 +27,7 @@ import { useRouter } from "vue-router";
 import { ref } from "vue";
 import { useNotificationStore } from "@/stores/notification.ts";
 import { useCartStore } from "@/stores/cart.ts";
+import ResetPasswordForm from "@/components/ResetPasswordForm.vue";
 
 const router = useRouter();
 const user = useUserStore();
@@ -30,6 +37,7 @@ const { requiredMessage, invalidStringMessage } = formMessages();
 
 const disabled = ref(false);
 const loading = ref(false);
+const isResetFormVisible = ref(false);
 
 const loginSchema: FormField<any>[] = [
   {

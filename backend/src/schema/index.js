@@ -14,6 +14,7 @@ const createProductSchema = require("./product/createProduct.schema.js");
 const updateProductSchema = require("./product/updateProduct.schema.js");
 const checkPasswordSchema = require("./user/checkPassword.schema.js");
 const loginSchema = require("./user/login.schema.js");
+const passwordResetRequest = require("./password/passwordResetRequest.schema.js");
 
 module.exports = {
     userUpdateByUserSchema,
@@ -32,4 +33,5 @@ module.exports = {
     updateProductSchema,
     checkPasswordSchema,
     loginSchema,
+    passwordResetRequest,
 };

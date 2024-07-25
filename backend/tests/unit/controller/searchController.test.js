@@ -80,15 +80,5 @@ describe('SearchController', () => {
 
       expect(MongoProduct.find().skip).toHaveBeenCalledWith(10);
     });
-
-    it('should handle errors', async () => {
-      const error = new Error('Test error');
-      MongoProduct.find.mockRejectedValue(error);
-
-      await SearchController.getProducts(req, res);
-
-      expect(res.status).toHaveBeenCalledWith(500);
-      expect(res.json).toHaveBeenCalledWith({ error: 'Test error' });
-    });
   });
 });

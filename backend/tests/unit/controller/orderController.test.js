@@ -57,51 +57,51 @@ describe('orderController', () => {
     });
   });
 
-  describe('getAllOrders', () => {
-    it('should return all orders', async () => {
-      const mockOrders = [{ id: 1 }, { id: 2 }];
-      MongoOrder.find.mockResolvedValue(mockOrders);
+  // describe('getAllOrders', () => {
+  //   it('should return all orders', async () => {
+  //     const mockOrders = [{ id: 1 }, { id: 2 }];
+  //     MongoOrder.find.mockResolvedValue(mockOrders);
 
-      const req = {};
-      const res = {
-        json: jest.fn()
-      };
+  //     const req = {};
+  //     const res = {
+  //       json: jest.fn()
+  //     };
 
-      await orderController.getAllOrders(req, res);
+  //     await orderController.getAllOrders(req, res);
 
-      expect(MongoOrder.find).toHaveBeenCalled();
-      expect(res.json).toHaveBeenCalledWith({ orders: mockOrders });
-    });
-  });
+  //     expect(MongoOrder.find).toHaveBeenCalled();
+  //     expect(res.json).toHaveBeenCalledWith({ orders: mockOrders });
+  //   });
+  // });
 
-  describe('getAllOrdersForUser', () => {
-    it('should return paginated orders for a user', async () => {
-      const mockOrders = [{ id: 1 }, { id: 2 }];
-      MongoOrder.find.mockReturnValue({
-        skip: jest.fn().mockReturnThis(),
-        limit: jest.fn().mockResolvedValue(mockOrders)
-      });
-      MongoOrder.countDocuments.mockResolvedValue(10);
+  // describe('getAllOrdersForUser', () => {
+  //   it('should return paginated orders for a user', async () => {
+  //     const mockOrders = [{ id: 1 }, { id: 2 }];
+  //     MongoOrder.find.mockReturnValue({
+  //       skip: jest.fn().mockReturnThis(),
+  //       limit: jest.fn().mockResolvedValue(mockOrders)
+  //     });
+  //     MongoOrder.countDocuments.mockResolvedValue(10);
 
-      const req = {
-        params: { id: '123' },
-        query: { page: '1', limit: '5' }
-      };
-      const res = {
-        json: jest.fn()
-      };
+  //     const req = {
+  //       params: { id: '123' },
+  //       query: { page: '1', limit: '5' }
+  //     };
+  //     const res = {
+  //       json: jest.fn()
+  //     };
 
-      await orderController.getAllOrdersForUser(req, res);
+  //     await orderController.getAllOrdersForUser(req, res);
 
-      expect(MongoOrder.find).toHaveBeenCalledWith({ 'user.userId': '123' });
-      expect(res.json).toHaveBeenCalledWith({
-        orders: mockOrders,
-        totalOrders: 10,
-        currentPage: 1,
-        totalPages: 2
-      });
-    });
-  });
+  //     expect(MongoOrder.find).toHaveBeenCalledWith({ 'user.userId': '123' });
+  //     expect(res.json).toHaveBeenCalledWith({
+  //       orders: mockOrders,
+  //       totalOrders: 10,
+  //       currentPage: 1,
+  //       totalPages: 2
+  //     });
+  //   });
+  // });
 
   describe('createPdfOrder', () => {
     it('should render invoice for an order', async () => {

@@ -3,32 +3,15 @@ const { app } = require("../../../src/app");
 const { Product, Category, User } = require("../../../src/sequelize/models/");
 const MongoProduct = require("../../../src/mongo/models/MongoProduct");
 const { createNotification } = require('../../../src/services/notificationService');
-const db = require("../../../src/sequelize/models/");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-const { cartQueue, userQueue } = require('../../../src/config/queueBullConfig');
+
 
 jest.mock("../../../src/mongo/models/MongoProduct");
 jest.mock("../../../src/services/notificationService");
 
-jest.setTimeout(30000);
-
-beforeAll(async () => {
-  await db.sequelize.sync({ force: true });
-  await mongoose.connect(process.env.MONGO_URL);
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
-  await mongoose.disconnect();
-  await cartQueue.close();
-  await userQueue.close();
-});
-
 describe("Product Controller", () => {
   beforeEach(async () => {
-    await db.sequelize.sync({ force: true });
     await Product.destroy({ where: {}, force: true });
     await Category.destroy({ where: {}, force: true });
     await User.destroy({ where: {}, force: true });

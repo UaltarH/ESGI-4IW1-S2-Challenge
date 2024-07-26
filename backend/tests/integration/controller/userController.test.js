@@ -4,15 +4,6 @@ const {app} = require("../../../src/app");
 const { User } = require("../../../src/sequelize/models/");
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
-const db = require("../../../src/sequelize/models/");
-
-beforeAll(async () => {
-  await db.sequelize.sync({ force: true });
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
-});
 
 
 describe("User Controller", () => {

@@ -1,4 +1,4 @@
-const CategoryController = require('../../../src/controllers/CategoryController');
+const CategoryController = require('../../../src/controllers/categoryController');
 const { Category } = require('../../../src/sequelize/models');
 
 jest.mock('../../../src/sequelize/models', () => ({

@@ -14,7 +14,7 @@ describe("DashboardController", () => {
     beforeEach(async () => {
         await User.destroy({ where: {}, force: true });
         jest.clearAllMocks();
-    });
+    }, 10000);
   
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

@@ -6,7 +6,7 @@
     "dev": "node --watch --trace-warnings src/index.js",
     "devl": "nodemon -L src/index.js",
     "start": "node src/index.js",
-    "test": "NODE_ENV=test jest --detectOpenHandles",
+    "test": "NODE_ENV=test jest",
     "migrate-up-test": "NODE_ENV=test sequelize-cli db:migrate --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",
     "migrate-down-all-test": "NODE_ENV=test sequelize-cli db:migrate:undo:all",
     "migrate-up": " sequelize-cli db:migrate --migrations-path ./src/sequelize/migrations --config ./src/config/sequelize_config.js",

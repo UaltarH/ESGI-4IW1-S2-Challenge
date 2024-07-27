@@ -1,4 +1,4 @@
-const DashboardController = require('../../../src/controllers/DashboardController');
+const DashboardController = require('../../../src/controllers/dashboardController');
 const ChartDataService = require('../../../src/services/dashboardService');
 const MongoDashboardConfig = require('../../../src/mongo/models/MongoDashboardConfig');
 

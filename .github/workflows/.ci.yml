@@ -17,6 +17,7 @@ jobs:
       TEST_DATABASE_URL: postgres://testuser:testpassword@postgres_test:5432/test_app
       MONGO_INITDB_ROOT_USERNAME: testmongo
       MONGO_INITDB_ROOT_PASSWORD: testmongo
+      JWT_SECRET: testjwtsecret
 
     steps:
       - name: Checkout repository

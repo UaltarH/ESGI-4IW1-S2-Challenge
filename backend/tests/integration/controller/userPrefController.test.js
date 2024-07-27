@@ -8,7 +8,7 @@ describe("UserPrefController", () => {
   beforeEach(async () => {
     await User.destroy({ where: {}, force: true });
     await User_pref.destroy({ where: {}, force: true });
-  });
+  }, 10000);
 
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

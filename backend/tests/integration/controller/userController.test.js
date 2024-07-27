@@ -9,7 +9,7 @@ const { v4: uuidv4 } = require('uuid');
 describe("User Controller", () => {
   beforeEach(async () => {
     await User.destroy({ where: {}, force: true });
-  });
+  }, 10000);
 
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

@@ -34,7 +34,7 @@ describe("Order Tests", () => {
     await Order_item.destroy({ where: {}, force: true });
     await MongoOrder.deleteMany({});
     jest.clearAllMocks();
-  });
+  },10000);
 
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

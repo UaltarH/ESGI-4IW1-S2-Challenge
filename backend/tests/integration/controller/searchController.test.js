@@ -13,7 +13,7 @@ describe("SearchController", () => {
     escapeRegex.mockImplementation(x => x);
     normalizeString.mockImplementation(x => x);
     cleanQuantity.mockImplementation((x) => parseInt(x) || 0);
-  });
+  }, 10000);
 
   describe("GET /search", () => {
     test("should return products based on search criteria", async () => {

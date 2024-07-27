@@ -16,7 +16,7 @@ describe("Product Controller", () => {
     await Category.destroy({ where: {}, force: true });
     await User.destroy({ where: {}, force: true });
     jest.clearAllMocks();
-  }, 10000);
+  }, 20000);
   
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

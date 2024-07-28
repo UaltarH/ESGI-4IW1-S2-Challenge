@@ -3,27 +3,12 @@ const { app } = require("../../../src/app");
 const { User, User_pref } = require("../../../src/sequelize/models");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const db = require("../../../src/sequelize/models/");
-const { cartQueue, userQueue } = require('../../../src/config/queueBullConfig');
-const mongoose = require('mongoose');
-
-beforeAll(async () => {
-    await db.sequelize.sync({ force: true });
-    await mongoose.connect(process.env.MONGO_URL);
-});
-
-afterAll(async () => {
-    await db.sequelize.close();
-    await mongoose.disconnect();
-    await cartQueue.close();
-    await userQueue.close();
-});
 
 describe("UserPrefController", () => {
   beforeEach(async () => {
     await User.destroy({ where: {}, force: true });
     await User_pref.destroy({ where: {}, force: true });
-  });
+  }, 20000);
 
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

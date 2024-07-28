@@ -3,32 +3,18 @@ const { app } = require("../../../src/app");
 const { User } = require("../../../src/sequelize/models/");
 const ChartDataService = require('../../../src/services/dashboardService');
 const MongoDashboardConfig = require('../../../src/mongo/models/MongoDashboardConfig');
-const { cartQueue, userQueue } = require('../../../src/config/queueBullConfig');
-const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const db = require("../../../src/sequelize/models/");
 
 jest.mock('../../../src/services/dashboardService');
 jest.mock('../../../src/mongo/models/MongoDashboardConfig');
 
-beforeAll(async () => {
-  await db.sequelize.sync({ force: true });
-  await mongoose.connect(process.env.MONGO_URL);
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
-  await mongoose.disconnect();
-  await cartQueue.close();
-  await userQueue.close();
-});
 
 describe("DashboardController", () => {
     beforeEach(async () => {
         await User.destroy({ where: {}, force: true });
         jest.clearAllMocks();
-    });
+    }, 20000);
   
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

@@ -4,15 +4,10 @@ const { User, Order, Payment, Shipping, Order_status, Cart, Order_item } = requi
 const MongoOrder = require('../../../src/mongo/models/MongoOrder');
 const { createStripeSession } = require('../../../src/services/stripeSession');
 const { createOrderTransac } = require('../../../src/services/createOrder');
-const { sendEmailWithTemplate } = require("../../../src/services/sendMail");
-const { cartQueue } = require('../../../src/config/queueBullConfig');
 const { afterCreateHook: orderAfterCreateHook } = require('../../../src/sequelize/hooks/OrdersHooks');
-const { afterCreateHook: orderStatusAfterCreateHook } = require('../../../src/sequelize/hooks/Order_statusHooks');
-const { afterCreateHook: orderItemAfterCreateHook } = require('../../../src/sequelize/hooks/Order_itemsHooks');
-const mongoose = require('mongoose');
+
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const db = require("../../../src/sequelize/models/");
 
 jest.mock('../../../src/services/stripeSession');
 jest.mock('../../../src/services/createOrder');
@@ -28,17 +23,6 @@ jest.mock('../../../src/sequelize/hooks/Order_itemsHooks', () => ({
   afterCreateHook: jest.fn(),
 }));
 
-beforeAll(async () => {
-  await db.sequelize.sync({ force: true });
-  await mongoose.connect(process.env.MONGO_URL);
-});
-
-afterAll(async () => {
-  await db.sequelize.close();
-  await mongoose.disconnect();
-  await cartQueue.close();
-});
-
 describe("Order Tests", () => {
   beforeEach(async () => {
     await User.destroy({ where: {}, force: true });
@@ -50,7 +34,7 @@ describe("Order Tests", () => {
     await Order_item.destroy({ where: {}, force: true });
     await MongoOrder.deleteMany({});
     jest.clearAllMocks();
-  });
+  },20000);
 
   const createTestUser = async (role = 'user') => {
     const user = await User.create({

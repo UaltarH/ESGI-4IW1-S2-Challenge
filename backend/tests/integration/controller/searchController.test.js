@@ -2,21 +2,10 @@ const request = require('supertest');
 const { app } = require("../../../src/app");
 const MongoProduct = require('../../../src/mongo/models/MongoProduct');
 const { escapeRegex, normalizeString, cleanQuantity } = require('../../../src/services/cleanUtils');
-const { cartQueue, userQueue } = require('../../../src/config/queueBullConfig');
-const mongoose = require('mongoose');
 
 jest.mock('../../../src/mongo/models/MongoProduct');
 jest.mock('../../../src/services/cleanUtils');
 
-beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URL);
-  });
-  
-  afterAll(async () => {
-    await mongoose.disconnect();
-    await cartQueue.close();
-    await userQueue.close();
-  });
 
 describe("SearchController", () => {
   beforeEach(() => {
@@ -24,7 +13,7 @@ describe("SearchController", () => {
     escapeRegex.mockImplementation(x => x);
     normalizeString.mockImplementation(x => x);
     cleanQuantity.mockImplementation((x) => parseInt(x) || 0);
-  });
+  }, 20000);
 
   describe("GET /search", () => {
     test("should return products based on search criteria", async () => {
